@@ -1,3 +1,12 @@
+ONLINE-VERSION
+===========
+http://ancient-waters-4140.herokuapp.com/
+
+CLONE FROM:
+========
+https://github.com/jamiew/heroku-static-site
+
+
 heroku-static-site
 ===========
 
