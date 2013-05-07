@@ -6,10 +6,16 @@ define(function(){
 
         for(var i=0; i<arr.length; i++){
             var x=arr[i];
+
+            if(x.on_end.length>0)
+                obtain_chain(x.on_end);
+
             acumulator.push(x.process.bind(x));        
             
             if(x.on_start.length>0)
                 obtain_chain(x.on_start);
+
+
         }
     }
     obtain_chain(_arr);

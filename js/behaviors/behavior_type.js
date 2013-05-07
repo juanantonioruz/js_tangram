@@ -3,6 +3,8 @@ define(["js/jquery-1.9.1.min.js"], function() {
         this.data={};
         this.data.ns=name;
         this.on_start=[];
+        this.on_end=[];
+
     };  
 
     Behavior.prototype.message=function(semantic_element, message){
@@ -18,11 +20,10 @@ define(["js/jquery-1.9.1.min.js"], function() {
 
     Behavior.prototype.process=function(event_data, callback){
         var that=this;
-        event_data.event_history.push(this.data.ns);
+        event_data.behavior_history.push(this.data.ns);
         $('#status').html("init: "+this.data.ns);
         (function(){
             that.behavior(event_data, callback);
-
         })();
     };
 
