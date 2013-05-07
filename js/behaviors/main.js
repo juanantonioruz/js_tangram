@@ -1,3 +1,7 @@
+require.config({
+    urlArgs: "bust=" + (new Date()).getTime()
+});
+
 require(["js/behaviors/compose_async.js", "js/behaviors/behaviors_service.js","js/jquery-1.9.1.min.js"], function(compose, BS) {
     
     // this is an attemp to separate HTML from semantic usability components, (html related components)
@@ -49,25 +53,16 @@ require(["js/behaviors/compose_async.js", "js/behaviors/behaviors_service.js","j
     BS.show_history.on_start.push(BS.template_history);
 
 
-    function response_to_event(event, onSuccessCallback, onErrorCallback){
-        // using async lib to compose async functions. Internally the async behaviors tree are transformed to a linear array
-        var compose_behaviors=compose(event.semantic_event.behaviors_array);
-        
-        compose_behaviors(event, function (err, result) {
-            if(err) onErrorCallback(err);
-            onSuccessCallback(result);
-            if(debug) console.log(toJson(result));
-        });
-    }
+ 
 
     // it is usually an ui update, so inside we can use jquery and semantic_dom
     var onSuccessCallback=function(event){$(semantic_dom.footer.status).html("end all behaviors! ").css('background-color', 'yellow').fadeOut(1000);};
-
+    var onErrorCallback=function(e){alert("error"+toJson(e));};
 
 // response to event_data
-    response_to_event(event_data, 
+    compose.response_to_event(event_data, 
                       onSuccessCallback,
-                      function(e){alert("error"+toJson(e));});
+                      onErrorCallback);
 
 
 
