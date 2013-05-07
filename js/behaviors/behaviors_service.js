@@ -1,5 +1,5 @@
 define([ "js/behaviors/behavior_type.js","js/jquery-1.9.1.min.js"], function(B) {
- 
+    
     var load_history=B("load_history");
     
     load_history.behavior=function(event_data, callback){
@@ -20,12 +20,12 @@ define([ "js/behaviors/behavior_type.js","js/jquery-1.9.1.min.js"], function(B) 
     
     show_user_history.behavior=function(event_data, callback){
         setTimeout(function () {
- // TODO  change selector by semantic id
-          $('#content').append("<h1>user_history</h1><ul></ul>");
+            // TODO  change selector by semantic id
+            $('#content').append("<h1>user_history</h1><ul></ul>");
             $.each(event_data.user_history, function(i, value){
                 $('#content ul').append("<li>"+value+"</li>");
             });
-        
+            
             callback(null, event_data);
         }, 1000);
 
@@ -34,10 +34,10 @@ define([ "js/behaviors/behavior_type.js","js/jquery-1.9.1.min.js"], function(B) 
     var show_history=B("show_history");
     
     show_history.behavior=function(event_data, callback){
- setTimeout(function () {
-          $('#event_history').append(event_data.template);
+        setTimeout(function () {
+            $(event_data.get_semantic_dom.modal.history.history).append(event_data.template);
             $.each(event_data.event_history, function(i, value){
-                $('#event_history div ul').append("<li>"+value+"</li>");
+                $(event_data.get_semantic_dom.modal.history.ul).append("<li>"+value+"</li>");
             });
             // $('#event_history div ul').after("<h2>"+event_data.template_message+"</h2>");
             callback(null, event_data);
@@ -48,7 +48,7 @@ define([ "js/behaviors/behavior_type.js","js/jquery-1.9.1.min.js"], function(B) 
     var template_history=B("template_history");
 
     template_history.behavior=function(event_data, callback){
-        this.message("#status", "loading dynamic_template");
+        this.message(event_data.get_semantic_dom.footer.status, "loading dynamic_template");
         setTimeout(function () {
             event_data.template_message="the template is dynamic and now is displayed!";
             event_data.template="<div style='background-color:green;'><h1>Behavior history</h1><ul></ul></div>";
@@ -56,7 +56,7 @@ define([ "js/behaviors/behavior_type.js","js/jquery-1.9.1.min.js"], function(B) 
             callback(null, event_data);
         }, 1000);
     };
-   
+    
     var behaviors_map={};
     behaviors_map[load_history.data.ns]=load_history;
     behaviors_map[show_history.data.ns]=show_history;

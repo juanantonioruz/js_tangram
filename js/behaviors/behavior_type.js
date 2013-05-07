@@ -5,7 +5,6 @@ define(["js/jquery-1.9.1.min.js"], function() {
         this.on_start=[];
     };  
 
-
     Behavior.prototype.message=function(semantic_element, message){
         $(semantic_element).html(message);
     };
