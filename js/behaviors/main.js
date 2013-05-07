@@ -6,11 +6,12 @@ require(["js/behaviors/compose_async.js", "js/behaviors/behaviors_service.js","j
         BS.show_user_history, 
         BS.show_history];
 
+    var event_data={current_context:"here!",event_history:[]};
+
      //TODO: it must be done in any place in code, currently only works before compose_behaviors invocation Behavior manipulation AOP
     BS.show_history.on_start.push(BS.template_history);
 
 
-    var event_data={current_context:"here!",event_history:[]};
 
     var compose_behaviors=compose(behaviors_array);
 
