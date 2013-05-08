@@ -15,7 +15,6 @@ define(function(){
             if(x.on_start.length>0)
                 obtain_chain(x.on_start);
 
-
         }
     }
     obtain_chain(_arr);

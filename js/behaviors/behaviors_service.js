@@ -1,8 +1,8 @@
-define(["require", "js/behaviors/chains_manager.js", "js/behaviors/behavior_type.js","js/jquery-1.9.1.min.js"],
+define(["require", "js/behaviors/chains_manager.js", "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
        function(require, chains, B) {
 
-    
-var the_time_out=500;
+
+           var the_time_out=700;
 
     // what types of behavior can exist? ...
     // representation_type
@@ -13,10 +13,12 @@ var the_time_out=500;
     // attaching behaviors/interactions/listeners i dont know how call it yet!
 
 
-    var that=this;
-    var load_history=B("load_history");
-    
-    load_history.behavior=function(event_data, callback){
+ //   var that=this;
+
+var load_history=B.extend( function(base){
+      return {
+         
+          behavior:function(event_data, callback){
         this.message(event_data.get_semantic_dom.footer.status, "loading user history mock");
         setTimeout(function () {
             var user_history=[];
@@ -28,10 +30,19 @@ var the_time_out=500;
             callback(null, event_data);
         }, the_time_out);
         
-    };
+    }
+          
+      };
+  });
+    
+    
+    
+        
 
-    var show_user_history=B("show_user_history");
-    show_user_history.behavior=function(event_data, callback){
+var show_user_history=B.extend( function(base){
+      return {
+         
+          behavior:function(event_data, callback){
         this.message(event_data.get_semantic_dom.footer.status, "showing user history ");
         setTimeout(function () {
 
@@ -43,12 +54,23 @@ var the_time_out=500;
             callback(null, event_data);
         }, the_time_out);
 
-    };
+    }
+          
+      };
+  });
 
-    var show_history=B("show_history");
-    show_history.behavior=function(event_data, callback){
+
+ 
+
+   
+
+ var show_history=B.extend( function(base){
+      return {
+         
+          behavior:function(event_data, callback){
+        this.message(event_data.get_semantic_dom.footer.status, "showing history");
         setTimeout(function () {
-           
+
             $(event_data.get_semantic_dom.modal.history.history).append(event_data.template);
             $.each(event_data.behavior_history, function(i, value){
                 $(event_data.get_semantic_dom.modal.history.ul).append("<li>"+value+"</li>");
@@ -56,11 +78,16 @@ var the_time_out=500;
             // $('#event_history div ul').after("<h2>"+event_data.template_message+"</h2>");
             callback(null, event_data);
         }, the_time_out);
-    };
+    }
+          
+      };
+  });
 
 
-    var template_history=B("template_history");
-    template_history.behavior=function(event_data, callback){
+ var template_history=B.extend( function(base){
+      return {
+         
+          behavior:function(event_data, callback){
         this.message(event_data.get_semantic_dom.footer.status, "loading dynamic_template");
         setTimeout(function () {
             event_data.template_message="the template is dynamic and now is displayed!";
@@ -68,39 +95,64 @@ var the_time_out=500;
             
             callback(null, event_data);
         }, the_time_out);
-    };
-    
+    }
+          
+      };
+  });
 
-    var attach_behaviors=B("attach_behaviors");
-    attach_behaviors.behavior=function(event_data, callback){
-        this.message(event_data.get_semantic_dom.footer.status, "attach on click history behavior");
+ 
+    
+ var attach_behaviors=B.extend( function(base){
+      return {
+        
+          behavior:function(event_data, callback){
+        this.message(event_data.get_semantic_dom.footer.status, "attaching on click history behavior");
         setTimeout(function () {
             $(event_data.get_semantic_dom.content.ul+" li").click(function(e){alert("you have clicked in user history");});
             callback(null, event_data);
         }, the_time_out);
-    };
+    }
+          
+      };
+  });
+  
 
-    var activate_start_chain_button=B("activate_start_chain_button");
-    activate_start_chain_button.behavior=function(event_data, callback){
+  
+    var activate_start_chain_button=B.extend( function(base){
+      return {
+         
+          behavior:function(event_data, callback){
         this.message(event_data.get_semantic_dom.footer.status, "activating start_chain_button");
         setTimeout(function () {
 require([ "js/behaviors/chains_manager.js"], function(chains){
 
-    $(event_data.get_semantic_dom.header.input_user.button).click(chains.show_history);
+    $(event_data.get_semantic_dom.header.input_user.button).click(
+        function(){alert("click");
+                   console.dir(chains);
+                   chains.show_history();});
             callback(null, event_data);
 });
             
-        }, the_time_out);
-    };
+        }, 1000);
+    }
+          
+      };
+  });
 
 
     var behaviors_map={};
-    behaviors_map[load_history.data.ns]=load_history;
-    behaviors_map[show_history.data.ns]=show_history;
-    behaviors_map[template_history.data.ns]=template_history;
-    behaviors_map[show_user_history.data.ns]=show_user_history;
-    behaviors_map[attach_behaviors.data.ns]=attach_behaviors;
-    behaviors_map[activate_start_chain_button.data.ns]=activate_start_chain_button;
 
-    return behaviors_map;
+    behaviors_map["load_history"]=load_history;
+     behaviors_map["show_history"]=show_history;
+   behaviors_map["template_history"]=template_history;
+    behaviors_map["show_user_history"]=show_user_history;
+     behaviors_map["attach_behavior"]=attach_behaviors;
+           
+    behaviors_map["activate_start_chain_button"]=activate_start_chain_button;
+
+    return  function(key){
+        console.log("asking for: "+key);
+        console.dir(key);
+        return   new behaviors_map[key](key);
+    };
 });

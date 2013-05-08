@@ -29,14 +29,14 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
         show_history:{
             ns:"show_history",
             behaviors_array:[
-                BS.load_history, 
-                BS.show_user_history, 
-                BS.show_history]
+                "load_history", 
+                "show_user_history", 
+                "show_history"]
         },
         start:{
             ns:"start",
             behaviors_array:[
-                BS.activate_start_chain_button
+                "activate_start_chain_button"
                 ]
         }
 

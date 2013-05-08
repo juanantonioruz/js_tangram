@@ -1,6 +1,6 @@
 define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
 
-// this module has to access to all contexts available in the app
+// this module has to access to all semantics contexts available in the app
 
     return  function(key_context, key_event){
         var event={};
