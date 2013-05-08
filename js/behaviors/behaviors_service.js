@@ -44,8 +44,9 @@ var show_user_history=B.extend( function(base){
          
           behavior:function(event_data, callback){
         this.message(event_data.get_semantic_dom.footer.status, "showing user history ");
+              $(event_data.get_semantic_dom.content.content).empty();
         setTimeout(function () {
-
+            
             $(event_data.get_semantic_dom.content.content).append("<h1>user_history</h1><ul></ul>");
             $.each(event_data.user_history, function(i, value){
                 $(event_data.get_semantic_dom.content.ul).append("<li>"+value+"</li>");
@@ -69,6 +70,7 @@ var show_user_history=B.extend( function(base){
          
           behavior:function(event_data, callback){
         this.message(event_data.get_semantic_dom.footer.status, "showing history");
+$(event_data.get_semantic_dom.modal.history.history).empty();
         setTimeout(function () {
 
             $(event_data.get_semantic_dom.modal.history.history).append(event_data.template);
@@ -127,13 +129,13 @@ var show_user_history=B.extend( function(base){
 require([ "js/behaviors/chains_manager.js"], function(chains){
 
     $(event_data.get_semantic_dom.header.input_user.button).click(
-        function(){alert("click");
-                   console.dir(chains);
+        function(){//alert("click");
+                  // console.dir(chains);
                    chains.show_history();});
             callback(null, event_data);
 });
             
-        }, 1000);
+        }, the_time_out);
     }
           
       };
@@ -146,7 +148,7 @@ require([ "js/behaviors/chains_manager.js"], function(chains){
      behaviors_map["show_history"]=show_history;
    behaviors_map["template_history"]=template_history;
     behaviors_map["show_user_history"]=show_user_history;
-     behaviors_map["attach_behavior"]=attach_behaviors;
+     behaviors_map["attach_behaviors"]=attach_behaviors;
            
     behaviors_map["activate_start_chain_button"]=activate_start_chain_button;
 

@@ -15,6 +15,14 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
 
         // set semantic_event as a property of event object
         event.semantic_event=event.current_context.semantic_events[key_event];
+        event.getBehaviorInstance=function(name){
+            var b_arr=event.semantic_event.behaviors_instances;
+            for(var i=0; i<b_arr.length; i++){
+                if(b_arr[i].data.ns==name) return b_arr[i];
+                }
+            //TODO throw an exception
+            return null;
+        };
 
         return event;
         

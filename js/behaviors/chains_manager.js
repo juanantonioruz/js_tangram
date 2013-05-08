@@ -17,9 +17,9 @@ define(
             // AOP manipulation, adding onStart behaviors more behaviors
             //TODO: it must be done in any place in code, currently only works before compose_behaviors invocation Behavior 
             // console.log(toJson(BS));
-//            BS("show_user_history").on_start.push(BS.template_history);
 
- //            BS("show_user_history").on_end.push(BS.attach_behaviors);
+
+
 
             // ENDING  AOP 
             //---------------------------------------------------------------------------
@@ -28,6 +28,10 @@ define(
 
 
               event_show_history.semantic_event.behaviors_instances=event_show_history.semantic_event.behaviors_array.map(BS);
+                  event_show_history.getBehaviorInstance("show_user_history").on_start.push(BS("template_history"));
+                event_show_history.getBehaviorInstance("show_user_history").on_end.push(BS("attach_behaviors"));
+                //            BS("show_user_history").on_start.push(BS.template_history);
+ //            BS("show_user_history").on_end.push(BS.attach_behaviors);
             // response to event_data
             compose.response_to_event(event_show_history, 
                                       onSuccessCallback,
