@@ -8,6 +8,7 @@ define(["js/jquery-1.9.1.min.js"], function() {
     };  
 
     Behavior.prototype.message=function(semantic_element, message){
+        if(debug) console.log(message);
         $(semantic_element).html(message);
     };
 

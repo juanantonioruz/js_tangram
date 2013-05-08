@@ -9,6 +9,7 @@
       return JSON.stringify(o, null, 4);
       };
       var debug=true;
+      var fine_debug=false;
 
     </script>
     <script type="text/javascript" src="js/require.js" data-main="js/behaviors/main"></script>
@@ -16,6 +17,13 @@
 
   </head>
   <body >
+
+<div id="input_user" >
+  <input type="button" id="start_chain" value="show user history mock"/>
+  <input type="text" id="input_user_input"
+                            value="you can use this input to test
+                            behaviors" size="30"> 
+</div>
 <div id="status" ></div>
 <div id="content" style="background-color:pink;"></div>
 <div id="event_history"></div>
