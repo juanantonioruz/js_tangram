@@ -32,7 +32,8 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
         return {
             dispatch:function(ns_behavior_event_process, event_data){
                 console.log("dispatch:: "+ns_behavior_event_process);
-                console.dir(event_data);
+                $.messageToLogging(ns_behavior_event_process);
+//                console.dir(event_data);
                 
                 //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
                 // search  in that place of domain_tree data the listeners to send the event

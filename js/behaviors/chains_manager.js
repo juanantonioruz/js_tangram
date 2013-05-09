@@ -7,11 +7,19 @@ define(
     function(compose, 
              getEventInContextService, BS, jQuery) {
 
-        function highlightStatus(message){
+        // TOdo get better this helper function
+         var highlightStatus=$.highlightStatus=function(message){
              $( "#status" ).css("background-color","yellow").text(message).animate({
                     backgroundColor: "white"
                 }, 1000 , function(){$(this).html("").css("background-color", "white");});
-        }
+        };
+
+         var messageToLogging=$.messageToLogging=function(message){
+             var index=($("#logging ul li").size())+1;
+             $("#logging ul").prepend("<li>"+index+" : "+message+"</li>");
+
+        };
+
 
             var onSuccessCallback=function(event){
                highlightStatus("all steps in pipeline are done!");

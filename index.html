@@ -20,10 +20,14 @@
 
     <script type="text/javascript" src="js/require.js" data-main="js/behaviors/main"></script>
 
-
+<style>
+#container{width:100%;}
+#left{float:left;width:20%;}
+#right{float:right;width:20%;}
+#center{margin:0 auto;width:60%;}
+</style>
   </head>
   <body >
-
 <div id="input_user" >
   <input type="button" id="start_chain" value="show user history mock"/>
   <input type="text" id="input_user_input"
@@ -31,8 +35,20 @@
                             behaviors" size="30"> 
 </div>
 <div id="status" ></div>
-<div id="content" style="background-color:pink;"></div>
-<div id="event_history"></div>
+<div id="container">
+  <div id="left"><div id="event_history"></div></div>
+  <div id="right"><div id="logging"><ul></ul></div></div>
+  <div id="center">
+    <div id="content" style="background-color:pink;"></div>
+</div>
+<div style="clear:both;">
+</div>
+
+
+
+
+
+
 <script>
 
 </script>

@@ -127,7 +127,7 @@ $(event_data.get_semantic_dom.modal.history.history).empty();
          
           behavior:function(event_data, callback){
               base.behavior(event_data, callback);
-        this.message(event_data.get_semantic_dom.footer.status, "activating start_chain_button");
+
         setTimeout(function () {
 require([ "js/behaviors/chains_manager.js"], function(chains){
 
@@ -156,8 +156,8 @@ require([ "js/behaviors/chains_manager.js"], function(chains){
     behaviors_map["activate_start_chain_button"]=activate_start_chain_button;
 
     return  function(key){
-        console.log("asking for: "+key);
-        console.dir(key);
+//        console.log("asking for: "+key);
+//        console.dir(key);
         return   new behaviors_map[key](key);
     };
 });
