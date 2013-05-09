@@ -2,12 +2,26 @@ define(
     ["js/behaviors/compose_async.js",
      "js/behaviors/contexts_service.js",
      "js/behaviors/behaviors_service.js",
-     "js/jquery-1.9.1.min.js"], 
+"js/jquery-ui-1.10.3.custom.min.js"
+    ], 
     function(compose, 
-             getEventInContextService, BS) {
-            var onSuccessCallback=function(event){$(event.get_semantic_dom.footer.status).html("end all behaviors! ").css('background-color', 'yellow').fadeOut(1000).html('').fadeIn();};
-            var onErrorCallback=function(e){alert("error"+toJson(e));};
-            function show_history_fn(){
+             getEventInContextService, BS, jQuery) {
+
+        function highlightStatus(message){
+             $( "#status" ).css("background-color","yellow").text(message).animate({
+                    backgroundColor: "white"
+                }, 1000 , function(){$(this).html("").css("background-color", "white");});
+        }
+
+            var onSuccessCallback=function(event){
+               highlightStatus("all steps in pipeline are done!");
+            };
+            var onErrorCallback=function(e){
+                highlightStatus("error"+toJson(e));
+            };
+        
+
+    function show_history_fn(){
 
                 var event_show_history=getEventInContextService('wellcome_context', 'show_history');
 

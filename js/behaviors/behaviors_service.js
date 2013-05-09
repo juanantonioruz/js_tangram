@@ -2,7 +2,7 @@ define(["require", "js/behaviors/chains_manager.js", "js/behaviors/behavior_type
        function(require, chains, B) {
 
 
-           var the_time_out=700;
+           var the_time_out=1000;
 
     // what types of behavior can exist? ...
     // representation_type
@@ -43,7 +43,8 @@ var show_user_history=B.extend( function(base){
       return {
          
           behavior:function(event_data, callback){
-        this.message(event_data.get_semantic_dom.footer.status, "showing user history ");
+        base.behavior(event_data, callback);
+              this.message(event_data.get_semantic_dom.footer.status, "showing user history ");
               $(event_data.get_semantic_dom.content.content).empty();
         setTimeout(function () {
             
@@ -69,7 +70,8 @@ var show_user_history=B.extend( function(base){
       return {
          
           behavior:function(event_data, callback){
-        this.message(event_data.get_semantic_dom.footer.status, "showing history");
+                  base.behavior(event_data, callback);
+    this.message(event_data.get_semantic_dom.footer.status, "showing history");
 $(event_data.get_semantic_dom.modal.history.history).empty();
         setTimeout(function () {
 
@@ -124,6 +126,7 @@ $(event_data.get_semantic_dom.modal.history.history).empty();
       return {
          
           behavior:function(event_data, callback){
+              base.behavior(event_data, callback);
         this.message(event_data.get_semantic_dom.footer.status, "activating start_chain_button");
         setTimeout(function () {
 require([ "js/behaviors/chains_manager.js"], function(chains){

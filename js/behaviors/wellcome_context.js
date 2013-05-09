@@ -23,6 +23,29 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
         }
     };
 
+    semantic_dom.dispatcher=(function(){
+        var domain_tree={};
+        // example domain_tree.com.ew.welcome ? has listeners property? ==>if has already listeners
+        // example domain_tree.com.ew ? has 'welcome' property? ==> if branch exiss
+        
+        return {
+            dispatch:function(ns_behavior_event_process, event_data){
+                console.log("dispatch:: "+ns_behavior_event_process);
+                console.dir(event_data);
+                //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
+                // search  in that place of domain_tree data the listeners to send the event
+                // forEach listener ... listener.process(event_data); ::: more or less
+            },
+            listen:function(ns_behavior_event_process, chain_or_step){
+                console.log("listen::: "+ns_behavior_event_process);
+                //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
+                // record in that place an 
+            }
+        };
+    })();
+    
+
+
     // usability events related to the context 
     // each event has his own behavior usability point of view chain 
     var semantic_events={

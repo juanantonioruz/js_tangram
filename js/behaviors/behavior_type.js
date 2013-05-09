@@ -57,7 +57,11 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
                  this.on_start=[];
                  this.on_end=[];
                  console.log("init behavior with this name:"+name);
-             }
+             },
+            behavior:function(event_data, callback){
+                console.log("PARENT METHOD");
+//                callback(null, event_data);
+            }
         };
 
     });  
@@ -75,14 +79,12 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
         $(semantic_element).html(message);
     };
 
-    Behavior.prototype.behavior=function(event_data, callback){
-        // console.log( this.data.ns);
-        //console.log();
-        callback(null, event_data);
-    };
+
 
     Behavior.prototype.process=function(event_data, callback){
         var that=this;
+        // here i am trying to throw an onStart event, but still dont know to whom
+        event_data.current_context.semantic_dom.dispatcher.dispatch("ON:"+this.data.ns, event_data);
         event_data.behavior_history.push(this.data.ns);
         $('#status').html("init: "+this.data.ns);
         (function(){
