@@ -44,8 +44,7 @@ define(
               event_show_history.semantic_event.behaviors_instances=event_show_history.semantic_event.behaviors_array.map(BS);
                   event_show_history.getBehaviorInstance("show_user_history").on_start.push(BS("template_history"));
                 event_show_history.getBehaviorInstance("show_user_history").on_end.push(BS("attach_behaviors"));
-                //            BS("show_user_history").on_start.push(BS.template_history);
- //            BS("show_user_history").on_end.push(BS.attach_behaviors);
+
             // response to event_data
             compose.response_to_event(event_show_history, 
                                       onSuccessCallback,
@@ -54,6 +53,9 @@ define(
             };
 
             function start_fn(){
+
+                //TODO: NOMENCLATURE::::  the event that causes the init chain can define it!
+
                 var event_start=getEventInContextService('wellcome_context', 'start');
 
 

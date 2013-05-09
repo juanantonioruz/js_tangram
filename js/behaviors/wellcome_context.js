@@ -25,6 +25,7 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
 
     semantic_dom.dispatcher=(function(){
         var domain_tree={};
+        
         // example domain_tree.com.ew.welcome ? has listeners property? ==>if has already listeners
         // example domain_tree.com.ew ? has 'welcome' property? ==> if branch exiss
         
@@ -32,6 +33,7 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
             dispatch:function(ns_behavior_event_process, event_data){
                 console.log("dispatch:: "+ns_behavior_event_process);
                 console.dir(event_data);
+                
                 //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
                 // search  in that place of domain_tree data the listeners to send the event
                 // forEach listener ... listener.process(event_data); ::: more or less
