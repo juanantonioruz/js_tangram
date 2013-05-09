@@ -31,7 +31,20 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
         
         return {
             /// ON_START AND ON_END ONLY EVENTS!
-            dispatch:function(behavior_event_type, ns_behavior, event_data){
+            dispatch:function(behavior_event_type, ns_behavior, event_data, callback /*this callback is complex, need more definition still, it must contain the rest of the behavior if is on_Start, but if is on_END then the callback is the same that the behavior had recieved*/){
+                
+
+                /*
+                 HERE if the developer wants, can open a pipe (start a parallel synchronous compose functions) and
+                 at the end of this new pipe call the "callback" argument as on_success callback
+
+                 OR 
+                 
+                 
+
+                */
+
+
 
                 var context=event_data.current_context.ns;
                 var pipeline=event_data.semantic_event.ns;
