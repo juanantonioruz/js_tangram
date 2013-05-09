@@ -30,9 +30,14 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
         // example domain_tree.com.ew ? has 'welcome' property? ==> if branch exiss
         
         return {
-            dispatch:function(ns_behavior_event_process, event_data){
-                console.log("dispatch:: "+ns_behavior_event_process);
-                $.messageToLogging(ns_behavior_event_process);
+            /// ON_START AND ON_END ONLY EVENTS!
+            dispatch:function(behavior_event_type, ns_behavior, event_data){
+
+                var context=event_data.current_context.ns;
+                var pipeline=event_data.semantic_event.ns;
+
+                console.log("dispatch:: "+behavior_event_type+":::"+behavior_event_type+" "+ns_behavior+" "+context+" "+pipeline);
+                $.messageToLogging(behavior_event_type+":::"+context+"."+pipeline+"."+ns_behavior);
 //                console.dir(event_data);
                 
                 //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
@@ -71,6 +76,7 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
 
         // the context have a semantic_dom_tree property
     var semantic_context={
+        ns:"welcome",
         semantic_dom:semantic_dom, 
         semantic_events:semantic_events};
 
