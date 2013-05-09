@@ -11,18 +11,21 @@ define(
          var highlightStatus=$.highlightStatus=function(message){
              $( "#status" ).css("background-color","yellow").text(message).animate({
                     backgroundColor: "white"
-                }, 1000 , function(){$(this).html("").css("background-color", "white");});
+                }, 2000 , function(){$(this).html("").css("background-color", "white");});
+             $.messageToLogging(message, "Plum", "white");
         };
 
-         var messageToLogging=$.messageToLogging=function(message){
+         var messageToLogging=$.messageToLogging=function(message, color, colorT){
              var index=($("#logging ul li").size())+1;
-             $("#logging ul").prepend("<li>"+index+" : "+message+"</li>");
+             $("#logging ul").prepend("<li>"+index+" : "+message+"</li>").find("li").first().css({"background": (color) ? color : 'white', "color" : (colorT) ? colorT : 'Plum'});
 
         };
 
 
             var onSuccessCallback=function(event){
-               highlightStatus("all steps in pipeline are done!");
+
+                var diff=event.recordDiff();
+               highlightStatus("all steps in pipeline are done! in "+diff +" ms");
             };
             var onErrorCallback=function(e){
                 highlightStatus("error"+toJson(e));
@@ -71,6 +74,7 @@ define(
 
 
               event_start.semantic_event.behaviors_instances=event_start.semantic_event.behaviors_array.map(BS);
+                
                 //event_start.semantic_event.behaviors_array=this.arr;
             // response to event_data
             compose.response_to_event(event_start, 

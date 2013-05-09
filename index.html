@@ -4,7 +4,7 @@
 	  <meta charset="utf-8">
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>EW: exercise async</title>
-  <link rel="stylesheet" href="css/no-theme/jquery-ui-1.10.3.custom.min.css" />
+  <!--link rel="stylesheet" href="css/no-theme/jquery-ui-1.10.3.custom.min.css" / -->
 
     <script>
       function toJson(o){
@@ -21,10 +21,10 @@
     <script type="text/javascript" src="js/require.js" data-main="js/behaviors/main"></script>
 
 <style>
-#container{width:90%;}
+#container{width:100%;}
 #left{float:left;width:20%;}
-#right{float:right;width:20%;}
-#center{margin:0 auto;width:60%;}
+#right{float:right;width:40%;}
+#center{margin:0 auto;width:40%;}
 </style>
   </head>
   <body >
@@ -37,7 +37,7 @@
 <div id="status" ></div>
 <div id="container">
   <div id="left"><div id="event_history"></div></div>
-  <div id="right"><div id="logging"><ul></ul></div></div>
+  <div id="right"><h3 style="color:Orchid;">Logging and timming the behaviors/steps in pipeline</h3><div id="logging"><ul></ul></div></div>
   <div id="center">
     <div id="content" style="background-color:pink;"></div>
 </div>

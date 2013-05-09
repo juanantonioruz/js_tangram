@@ -36,8 +36,17 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
                 var context=event_data.current_context.ns;
                 var pipeline=event_data.semantic_event.ns;
 
-                console.log("dispatch:: "+behavior_event_type+":::"+behavior_event_type+" "+ns_behavior+" "+context+" "+pipeline);
-                $.messageToLogging(behavior_event_type+":::"+context+"."+pipeline+"."+ns_behavior);
+                var message=behavior_event_type+":::"+context+"."+pipeline+"."+ns_behavior;
+
+                if(behavior_event_type=="ON_START")
+                    event_data.addStep(ns_behavior);
+                if(behavior_event_type=="ON_END"){
+                    var diff=event_data.recordEndStep(ns_behavior);
+                    message+=" in "+diff+" ms";
+                }
+
+                console.log("dispatch:: "+message);
+                $.messageToLogging(message);
 //                console.dir(event_data);
                 
                 //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
