@@ -84,23 +84,31 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
         };
     })();
     
+     
 
 
     // usability events related to the context 
-    // each event has his own behavior usability point of view chain 
+    // each event has his own behavior usability point of view chain     
     var semantic_events={
+        
         show_history:{
             ns:"show_history",
             behaviors_array:[
                 "load_history", 
                 "show_user_history", 
-                "show_history"]
+                "show_history"],
+
+            back_ui_behaviors_array:[
+                "template_history",
+                "attach_behaviors"]
+
         },
         start:{
             ns:"start",
             behaviors_array:[
                 "activate_start_chain_button"
-                ]
+                ],
+             back_ui_behaviors_array:[]
         }
 
     };
@@ -110,7 +118,8 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
     var semantic_context={
         ns:"welcome",
         semantic_dom:semantic_dom, 
-        semantic_events:semantic_events};
+        semantic_events:semantic_events
+    };
 
 
    

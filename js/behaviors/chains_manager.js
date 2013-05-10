@@ -38,6 +38,11 @@ define(
 
             event_show_history.semantic_event.behaviors_instances=event_show_history.semantic_event.behaviors_array.map(BS);
 
+
+            //TODO: this code has to change and be defined through listeners, and onSuccess callback main pipeline chain
+            // the ideal would be defined in json style in corresponding context 
+            // the type of info necesary is::: event_behavior_ns, behavior_ns, event_type (ON_START/ON_END)
+
             event_show_history.getBehaviorInstance("show_user_history").on_start.push(BS("template_history"));
             event_show_history.getBehaviorInstance("show_user_history").on_end.push(BS("attach_behaviors"));
 
@@ -49,25 +54,29 @@ define(
         };
 
         function start_fn(){
-
-            //TODO: NOMENCLATURE::::  the event that causes the init chain can define it!
-
-            var event_start=getEventInContextService(null, 'wellcome_context', 'start');
-
-
-            // on success, it is usually an ui update or the ideal place to toggle an  on_end_process property state
-
-
-            event_start.semantic_event.behaviors_instances=event_start.semantic_event.behaviors_array.map(BS);
-            
-            //event_start.semantic_event.behaviors_array=this.arr;
-            // response to event_data
-            compose.response_to_event(event_start, 
-                                      onSuccessCallback,
-                                      onErrorCallback);
+            create_pipeline(null,  'wellcome_context', 'start', onSuccessCallback, onErrorCallback);
 
         };
         
+        // create pipeline function TODO: FROM HERE:  but doesn't invoke yet to let include the listeners
+        function create_pipeline(current_pipeline_event, semantic_context_ns, semantic_event_ns, onSuccessCallback, onErrorCallback ){
+
+            
+
+            var pipeline_event=getEventInContextService(current_pipeline_event, semantic_context_ns, semantic_event_ns);
+
+            pipeline_event.semantic_event.behaviors_instances=pipeline_event.semantic_event.behaviors_array.map(BS);
+            
+
+
+            compose.response_to_event(pipeline_event, 
+                                      onSuccessCallback,
+                                      onErrorCallback);
+
+
+
+        };
+
         return {show_history:show_history_fn, start: start_fn};
 
     });
