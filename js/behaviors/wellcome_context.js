@@ -64,8 +64,11 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
 
 
                 var pipeline_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
+                 console.log("trying to dispath "+message+" to pipeline_listeners: "+pipeline_listeners);
                 if(pipeline_listeners){
                     pipeline_listeners.map(function(pipeline){
+                        console.log("trying to dispath event to chain"+pipeline);
+//                      TODO: ?????? AND how to continue with an event that has ???    pipeline();
                         // init pipeline...related with compose 
                     });
                     

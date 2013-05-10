@@ -19,7 +19,7 @@ var load_history=B.extend( function(base){
       return {
          
           behavior:function(event_data, callback){
-        this.message(event_data.get_semantic_dom.footer.status, "loading user history mock");
+
         setTimeout(function () {
             var user_history=[];
             user_history.push("click here");
@@ -35,10 +35,6 @@ var load_history=B.extend( function(base){
       };
   });
     
-    
-    
-        
-
 var show_user_history=B.extend( function(base){
       return {
          
@@ -61,11 +57,6 @@ var show_user_history=B.extend( function(base){
       };
   });
 
-
- 
-
-   
-
  var show_history=B.extend( function(base){
       return {
          
@@ -87,7 +78,6 @@ $(event_data.get_semantic_dom.modal.history.history).empty();
       };
   });
 
-
  var template_history=B.extend( function(base){
       return {
          
@@ -103,7 +93,6 @@ $(event_data.get_semantic_dom.modal.history.history).empty();
           
       };
   });
-
  
     
  var attach_behaviors=B.extend( function(base){
@@ -119,8 +108,6 @@ $(event_data.get_semantic_dom.modal.history.history).empty();
           
       };
   });
-  
-
   
     var activate_start_chain_button=B.extend( function(base){
       return {

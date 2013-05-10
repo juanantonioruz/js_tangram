@@ -16,7 +16,8 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
 //??  to inject the new functions with their dependencies    
 
 
-    return  function(key_context, key_event){
+    return  function(current_event_data, key_context, key_event){
+
         var pipeline_event={};
 
         pipeline_event.current_context=(key_context=="wellcome_context") ? wellcome_context : null;
@@ -62,7 +63,13 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
         };
         pipeline_event.start=getStart();
         pipeline_event.recordDiff=function(){return recordDiff(pipeline_event); };
+
+        
+
+        if (current_event_data)  pipeline_event.parent=current_event_data ;
+
         return pipeline_event;
+
         
     };
 

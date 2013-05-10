@@ -34,9 +34,10 @@ define(
 
         function show_history_fn(){
 
-            var event_show_history=getEventInContextService('wellcome_context', 'show_history');
+            var event_show_history=getEventInContextService(null, 'wellcome_context', 'show_history');
 
             event_show_history.semantic_event.behaviors_instances=event_show_history.semantic_event.behaviors_array.map(BS);
+
             event_show_history.getBehaviorInstance("show_user_history").on_start.push(BS("template_history"));
             event_show_history.getBehaviorInstance("show_user_history").on_end.push(BS("attach_behaviors"));
 
@@ -51,7 +52,7 @@ define(
 
             //TODO: NOMENCLATURE::::  the event that causes the init chain can define it!
 
-            var event_start=getEventInContextService('wellcome_context', 'start');
+            var event_start=getEventInContextService(null, 'wellcome_context', 'start');
 
 
             // on success, it is usually an ui update or the ideal place to toggle an  on_end_process property state
