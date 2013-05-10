@@ -45,7 +45,8 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
                 */
 
 
-
+                // there is now an alias  function in pipeline_event to get the context_pipeline_ns
+                // TODO change for pipeline_context_ns
                 var context=event_data.current_context.ns;
                 var pipeline=event_data.semantic_event.ns;
                 var domain_behavior=context+"."+pipeline+"."+ns_behavior;
@@ -66,8 +67,11 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
                 var pipeline_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
                  console.log("trying to dispath "+message+" to pipeline_listeners: "+pipeline_listeners);
                 if(pipeline_listeners){
-                    pipeline_listeners.map(function(pipeline){
-                        console.log("trying to dispath event to chain"+pipeline);
+                    pipeline_listeners.map(function(pipeline_string_id){
+                        var actual_key_working=pipeline_string_id.split(".").pop();
+                        console.log("trying to dispath event to chain"+actual_key_working);
+                        console.dir(BS(actual_key_working));
+                        BS(actual_key_working).process(event_data)
 //                      TODO: ?????? AND how to continue with an event that has ???    pipeline();
                         // init pipeline...related with compose 
                     });
@@ -76,10 +80,11 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
                 
 
             },
-            listen:function(domain_behavior, behavior_event_type, pipeline){
+            listen:function(pipeline_listener_string_id, behavior_event_type,domain_behavior){
+                domain_behavior=semantic_context.ns+"."+domain_behavior;
                 console.log("listen::: "+domain_behavior+"/"+behavior_event_type);
                 var actual_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
-                (actual_listeners) ? actual_listeners.push(pipeline) :  domain_tree[domain_behavior+"/"+behavior_event_type]=[pipeline];
+                (actual_listeners) ? actual_listeners.push(pipeline_listener_string_id) :  domain_tree[domain_behavior+"/"+behavior_event_type]=[pipeline_listener_string_id];
             }
         };
     })();
@@ -118,7 +123,9 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
     var semantic_context={
         ns:"welcome",
         semantic_dom:semantic_dom, 
-        semantic_events:semantic_events
+        semantic_events:semantic_events,
+        //alias
+        listen:semantic_dom.dispatcher.listen
     };
 
 

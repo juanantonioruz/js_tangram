@@ -1,4 +1,4 @@
-define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
+define( function() {
 
 // actually, this function returns an "pipeline_event(_data)" to pass through the pipeline
 // in this  "pipeline_event(_data)" will inject the current_context (identified with key_context argument recieved),
@@ -16,11 +16,11 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
 //??  to inject the new functions with their dependencies    
 
 
-    return  function(current_event_data, key_context, key_event){
+    return  function(current_event_data, context, key_event){
 
         var pipeline_event={};
-
-        pipeline_event.current_context=(key_context=="wellcome_context") ? wellcome_context : null;
+        pipeline_event.current_context=context;
+        
 
         // init internal behavior history as an array
         pipeline_event.behavior_history=[];
@@ -65,6 +65,8 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
         pipeline_event.recordDiff=function(){return recordDiff(pipeline_event); };
 
         
+
+        pipeline_event.pipeline_context_ns=pipeline_event.current_context.ns+"."+pipeline_event.semantic_event.ns;
 
         if (current_event_data)  pipeline_event.parent=current_event_data ;
 
