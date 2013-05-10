@@ -1,4 +1,4 @@
-define([ "js/behaviors/behaviors_service.js"], function(BS) {
+define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async) {
 
     // this is an attemp to separate HTML from semantic usability components, (html related components)
     var semantic_dom={
@@ -65,13 +65,18 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
 
 
                 var pipeline_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
-                 console.log("trying to dispath "+message+" to pipeline_listeners: "+pipeline_listeners);
                 if(pipeline_listeners){
                     pipeline_listeners.map(function(pipeline_string_id){
                         var actual_key_working=pipeline_string_id.split(".").pop();
                         console.log("trying to dispath event to chain"+actual_key_working);
-                        console.dir(BS(actual_key_working));
-                        BS(actual_key_working).process(event_data)
+                     //   console.dir(BS(actual_key_working));
+                        //TODO:  that's horrible!
+                        var the_f=BS(actual_key_working).process.bind(BS(actual_key_working));
+                        async.compose(the_f)(event_data, 
+                                                                      function(err, result){
+                                                                          console.dir(result);
+                                                                      });
+//                        BS(actual_key_working).process(event_data);
 //                      TODO: ?????? AND how to continue with an event that has ???    pipeline();
                         // init pipeline...related with compose 
                     });
@@ -83,8 +88,15 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
             listen:function(pipeline_listener_string_id, behavior_event_type,domain_behavior){
                 domain_behavior=semantic_context.ns+"."+domain_behavior;
                 console.log("listen::: "+domain_behavior+"/"+behavior_event_type);
+                
                 var actual_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
-                (actual_listeners) ? actual_listeners.push(pipeline_listener_string_id) :  domain_tree[domain_behavior+"/"+behavior_event_type]=[pipeline_listener_string_id];
+                if (actual_listeners) {
+                    actual_listeners.push(pipeline_listener_string_id) ;
+                   
+                }else{ 
+                    domain_tree[domain_behavior+"/"+behavior_event_type]=[pipeline_listener_string_id];
+                }
+              //  console.log(toJson(domain_tree));
             }
         };
     })();

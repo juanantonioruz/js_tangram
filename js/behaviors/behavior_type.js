@@ -30,7 +30,7 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
 
     Behavior.prototype.process=function(event_data, callback){
         var that=this;
-        // here i am trying to throw an onStart event, but still dont know to whom
+   
         event_data.current_context.semantic_dom.dispatcher.dispatch("ON_START",this.data.ns, event_data);
 
 

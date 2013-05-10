@@ -12,7 +12,7 @@ define(
         //AOP in any code place and in any runtime time
 
        wellcome_context.listen( "show_history.template_history",  "ON_START", "show_history.show_user_history");
-
+       wellcome_context.listen( "show_history.attach_behaviors",  "ON_END", "show_history.show_user_history");
 
         // TOdo get better this helper function
         var highlightStatus=$.highlightStatus=function(message){
@@ -54,8 +54,8 @@ define(
 
 
 
-            event_show_history.getBehaviorInstance("show_user_history").on_start.push(BS("template_history"));
-            event_show_history.getBehaviorInstance("show_user_history").on_end.push(BS("attach_behaviors"));
+         
+          //  event_show_history.getBehaviorInstance("show_user_history").on_end.push(BS("attach_behaviors"));
             
             // response to event_data
             compose.response_to_event(event_show_history, 

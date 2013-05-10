@@ -53,14 +53,8 @@ define( function() {
         pipeline_event.semantic_event=pipeline_event.current_context.semantic_events[key_event];
 
 
-        // this method has to get out from this place... only called currently to test aop from chains_manager
-        pipeline_event.getBehaviorInstance=function(name){
-            var b_arr=pipeline_event.semantic_event.behaviors_instances;
-            for(var i=0; i<b_arr.length; i++){
-                if(b_arr[i].data.ns==name) return b_arr[i];
-                }
-            throw "this behavior: '"+name+"', doesn't exist in behaviors instances of the current semantic_event";
-        };
+      
+      
         pipeline_event.start=getStart();
         pipeline_event.recordDiff=function(){return recordDiff(pipeline_event); };
 
