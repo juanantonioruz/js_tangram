@@ -4,7 +4,7 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
 // in this  "pipeline_event(_data)" will inject the current_context (identified with key_context argument recieved),
 // so this function can be thought in this way as  a contexts_service (his actual name)
 
-// additionally (and maybe we have to create a separate pipeline_event function for this) 
+// TODO:  additionally (and maybe we have to create a separate pipeline_event function for this) 
 // the "pipeline_event(_data)" increase his functionality with properties and methods to store and read the pipeline 
 // history or workflow [addStep, getStep, recordEndStep] 
 

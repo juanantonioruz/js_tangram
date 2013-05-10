@@ -6,6 +6,9 @@ CLONE FROM:
 ========
 https://github.com/jamiew/heroku-static-site
 
+TODO:
+====
+https://github.com/juanantonioruz/js_tangram/wiki/Todo
 
 
 heroku-static-site
