@@ -35,7 +35,7 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
                 
 
                 /*
-                 HERE if the developer wants, can open a pipe (start a parallel synchronous compose functions) and
+                 HERE if the developer wants, can open a pipe (start an asynchronously pipe  compose (this is synchronous/secuancial) functions) and
                  at the end of this new pipe call the "callback" argument as on_success callback
 
                  OR 
