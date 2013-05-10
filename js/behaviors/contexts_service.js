@@ -9,6 +9,8 @@ define(["js/behaviors/wellcome_context.js"], function(wellcome_context) {
 // history or workflow [addStep, getStep, recordEndStep] 
 
 
+// then, the invocation of this function returns a pipeline_event object with the semantic_event_target and semantic_context(current)
+
 //??  theoretically 
 //??  this module has to access to all semantics contexts available in the app
 //??  to inject the new functions with their dependencies    

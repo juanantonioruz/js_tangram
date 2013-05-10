@@ -48,8 +48,8 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
 
                 var context=event_data.current_context.ns;
                 var pipeline=event_data.semantic_event.ns;
-
-                var message=behavior_event_type+":::"+context+"."+pipeline+"."+ns_behavior;
+                var domain_behavior=context+"."+pipeline+"."+ns_behavior;
+                var message=behavior_event_type+":::"+domain_behavior;
 
                 if(behavior_event_type=="ON_START")
                     event_data.addStep(ns_behavior);
@@ -61,15 +61,22 @@ define([ "js/behaviors/behaviors_service.js"], function(BS) {
                 console.log("dispatch:: "+message);
                 $.messageToLogging(message);
 //                console.dir(event_data);
+
+
+                var pipeline_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
+                if(pipeline_listeners){
+                    pipeline_listeners.map(function(pipeline){
+                        // init pipeline...related with compose 
+                    });
+                    
+                }
                 
-                //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
-                // search  in that place of domain_tree data the listeners to send the event
-                // forEach listener ... listener.process(event_data); ::: more or less
+
             },
-            listen:function(ns_behavior_event_process, chain_or_step){
-                console.log("listen::: "+ns_behavior_event_process);
-                //TODO split ns in this form "com.ew.wellcome.init" => ['com']['ew']['welcome']['init']
-                // record in that place an 
+            listen:function(domain_behavior, behavior_event_type, pipeline){
+                console.log("listen::: "+domain_behavior+"/"+behavior_event_type);
+                var actual_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
+                (actual_listeners) ? actual_listeners.push(pipeline) :  domain_tree[domain_behavior+"/"+behavior_event_type]=[pipeline];
             }
         };
     })();
