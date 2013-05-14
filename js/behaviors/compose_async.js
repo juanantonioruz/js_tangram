@@ -5,10 +5,11 @@ define(["js/async.js", "./behaviors_chain.js", "js/behaviors/behaviors_service.j
     };
 
     function response_to_event(pipeline_event, onSuccessCallback, onErrorCallback){
-        // using async lib to compose async functions. Internally the async behaviors tree are transformed to a linear array
 
+        // from string json declaration in semantic_context search function in BehaviorServiceMap
         var functions_behaviors=pipeline_event.semantic_event.behaviors_array.map(BS);
         
+        // using async lib to compose async functions. Internally the async behaviors tree are transformed to a linear array
         var compose_behaviors=composeAsyncBehaviors(functions_behaviors);
         
         compose_behaviors(pipeline_event, function (err, result) {

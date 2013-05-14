@@ -109,11 +109,12 @@ define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
                        setTimeout(function () {
 
                                $(event_data.get_semantic_dom.header.input_user.button).click(
-
-                                       //alert("click"+event_data.current_context.ns);
-                                       //TODO: this must be in runtime, throw an string event
-                                       // but who is going to listen this event?
-                                       uijuan.chains_manager['show_history']
+                                   
+                                   //alert("click"+event_data.current_context.ns);
+                                   //TODO: this must be in runtime, throw an string event
+                                   // but who is going to listen this event?
+           
+                                   uijuan.chains_manager['show_history']
                                    );
                                callback(null, event_data);
 
@@ -125,8 +126,89 @@ define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
            });
 
 
+               var load_userDashBoard=B.extend( function(base){
+               return {
+                   behavior:function(event_data, callback){
+                       this.message(event_data.get_semantic_dom.footer.status, "load_userDashBoard");
+                       setTimeout(function () {
+                           event_data.userDashBoard=event_data.dao.load_userDashBoard();
+                           callback(null, event_data);
+                       }, the_time_out);
+                   }
+                   
+               };
+           });
+
+               var select_datasource_api_call=B.extend( function(base){
+               return {
+                   
+                   behavior:function(event_data, callback){
+                       this.message(event_data.get_semantic_dom.footer.status, "select_datasource_api_call");
+                       setTimeout(function () {
+                           var dao={
+                               load_userDashBoard:function(){return {name:"juan", interests:["walk", "travel", "sightseeing", "toys"]};}
+                           };
+                           event_data.dao=dao;
+                           callback(null, event_data);
+                       }, the_time_out);
+                   }
+                   
+               };
+           });
+
+            var display_userDashBoard=B.extend( function(base){
+               return {
+                   behavior:function(event_data, callback){
+                       this.message(event_data.get_semantic_dom.footer.status, "display_userDashBoard");
+                       setTimeout(function () {
+                           $(event_data.semantic_dom_target).html("<h1>UserDashBoard</h1>"+toJson(event_data.userDashBoard));
+      
+                           callback(null, event_data);
+                       }, the_time_out);
+                   }
+                   
+               };
+           });
+
+var select_body_viewer=B.extend( function(base){
+               return {
+                   behavior:function(event_data, callback){
+                       this.message(event_data.get_semantic_dom.footer.status, "select_body_viewer");
+                    
+                       setTimeout(function () {
+                           event_data.semantic_dom_target=event_data.current_context.semantic_dom.content.content;
+
+                           callback(null, event_data);
+                       }, the_time_out);
+                   }
+                   
+               };
+           });
+
+           var show_history_footer_navigator=B.extend( function(base){
+               return {
+                   behavior:function(event_data, callback){
+                       this.message(event_data.get_semantic_dom.footer.status, "show_history_footer_navigator");
+                       
+                       setTimeout(function () {
+
+                           $(event_data.current_context.semantic_dom.footer_down).html("<h2>Dynamic footer</h2><ul><li>footer 1</li><li>footer 2</li><li>footer 3</li></ul>");
+
+                           callback(null, event_data);
+                       }, the_time_out);
+                   }
+                   
+               };
+           });
+
+
            var behaviors_map={};
 
+           behaviors_map["show_history_footer_navigator"]=show_history_footer_navigator;
+          behaviors_map["select_body_viewer"]=select_body_viewer;
+           behaviors_map["display_userDashBoard"]=display_userDashBoard;
+           behaviors_map["select_datasource_api_call"]=select_datasource_api_call;
+           behaviors_map["load_userDashBoard"]=load_userDashBoard;
            behaviors_map["load_history"]=load_history;
            behaviors_map["show_history"]=show_history;
            behaviors_map["template_history"]=template_history;

@@ -31,7 +31,12 @@ define(
             },
              start: function(){
                  start_pipeline(pipeline_event(null,  welcome_context, 'start') ,onSuccessCallback, onErrorCallback);         
-            }};
+             },
+            start_bis: function(){
+                 start_pipeline(pipeline_event(null,  welcome_context, 'start_bis') ,onSuccessCallback, onErrorCallback);         
+            }
+            
+        };
 
         uijuan.chains_manager=chains_mapping;
 

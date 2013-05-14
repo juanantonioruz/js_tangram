@@ -15,6 +15,7 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
         footer:{
             status:"#status"                
         },
+        footer_down:"#footer", 
         modal:{
             history:{
                 history:"#event_history",
@@ -133,9 +134,24 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
                 "activate_start_chain_button"
                 ],
              back_ui_behaviors_array:[]
+        },
+        start_bis:{
+            ns:"start_bis",
+            behaviors_array:[
+                "load_userDashBoard"
+                 ,"display_userDashBoard" 
+                 ,"show_history_footer_navigator"
+               // , "activate_header_search_form_and_profile_and_login_links"
+                ],
+            back_ui_behaviors_array:[
+                "select_datasource_api_call",
+                "select_body_viewer", 
+                "attach_behaviors_to_history_footer_navigator"
+            ]
         }
 
     };
+
 
 
         // the context have a semantic_dom_tree property
@@ -148,6 +164,8 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
     };
 
 
+    semantic_context.apply( "start_bis.select_datasource_api_call",  "ON_START", "start_bis.load_userDashBoard");
+    semantic_context.apply( "start_bis.select_body_viewer",  "ON_START", "start_bis.display_userDashBoard");
    
     return semantic_context;
 });
