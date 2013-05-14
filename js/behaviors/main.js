@@ -4,5 +4,6 @@ require.config({
 
 require(["js/behaviors/chains_manager.js"],
         function(chains) {
+
             chains.start();
         });

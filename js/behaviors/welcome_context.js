@@ -55,12 +55,16 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
                 if(behavior_event_type=="ON_START")
                     event_data.addStep(ns_behavior);
                 if(behavior_event_type=="ON_END"){
+                    // in this line we can record a behavior's history
+                    // could be done in aop style 
+                     event_data.behavior_history.push(ns_behavior);
+                 
                     var diff=event_data.recordEndStep(ns_behavior);
                     message+=" in "+diff+" ms";
                 }
 
                 console.log("dispatch:: "+message);
-                $.messageToLogging(message);
+                messageToLogging(message);
 //                console.dir(event_data);
 
 
@@ -137,7 +141,7 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
         semantic_dom:semantic_dom, 
         semantic_events:semantic_events,
         //alias
-        listen:semantic_dom.dispatcher.listen
+        apply:semantic_dom.dispatcher.listen
     };
 
 
