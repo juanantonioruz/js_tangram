@@ -52,6 +52,9 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
                 var domain_behavior=context+"."+pipeline+"."+ns_behavior;
                 var message=behavior_event_type+":::"+domain_behavior;
 
+              //  if(behavior_event_type=="START_CHAIN")
+                    
+
                 if(behavior_event_type=="ON_START")
                     event_data.addStep(ns_behavior);
                 if(behavior_event_type=="ON_END"){

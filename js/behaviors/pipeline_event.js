@@ -16,10 +16,10 @@ define( function() {
 //??  to inject the new functions with their dependencies    
 
 
-    return  function(current_event_data, context, key_event){
+    return  function(parent_event_pipeline, semantic_context, event_ns){
 
         var pipeline_event={};
-        pipeline_event.current_context=context;
+        pipeline_event.current_context=semantic_context;
         
 
         // init internal behavior history as an array
@@ -38,7 +38,6 @@ define( function() {
                 if(ns_behavior==step.ns) return step;
             };
             throw "this behavior: '"+ns_behavior+"', doesn't exist in these pipeline steps";
-
         };
 
         pipeline_event.recordEndStep=function(ns_behavior){
@@ -50,7 +49,7 @@ define( function() {
         pipeline_event.get_semantic_dom=pipeline_event.current_context.semantic_dom;
 
         // other alias  semantic_event as a property of pipeline_event object
-        pipeline_event.semantic_event=pipeline_event.current_context.semantic_events[key_event];
+        pipeline_event.semantic_event=pipeline_event.current_context.semantic_events[event_ns];
 
 
       
@@ -62,7 +61,7 @@ define( function() {
 
         pipeline_event.pipeline_context_ns=pipeline_event.current_context.ns+"."+pipeline_event.semantic_event.ns;
 
-        if (current_event_data)  pipeline_event.parent=current_event_data ;
+        if (parent_event_pipeline)  pipeline_event.parent=parent_event_pipeline ;
 
         return pipeline_event;
 

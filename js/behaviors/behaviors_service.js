@@ -1,5 +1,5 @@
-define(["require", "js/behaviors/chains_manager.js", "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
-       function(require, chains, B) {
+define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
+       function(  B) {
 
 
            var the_time_out=1000;
@@ -107,15 +107,16 @@ define(["require", "js/behaviors/chains_manager.js", "js/behaviors/behavior_type
                        base.behavior(event_data, callback);
 
                        setTimeout(function () {
-                           require([ "js/behaviors/chains_manager.js"], function(chains){
+
                                $(event_data.get_semantic_dom.header.input_user.button).click(
-                                   function(){
-                                       //alert("click");
-                                       // console.dir(chains);
+
+                                       //alert("click"+event_data.current_context.ns);
                                        //TODO: this must be in runtime, throw an string event
-                                       chains.show_history();});
+                                       // but who is going to listen this event?
+                                       uijuan.chains_manager['show_history']
+                                   );
                                callback(null, event_data);
-                           });
+
                            
                        }, the_time_out);
                    }

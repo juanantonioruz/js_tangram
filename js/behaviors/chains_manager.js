@@ -1,12 +1,12 @@
 define(
     ["js/behaviors/compose_async.js",
-     "js/behaviors/contexts_service.js",
-     "js/behaviors/behaviors_service.js",
+     "js/behaviors/pipeline_event.js",
      "js/behaviors/welcome_context.js"
     
     ], 
-    function(compose, 
-             getEventInContextService, BS, welcome_context) {
+    function(start_pipeline, 
+             pipeline_event, 
+             welcome_context) {
 
 
         //AOP in any code place and in any runtime time
@@ -25,25 +25,19 @@ define(
         var onErrorCallback=function(e){
             highlightStatus("error"+toJson(e));
         };
-        
-        
-        // create and start  pipeline function TODO: FROM HERE:  but doesn't invoke yet to let include the listeners
-        function start_pipeline(current_pipeline_event, semantic_context, semantic_event_ns, onSuccessCallback, onErrorCallback ){
-
-            var pipeline_event=getEventInContextService(current_pipeline_event, semantic_context, semantic_event_ns);
-            pipeline_event.semantic_event.behaviors_instances=pipeline_event.semantic_event.behaviors_array.map(BS);
-            compose.response_to_event(pipeline_event, 
-                                      onSuccessCallback,
-                                      onErrorCallback);
-        };
-
-        return {
+        var chains_mapping={
             show_history: function (){
-                start_pipeline(null,  welcome_context, 'show_history', onSuccessCallback, onErrorCallback);         
-            }
-            , start: function(){
-                start_pipeline(null,  welcome_context, 'start', onSuccessCallback, onErrorCallback);
+                start_pipeline(pipeline_event(null,  welcome_context, 'show_history'),onSuccessCallback, onErrorCallback);  
+            },
+             start: function(){
+                 start_pipeline(pipeline_event(null,  welcome_context, 'start') ,onSuccessCallback, onErrorCallback);         
             }};
+
+        uijuan.chains_manager=chains_mapping;
+
+
+        return chains_mapping; 
+    
 
     });
 
