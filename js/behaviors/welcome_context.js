@@ -166,6 +166,7 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
 
     semantic_context.apply( "start_bis.select_datasource_api_call",  "ON_START", "start_bis.load_userDashBoard");
     semantic_context.apply( "start_bis.select_body_viewer",  "ON_START", "start_bis.display_userDashBoard");
+    semantic_context.apply( "start.activate_start_chain_button",  "ON_END", "start_bis.show_history_footer_navigator");
    
     return semantic_context;
 });
