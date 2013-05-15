@@ -119,6 +119,7 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
         show_history:{
             ns:"show_history",
             behaviors_array:[
+
                 "load_history", 
                 "show_user_history", 
                 "show_history"],
@@ -138,7 +139,7 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
         start_bis:{
             ns:"start_bis",
             behaviors_array:[
-                "load_userDashBoard"
+               "load_userDashBoard"
                  ,"display_userDashBoard" 
                  ,"show_history_footer_navigator"
                // , "activate_header_search_form_and_profile_and_login_links"

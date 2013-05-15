@@ -4,10 +4,9 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
     var Behavior=Fiber.extend(function(){
         return  {
              init: function(name) {
-                 this.data={};
-                 this.data.ns=name;
-                 this.on_start=[];
-                 this.on_end=[];
+               //  this.data={};
+               //  this.data.ns=name;
+
                  // console.log("init behavior with this name:"+name);
              },
             behavior:function(event_data, callback){
@@ -29,10 +28,10 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
 
     Behavior.prototype.process=function(event_data, callback){
         var that=this;
-        event_data.current_context.semantic_dom.dispatcher.dispatch("ON_START",this.data.ns, event_data);
+        event_data.current_context.semantic_dom.dispatcher.dispatch("ON_START",this.ns, event_data);
         (function(){
             function my_callback(error, results){
-                event_data.current_context.semantic_dom.dispatcher.dispatch("ON_END", that.data.ns, event_data);
+                event_data.current_context.semantic_dom.dispatcher.dispatch("ON_END", that.ns, event_data);
                 callback(error, results);
             }
             that.behavior(event_data, my_callback);
