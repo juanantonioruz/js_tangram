@@ -1,7 +1,7 @@
 define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
 
 
-    var Behavior=Fiber.extend(function(){
+    var Transformation=Fiber.extend(function(){
         return  {
              init: function(name) {
                //  this.data={};
@@ -20,13 +20,13 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
     });  
 
 
-    Behavior.prototype.message=function(semantic_element, message){
+    Transformation.prototype.message=function(semantic_element, message){
          console.log(message);
         $(semantic_element).html(message);
     };
 
 
-    Behavior.prototype.process=function(event_data, callback){
+    Transformation.prototype.process=function(event_data, callback){
         var that=this;
         event_data.current_context.semantic_dom.dispatcher.dispatch("ON_START",this.ns, event_data);
         (function(){
@@ -38,6 +38,6 @@ define(["js/fiber.min.js", "js/jquery-1.9.1.min.js"], function(Fiber) {
         })();
     };
 
-    return Behavior;
+    return Transformation;
 });
 

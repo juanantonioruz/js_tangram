@@ -1,4 +1,4 @@
-define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async) {
+define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, async) {
 
     // this is an attemp to separate HTML from semantic usability components, (html related components)
     var semantic_dom={
@@ -77,14 +77,14 @@ define([ "js/behaviors/behaviors_service.js","js/async.js"], function(BS, async)
                     pipeline_listeners.map(function(pipeline_string_id){
                         var actual_key_working=pipeline_string_id.split(".").pop();
                         console.log("trying to dispath event to chain"+actual_key_working);
-                     //   console.dir(BS(actual_key_working));
+                     //   console.dir(TS(actual_key_working));
                         //TODO:  that's horrible!
-                        var the_f=BS(actual_key_working).process.bind(BS(actual_key_working));
+                        var the_f=TS(actual_key_working).process.bind(TS(actual_key_working));
                         async.compose(the_f)(event_data, 
                                                                       function(err, result){
                                                                           console.dir(result);
                                                                       });
-//                        BS(actual_key_working).process(event_data);
+//                        TS(actual_key_working).process(event_data);
 //                      TODO: ?????? AND how to continue with an event that has ???    pipeline();
                         // init pipeline...related with compose 
                     });

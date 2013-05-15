@@ -1,13 +1,13 @@
-define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
-       function(  B) {
+define([  "js/behaviors/transformation_type.js", "js/jquery-1.9.1.min.js"],
+       function(  T) {
 
 
            var the_time_out=1000;
 
-           var behaviors_map={};
+           var transformations_map={};
 
            function create( ns, the_fn){
-               var the_behavior=B.extend( function(base){
+               var the_behavior=T.extend( function(base){
                    return {
                        ns:ns, 
                        behavior:function(event_data, callback){
@@ -15,7 +15,7 @@ define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
                        }
                    };
                });
-               behaviors_map[ns]=the_behavior;
+               transformations_map[ns]=the_behavior;
 
            }
            
@@ -94,7 +94,7 @@ define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
 
            create("show_history_footer_navigator", function(event_data, callback){
                this.message(event_data.get_semantic_dom.footer.status, "show_history_footer_navigator");
-               alert("here: showing the footer");
+          
                setTimeout(function () {
                    $(event_data.current_context.semantic_dom.footer_down).html("<h2>Dynamic footer</h2><ul><li>footer 1</li><li>footer 2</li><li>footer 3</li></ul>");
                    callback(null, event_data);
@@ -152,7 +152,7 @@ define([  "js/behaviors/behavior_type.js", "js/jquery-1.9.1.min.js"],
          
 
            return  function(key){
-              var the_function=behaviors_map[key];
+              var the_function=transformations_map[key];
                if (the_function)
                    return new the_function();
                throw new Error("there isnt a function with this name: "+key);
