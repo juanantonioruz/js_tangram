@@ -19,8 +19,9 @@ define(
 
 
         var onSuccessCallback=function(eventFinishChain){
-            var diff=eventFinishChain.recordDiff();
-            highlightStatus("all steps in pipeline are done! in "+diff +" ms");
+
+            highlightStatus("all steps in pipeline are done! in "+eventFinishChain.diff +" ms ... of: "+eventFinishChain.pipeline_context_ns);
+
         };
         var onErrorCallback=function(e){
             highlightStatus("error"+toJson(e));

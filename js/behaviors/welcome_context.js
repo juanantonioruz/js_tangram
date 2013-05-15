@@ -1,4 +1,6 @@
-define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, async) {
+define(["js/behaviors/compose_async.js",
+     "js/behaviors/pipeline_event.js", "js/behaviors/transformations_service.js","js/async.js"], function(start_pipeline, 
+             pipeline_event, TS, async) {
 
     // this is an attemp to separate HTML from semantic usability components, (html related components)
     var semantic_dom={
@@ -16,6 +18,7 @@ define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, 
             status:"#status"                
         },
         footer_down:"#footer", 
+        left_div:"#left",
         modal:{
             history:{
                 history:"#event_history",
@@ -27,22 +30,19 @@ define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, 
     semantic_dom.dispatcher=(function(){
         var domain_tree={};
         
-        // example domain_tree.com.ew.welcome ? has listeners property? ==>if has already listeners
-        // example domain_tree.com.ew ? has 'welcome' property? ==> if branch exiss
         
         return {
-            /// ON_START AND ON_END ONLY EVENTS!
-            dispatch:function(behavior_event_type, ns_behavior, event_data, callback /*this callback is complex, need more definition still, it must contain the rest of the behavior if is on_Start, but if is on_END then the callback is the same that the behavior had recieved*/){
+
+            dispatch:function(transformation_event_type, ns_transformation, event_data
+                              , callback /*this callback is complex, need more definition still, it must contain the rest of the behavior 
+                                          if is on_Start, but if is on_END then the callback is the same that the behavior had recieved*/){
                 
 
                 /*
-                 HERE if the developer wants, can open a pipe (start an asynchronously pipe  compose (this is synchronous/secuancial) functions) and
+                 HERE if the developer wants, could  open a pipeline (start an asynchronously pipe  compose (this is synchronous/secuancial) functions) and
                  at the end of this new pipe call the "callback" argument as on_success callback
 
-                 OR 
-                 
-                 
-
+                 OR ....
                 */
 
 
@@ -50,61 +50,73 @@ define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, 
                 // TODO change for pipeline_context_ns
                 var context=event_data.current_context.ns;
                 var pipeline=event_data.semantic_event.ns;
-                var domain_behavior=context+"."+pipeline+"."+ns_behavior;
-                var message=behavior_event_type+":::"+domain_behavior;
+                var domain_behavior=context+"."+pipeline+((ns_transformation)? "."+ns_transformation : "");
+                var message=transformation_event_type+":::"+domain_behavior;
 
-              //  if(behavior_event_type=="START_CHAIN")
                     
 
-                if(behavior_event_type=="ON_START")
-                    event_data.addStep(ns_behavior);
-                if(behavior_event_type=="ON_END"){
+                if(transformation_event_type=="ON_START")
+                    event_data.addStep(ns_transformation);
+                if(transformation_event_type=="ON_END"){
                     // in this line we can record a behavior's history
                     // could be done in aop style 
-                     event_data.behavior_history.push(ns_behavior);
+                     event_data.behavior_history.push(ns_transformation);
                  
-                    var diff=event_data.recordEndStep(ns_behavior);
+                    var diff=event_data.recordEndStep(ns_transformation);
                     message+=" in "+diff+" ms";
                 }
 
-                console.log("dispatch:: "+message);
+                console.log("dispatch:: >>>>>>>"+message);
                 messageToLogging(message);
 //                console.dir(event_data);
 
 
-                var pipeline_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
+                var pipeline_listeners=domain_tree[domain_behavior+"/"+transformation_event_type];
                 if(pipeline_listeners){
                     pipeline_listeners.map(function(pipeline_string_id){
-                        var actual_key_working=pipeline_string_id.split(".").pop();
-                        console.log("trying to dispath event to chain"+actual_key_working);
-                     //   console.dir(TS(actual_key_working));
-                        //TODO:  that's horrible!
+                        console.log("trying to dispath event to chain::::"+pipeline_string_id);
+                        var arra=pipeline_string_id.split(".");
+
+                        if(arra.length==2){
+                            console.log("is a transformation event____  "+pipeline_string_id);
+                            var actual_key_working=arra.pop();
+
+
+                        console.log("trying to dispath event to chain__ "+actual_key_working);
+
+
+                        
                         var the_f=TS(actual_key_working).process.bind(TS(actual_key_working));
                         async.compose(the_f)(event_data, 
                                                                       function(err, result){
                                                                           console.dir(result);
                                                                       });
-//                        TS(actual_key_working).process(event_data);
-//                      TODO: ?????? AND how to continue with an event that has ???    pipeline();
-                        // init pipeline...related with compose 
+
+                        }else{
+                            console.log("is a pipeline event____ "+pipeline_string_id);
+                            start_pipeline(pipeline_event(null,  event_data.current_context, pipeline_string_id) , function(r){highlightStatus("all steps in second pipeline are done! in "+r.diff +" ms ... of: "+r.pipeline_context_ns); console.log("2 pipelines chained successful");}, function(e){alert("an error has happened!");});         
+                        }
+
+                        
+                       
                     });
                     
                 }
                 
 
             },
-            listen:function(pipeline_listener_string_id, behavior_event_type,domain_behavior){
+            listen:function(pipeline_listener_string_id, transformation_event_type,domain_behavior){
                 domain_behavior=semantic_context.ns+"."+domain_behavior;
-                console.log("listen::: "+domain_behavior+"/"+behavior_event_type);
+                console.log("listen::: "+domain_behavior+"/"+transformation_event_type);
                 
-                var actual_listeners=domain_tree[domain_behavior+"/"+behavior_event_type];
+                var actual_listeners=domain_tree[domain_behavior+"/"+transformation_event_type];
                 if (actual_listeners) {
                     actual_listeners.push(pipeline_listener_string_id) ;
                    
                 }else{ 
-                    domain_tree[domain_behavior+"/"+behavior_event_type]=[pipeline_listener_string_id];
+                    domain_tree[domain_behavior+"/"+transformation_event_type]=[pipeline_listener_string_id];
                 }
-              //  console.log(toJson(domain_tree));
+                //console.log(toJson(domain_tree));
             }
         };
     })();
@@ -133,6 +145,13 @@ define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, 
             ns:"start",
             behaviors_array:[
                 "activate_start_chain_button"
+                ],
+             back_ui_behaviors_array:[]
+        },
+         advise:{
+            ns:"advise",
+            behaviors_array:[
+                "advise"
                 ],
              back_ui_behaviors_array:[]
         },
@@ -168,6 +187,7 @@ define([ "js/behaviors/transformations_service.js","js/async.js"], function(TS, 
     semantic_context.apply( "start_bis.select_datasource_api_call",  "ON_START", "start_bis.load_userDashBoard");
     semantic_context.apply( "start_bis.select_body_viewer",  "ON_START", "start_bis.display_userDashBoard");
     semantic_context.apply( "start.activate_start_chain_button",  "ON_END", "start_bis.show_history_footer_navigator");
+    semantic_context.apply( "advise",  "ON_END", "start_bis");
    
     return semantic_context;
 });

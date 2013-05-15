@@ -41,8 +41,13 @@ define( function() {
         };
 
         pipeline_event.recordEndStep=function(ns_behavior){
+            try{
             var the_step=pipeline_event.getStep(ns_behavior);
             return recordDiff(the_step);
+
+            }catch(e){
+                return pipeline_event.recordDiff();
+            }
         };
 
         // alias function
@@ -52,7 +57,7 @@ define( function() {
         pipeline_event.semantic_event=pipeline_event.current_context.semantic_events[event_ns];
 
 
-      
+
       
         pipeline_event.start=getStart();
         pipeline_event.recordDiff=function(){return recordDiff(pipeline_event); };

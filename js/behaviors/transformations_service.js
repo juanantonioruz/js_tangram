@@ -149,6 +149,17 @@ define([  "js/behaviors/transformation_type.js", "js/jquery-1.9.1.min.js"],
            });
 
 
+           create("advise", function(event_data, callback){
+               
+
+               setTimeout(function () {
+                   
+                   $(event_data.get_semantic_dom.left_div).append("<h1>here the first transformation of the second pipeline!</h1>");
+                   callback(null, event_data);
+
+                   
+               }, the_time_out);
+           });
          
 
            return  function(key){
