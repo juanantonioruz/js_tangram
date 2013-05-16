@@ -8,18 +8,29 @@ this.uiapp={
     dispatcher:(function(){
         var domain_tree={};
         return {
-            dispatch:function(transformation_event_type, ns_target, data_state){
+            dispatch:function(transformation_event_type, ns_target, data_state,callback){
 
                 var pipeline_listeners=domain_tree[ns_target+"/"+transformation_event_type];
                 if(pipeline_listeners){
-                    console.log(ns_target+"/"+transformation_event_type+"...."+toJson(data_state));
+                    console.log(ns_target+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
 
                     pipeline_listeners.map(function(o){
-                        if(o.parallel)
-                        o.pipeline.apply_transformations(data_state);
-                        else
-                            console.log("TODO chained in runtime synchronous");
+                        if(o.parallel){
+                            o.pipeline.apply_transformations(data_state);
+                            callback();
+                        }else{
+                            //console.log("TODO chained in runtime synchronous");
+                            var actual=o.pipeline.on_success;
+                            var changed=function(res, pipeline){
+                                actual(res,pipeline);
+                                callback();
+                            };
+                            o.pipeline.on_success=changed;
+                            o.pipeline.apply_transformations(data_state);                            
+                        }
                     });
+                }else{
+                    callback();
                 }
             },
             listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
@@ -173,7 +184,18 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
 
 
                 window.uiapp.dispatcher.listen("ON_INIT","pipeline1",  pipe_listener, true);
-                pipe_1.apply_transformations({user_history:["vamos allá"]});
+                pipe_1.apply_transformations({user_history:["vamos async"]});
+            };
+
+            function  async_event(){
+                alert("lets go sync");
+
+                var pipe_1=getPipeline1().set_on_success(on_success_pipe("success11111")).set_on_error(get_alert("error 1"));
+                var pipe_listener=getPipelineListen().set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
+
+
+                window.uiapp.dispatcher.listen("ON_INIT","pipeline1",  pipe_listener, false);
+                pipe_1.apply_transformations({user_history:["vamos sync"]});
             };
 
             $('#start_pipeline').click(start1);
@@ -181,6 +203,7 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
 
             $('#compose_pipelines').click(function(){compose_it();});
             $('#compose_parallel_pipelines_on_init').click(function(){parallel_event();});
+            $('#compose_sync_pipelines_on_init').click(function(){async_event();});
             
 
 

@@ -41,12 +41,12 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        this.after_data_state=$.extend(true, {}, data_state);
 
                    },
-                   on_init:function(data_state){
+                   on_init:function(data_state, callback){
                        this.start=getStart();
                        $('#status').fadeIn();
                        data_state.user_history.push(" on_init pipeline: "+this.ns);
                        this.before_data_state=$.extend(true, {}, data_state);
-                      window.uiapp.dispatcher.dispatch("ON_INIT",this.ns,  data_state);
+                      window.uiapp.dispatcher.dispatch("ON_INIT",this.ns,  data_state, callback);
                    },
                    set_on_success:function(fn){
                        this.on_success=fn;
@@ -64,9 +64,10 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        var composition=async.compose.apply(null, this.future_state_steps.reverse().map(function(o){return o.transform.bind(o);}));
 
 
-                       this.on_init(data_state);
+                      
 
-                       composition($.extend(true, {}, data_state),function(err, res){
+                       function internal_call(){
+                           composition($.extend(true, {}, data_state),function(err, res){
 
                            if(!err){
 
@@ -84,6 +85,8 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                            }
 
                        });
+                       };
+                        this.on_init(data_state, internal_call);
 
                        
                    },
