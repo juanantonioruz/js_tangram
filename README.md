@@ -2,9 +2,6 @@ ONLINE-VERSION
 ===========
 http://ancient-waters-4140.herokuapp.com/
 
-Startup heroku-javascript template CLONE FROM:
-========
-https://github.com/jamiew/heroku-static-site &copy; copyfree 2012 [Jamie Dubs](http://jamiedubs.com).
 
 TODO:
 ====
@@ -20,3 +17,6 @@ Run the app locally:
 3. `bundle exec rackup`
 4. Visit <http://localhost:9292>
 
+
+** Startup template for working with heroku and javascript cloned from:   
+https://github.com/jamiew/heroku-static-site 
