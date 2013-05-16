@@ -17,6 +17,10 @@
       var debug=false;
       var fine_debug=false;
 
+    function getStart(){return (new Date).getTime();};
+    function getDiff(start){return (new Date).getTime() - start;};
+    function recordDiff(o){var dif=getDiff(o['start']); o['diff']= dif; return dif;};
+
 
     </script>
 

@@ -11,8 +11,11 @@ define(["js/fiber.min.js"],
 
                     on_end:function(data_state){
                         this.after_data_state=$.extend(true, {}, data_state);
+                        recordDiff(this);
                     },
                     on_init:function(data_state){
+                        this.start=getStart();
+
                         this.before_data_state=$.extend(true, {}, data_state);
                     },
                     

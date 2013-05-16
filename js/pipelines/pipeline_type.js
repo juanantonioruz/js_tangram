@@ -25,10 +25,12 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                         return this.future_state_steps.reverse();
                     },
                     on_end:function(data_state){
+                        recordDiff(this);
                         $('#status').fadeOut();
                         this.after_data_state=$.extend(true, {}, data_state);
                     },
                     on_init:function(data_state){
+                        this.start=getStart();
                         $('#status').fadeIn();
                         this.before_data_state=$.extend(true, {}, data_state);
                     },
