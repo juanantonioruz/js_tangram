@@ -12,18 +12,24 @@ this.uiapp={
 
                 var pipeline_listeners=domain_tree[ns_target+"/"+transformation_event_type];
                 if(pipeline_listeners){
-                                    console.log(ns_target+"/"+transformation_event_type+"...."+toJson(data_state));
-                pipeline_listeners.map(function(pipeline){pipeline.apply_transformations(data_state);});
+                    console.log(ns_target+"/"+transformation_event_type+"...."+toJson(data_state));
+
+                    pipeline_listeners.map(function(o){
+                        if(o.parallel)
+                        o.pipeline.apply_transformations(data_state);
+                        else
+                            console.log("TODO chained in runtime synchronous");
+                    });
                 }
             },
-            listen:function(transformation_event_type, ns_listened,  pipeline ){
+            listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
                 var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
                 if (actual_listeners) {
-                    actual_listeners.push(pipeline) ;
+                    actual_listeners.push({pipeline:pipeline, parallel:parallel_or_sync}) ;
                 }else{ 
-                    domain_tree[ns_listened+"/"+transformation_event_type]=[pipeline];
+                    domain_tree[ns_listened+"/"+transformation_event_type]=[{pipeline:pipeline, parallel:parallel_or_sync}];
                 }
-   
+                
             }
         };
     })()
@@ -131,15 +137,15 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                     // alert(extended_message);
                 };
             }
- var  on_success_pipe=function(message){
-                    return function(res, pipeline){
-                        on_success(res, pipeline); 
-                        get_alert(message);
-                        
-                    };};
+            var  on_success_pipe=function(message){
+                return function(res, pipeline){
+                    on_success(res, pipeline); 
+                    get_alert(message);
+                    
+                };};
 
             function compose_it(){
-               
+                
 
 
 
@@ -166,7 +172,7 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                 var pipe_listener=getPipelineListen().set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
 
 
-                window.uiapp.dispatcher.listen("ON_INIT","pipeline1",  pipe_listener);
+                window.uiapp.dispatcher.listen("ON_INIT","pipeline1",  pipe_listener, true);
                 pipe_1.apply_transformations({user_history:["vamos allá"]});
             };
 
