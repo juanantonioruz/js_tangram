@@ -2,8 +2,32 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-this.uiapp={};
 
+this.uiapp={
+
+    dispatcher:(function(){
+        var domain_tree={};
+        return {
+            dispatch:function(transformation_event_type, ns_target, data_state){
+
+                var pipeline_listeners=domain_tree[ns_target+"/"+transformation_event_type];
+                if(pipeline_listeners){
+                                    console.log(ns_target+"/"+transformation_event_type+"...."+toJson(data_state));
+                pipeline_listeners.map(function(pipeline){pipeline.apply_transformations(data_state);});
+                }
+            },
+            listen:function(transformation_event_type, ns_listened,  pipeline ){
+                var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
+                if (actual_listeners) {
+                    actual_listeners.push(pipeline) ;
+                }else{ 
+                    domain_tree[ns_listened+"/"+transformation_event_type]=[pipeline];
+                }
+   
+            }
+        };
+    })()
+};
 
 
 require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js"],
@@ -40,6 +64,15 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                 }, 250);
             };
             
+            var transformation_chainable4_fn=function(data_state, callback){
+                setTimeout(function () {
+                    var user_history=[];
+                    user_history.push("i am the slowest");
+                    data_state.user_history.push.apply(data_state.user_history, user_history);
+                    callback(null, data_state);
+                }, 2000);
+            };
+
 
             var on_success=function(res, pipeline){
                 
@@ -68,6 +101,12 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                     .addTransformation("Good_Night", transformation_chainable3_fn);
 
             }
+
+            function getPipelineListen(){
+                return  new Pipeline("pipelineListen")
+                    .addTransformation("i_am_the_slowest", transformation_chainable4_fn);
+
+            }
             function start1(){
                 var  on_success_start1=function(res, pipeline){
                     on_success(res, pipeline); 
@@ -92,15 +131,15 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                     // alert(extended_message);
                 };
             }
-
-            function compose_it(){
-                var  on_success_pipe=function(message){
+ var  on_success_pipe=function(message){
                     return function(res, pipeline){
                         on_success(res, pipeline); 
                         get_alert(message);
                         
                     };};
 
+            function compose_it(){
+               
 
 
 
@@ -111,6 +150,7 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                 var compose=  new Pipeline("pipeline_compose!")
                         .set_on_success(get_alert("success::: composing"))
                         .set_on_error(get_alert("error on composing"));
+
                 compose.addPipe(pipe_1).addPipe(pipe_2);
                 //                    .addPipe(pipe_1).addPipe(pipe_2);
                 
@@ -119,11 +159,23 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
 
             }
 
+            function parallel_event(){
+
+
+                var pipe_1=getPipeline1().set_on_success(on_success_pipe("success11111")).set_on_error(get_alert("error 1"));
+                var pipe_listener=getPipelineListen().set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
+
+
+                window.uiapp.dispatcher.listen("ON_INIT","pipeline1",  pipe_listener);
+                pipe_1.apply_transformations({user_history:["vamos allá"]});
+            };
 
             $('#start_pipeline').click(start1);
 
 
             $('#compose_pipelines').click(function(){compose_it();});
+            $('#compose_parallel_pipelines_on_init').click(function(){parallel_event();});
+            
 
 
         });

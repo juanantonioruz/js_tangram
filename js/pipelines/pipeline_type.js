@@ -46,7 +46,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        $('#status').fadeIn();
                        data_state.user_history.push(" on_init pipeline: "+this.ns);
                        this.before_data_state=$.extend(true, {}, data_state);
-
+                      window.uiapp.dispatcher.dispatch("ON_INIT",this.ns,  data_state);
                    },
                    set_on_success:function(fn){
                        this.on_success=fn;
