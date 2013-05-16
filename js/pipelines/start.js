@@ -84,14 +84,19 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
                     .apply_transformations(initial_state);
             }
             function get_alert(message){
-                return function(res, pipeline){alert(message+"pipeline: "+ ((pipeline)? pipeline.ns: "no_pipeline")+"\n"+toJson((res)? res : "no res!"));};
+                return function(res, pipeline){
+                    var extended_message=message+"pipeline: "+ ((pipeline)? pipeline.ns: "no_pipeline")+"\n"+toJson((res)? res : "no res!");
+//                    alert(extended_message);
+                    console.log(extended_message);
+                };
             }
 
             function compose_it(){
                 var  on_success_pipe=function(message){
                     return function(res, pipeline){
                         on_success(res, pipeline); 
-                        get_alert(message);
+                       get_alert(message);
+                   
                     };};
 
 
@@ -100,8 +105,13 @@ require(["js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/a
 
                 var pipe_1=getPipeline1().set_on_success(on_success_pipe("success11111")).set_on_error("error 1");
                 var pipe_2=getPipeline2().set_on_success(on_success_pipe("success222")).set_on_error("error 2");
-                var compose=  new Pipeline("pipeline_compose!").set_on_success(get_alert("success::: composing")).set_on_error(get_alert("error on composing"));
+
+                var compose=  new Pipeline("pipeline_compose!")
+                        .set_on_success(get_alert("success::: composing"))
+                        .set_on_error(get_alert("error on composing"));
                 compose.addPipe(pipe_1).addPipe(pipe_2);
+//                    .addPipe(pipe_1).addPipe(pipe_2);
+               
                 compose.apply_transformations({user_history:["composing history!!"]});
                 
 
