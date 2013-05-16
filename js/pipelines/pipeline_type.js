@@ -74,8 +74,13 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                                that.on_success(res, that);
 
                            }else{
-                               that.on_error(err, that);
+                               //alert("quillo"+err);
+                               console.log("big one pipeline error: "+that.ns+"\n"+toJson(data_state));
 
+                                   that.on_error(err, that);
+                               
+
+                              // this method fails because is using a data  that.on_end(res);
                            }
 
                        });
@@ -87,15 +92,28 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        var that=this;
                        console.log("try to transform "+this.ns);
 
-                       var actual=this.on_success;
-
-                       var extended=function(res, that){
-                           actual(res, that);
+                       var actual_on_success=this.on_success;
+                       var extended_on_success=function(res, that){
+                           actual_on_success(res, that);
                            callback(null, res);
-                         //   this.on_success=actual;
+                           //   this.on_success=actual;
                        };
-                       this.set_on_success(extended);
+                       this.set_on_success(extended_on_success);
+
+                       var actual_on_error=this.on_error;
+                       var extended_on_error=function(err, that){
+                           console.log("pipeline error"+that.ns+"\n"+toJson(data_state));
+                           actual_on_error(err, that);
+                           
+                           callback(err, that);
+                              this.on_error=actual_on_error;
+                       };
+                       this.set_on_error(extended_on_error);
+
                        this.apply_transformations(data_state);
+
+
+
                        // TODO on_error behavior isnt implemented yet!
 
                    }
