@@ -1,5 +1,5 @@
-define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
-       function(Fiber, StateStep,async) {
+define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
+       function(Fiber, StateStep,async, dispatcher) {
            
 
            var Pipeline=Fiber.extend(function(){
@@ -21,7 +21,6 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        this.future_state_steps.push(pipe);
                        return this;
                    },
-                   
 
                    getStateStep:function(ns){
                        for(var i=0 ; i<this.future_state_steps.length; i++){
@@ -32,6 +31,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                    },
                    getSteps:function(){
                        // before transformation they are future_state_steps, after it, they are state_steps
+                       // the funcions for composing have to be rearranged in reverse order
                        return this.future_state_steps.reverse();
                    },
                    on_end:function(data_state, callback){
@@ -39,14 +39,14 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        $('#status').fadeOut();
                        data_state.user_history.push(" on_end pipeline: "+this.ns+" in: "+this.diff+" ms" );
                        this.after_data_state=$.extend(true, {}, data_state);
-                      window.uiapp.dispatcher.dispatch("ON_END",this.ns,  data_state, callback);
+                      dispatcher.dispatch("ON_END",this.ns,  data_state, callback);
                    },
                    on_init:function(data_state, callback){
                        this.start=getStart();
                        $('#status').fadeIn();
                        data_state.user_history.push(" on_init pipeline: "+this.ns);
                        this.before_data_state=$.extend(true, {}, data_state);
-                      window.uiapp.dispatcher.dispatch("ON_INIT",this.ns,  data_state, callback);
+                      dispatcher.dispatch("ON_INIT",this.ns,  data_state, callback);
                    },
                    set_on_success:function(fn){
                        this.on_success=fn;
@@ -60,8 +60,8 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
 
                    apply_transformations:function(data_state){
                        var that=this;
-                       // this function composition use the method transform of each statestep in the context of each step (bind) ... the funcions for composing have to be rearranged in reverse order
-                       var composition=async.compose.apply(null, this.future_state_steps.reverse().map(function(o){return o.transform.bind(o);}));
+                       // this function composition use the method transform of each statestep in the context of each step (bind) ...
+                       var composition=async.compose.apply(null, this.getSteps().map(function(o){return o.transform.bind(o);}));
 
 
                       

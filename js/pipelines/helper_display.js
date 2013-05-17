@@ -1,7 +1,7 @@
 define(
-        function() {
-            return {
-        jqueryIterateAndDisplay:function jqueryIterateAndDisplay(target_dom_id, title, model){
+    function() {
+        return {
+            jqueryIterateAndDisplay:function jqueryIterateAndDisplay(target_dom_id, title, model){
 
                 $(target_dom_id).append("<h1>"+title+"</h1><ul></ul>");
                 $.each(model, function(i, value){
@@ -9,7 +9,7 @@ define(
                 });
             },
 
-           jqueryIterateAndDisplayHistoryStep: function jqueryIterateAndDisplayHistoryStep(target_dom_id, title, step, model_property){
+            jqueryIterateAndDisplayHistoryStep: function jqueryIterateAndDisplayHistoryStep(target_dom_id, title, step, model_property){
                 $(target_dom_id).append("<ul id='"+step.ns+"'><li><b>"+title+"</b>"+
                                         "<ul><li>Data State Before Transformations<ul></ul></li>"+
                                         "<li>Data State  After Transformations (Time elapsed: "+step.diff+" ms)<ul></ul></li></ul></li></ul>");
@@ -21,4 +21,4 @@ define(
                 });
 
             }
-};});
+        };});
