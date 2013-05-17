@@ -3,7 +3,7 @@
   <head>
 	  <meta charset="utf-8">
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>DEF PROPOSAL: exercise async</title>
+    <title>TEST INDEX PROPOSAL: exercise async</title>
     <!--link rel="stylesheet" href="css/no-theme/jquery-ui-1.10.3.custom.min.css" / -->
     <script  src="js/jquery-1.9.1.min.js" ></script>
     <script src="js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -24,7 +24,7 @@
 
     </script>
 
-    <script type="text/javascript" src="js/require.js" data-main="js/pipelines/start_proposal"></script>
+    <script type="text/javascript" src="js/require.js" data-main="js/pipelines/start_test"></script>
 
     <style>
       #container{width:100%;}
@@ -36,7 +36,14 @@
   <body >
 
     <div id="input_user" >
+      <input type="button" id="start_pipeline" value="start pipeline"/>
+<br>
+      <input type="button" id="compose_pipelines" value="run sync pipelines composed in dev time"/><br>
+      <input type="button" id="compose_parallel_pipelines_on_init" value="run async-parallel pipelines composed in runtime on_init event_data"/><br>
+      <input type="button" id="compose_sync_pipelines_on_init" value="run sync pipelines composed in runtime on_init event_data"/><br>
+
     </div>
+
     <div id="status" style="display:none;">LOADING ...</div>
     <div id="container">
       <div id="left">
