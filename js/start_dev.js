@@ -2,8 +2,11 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-require(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js"],
+define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js"],
         function(json_data, dispatcher, Pipeline, display, async) {
+
+     
+
 
 
             // console.log(toJson(json_data));
@@ -155,13 +158,21 @@ require(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipeline
                 pipe_1.apply_transformations({user_history:["vamos sync"]});
             };
 
-            $('#start_pipeline').click(start1);
-
-
+            function init_display(){
+                  $('#input_user').append(
+                      '<input type="button" id="start_pipeline" value="start pipeline"/><br>'+
+                          '<input type="button" id="compose_pipelines" value="run sync pipelines composed in dev time"/><br>'+
+                          '<input type="button" id="compose_parallel_pipelines_on_init" value="run async-parallel pipelines composed in runtime on_init event_data"/><br>'+
+                          '<input type="button" id="compose_sync_pipelines_on_init" value="run sync pipelines composed in runtime on_init event_data"/><br>');
+                
+                $('#start_pipeline').click(start1);
             $('#compose_pipelines').click(function(){compose_it();});
             $('#compose_parallel_pipelines_on_init').click(function(){parallel_event();});
             $('#compose_sync_pipelines_on_init').click(function(){sync_event();});
-            
 
+            }
+
+            
+            return init_display;
 
         });
