@@ -19,6 +19,7 @@
 
     function getStart(){return (new Date).getTime();};
     function getDiff(start){return (new Date).getTime() - start;};
+    function recordStart(o) {o['start']= getStart();};
     function recordDiff(o){var dif=getDiff(o['start']); o['diff']= dif; return dif;};
 
 
@@ -37,7 +38,7 @@
 You can select one: <a href='?dev=true'>dev examples</a> or <a href='?proposal=true'>proposal</a>
     <div id="input_user" >
     </div>
-    <div id="status" style="display:none;">LOADING ...</div>
+    <div id="status" style=""><ul id="history_status"></ul></div>
     <div id="container">
       <div id="left">
         <div id="event_history"></div></div>

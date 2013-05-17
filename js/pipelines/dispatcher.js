@@ -2,12 +2,44 @@ define(function() {
     
     var dispatcher=(function(){
         var domain_tree={};
+        function contains(context, search){
+            return (context.indexOf(search) !== -1);
+        }
         return {
-            dispatch:function(transformation_event_type, ns_target, data_state,callback){
-                console.log("try to dispatch: "+transformation_event_type+" "+ns_target);
-                var pipeline_listeners=domain_tree[ns_target+"/"+transformation_event_type];
+            dispatch:function(transformation_event_type, target, data_state,callback){
+
+                if(transformation_event_type=="ON_INIT"){
+                    
+                    $('#proposal').append("<h2>"+target.ns+"</h2>");
+
+                }
+
+
+
+                if(transformation_event_type=="ON_END"){
+                    
+                    $('#proposal').append("<span>ENDING: "+target.ns+" :::::::: Time Elapsed: "+target.diff+"</span><br>");
+
+                }
+
+
+       //         console.log("try to dispatch: "+transformation_event_type+" "+target.ns);
+                var history_message=transformation_event_type+"/"+target.ns+((transformation_event_type=="ON_END")? " finished in "+data_state.diff+"ms":" ... timing ..." );
+                   data_state.history.push(history_message);
+                   //data_state.user_history.push(" on_end pipeline: "+this.ns+" in: "+this.diff+" ms" );
+                if(transformation_event_type=="ON_END" || transformation_event_type=="ON_INIT"){
+                    if(contains(history_message, "state_step_"))
+                        history_message=" -------- "+history_message;
+                  $('#status').fadeIn(function(){$('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
+});
+                }
+
+
+
+
+                var pipeline_listeners=domain_tree[target.ns+"/"+transformation_event_type];
                 if(pipeline_listeners){
-                    console.log(ns_target+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
+                    console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
 
                     pipeline_listeners.map(function(o){
                         if(o.parallel){
@@ -28,6 +60,7 @@ define(function() {
                     callback();
                 }
             },
+           
             listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
                 var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
                 if (actual_listeners) {

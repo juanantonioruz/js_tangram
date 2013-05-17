@@ -5,7 +5,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
            var Pipeline=Fiber.extend(function(){
                return  {
                    init: function(name,on_success, on_error) {
-                       this.ns=name;
+                       this.ns="pipeline_"+name;
                        this.future_state_steps=[];
                        this.on_success=on_success;
                        this.on_error=on_error;
@@ -13,6 +13,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                    },
                    // this method to add statesteps
                    addTransformation:function(ns, transformation_fn){
+                    
                        this.future_state_steps.push(new StateStep(ns, transformation_fn));
                        return this;
                    },
@@ -36,17 +37,15 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                    },
                    on_end:function(data_state, callback){
                        recordDiff(this);
-                       $('#status').fadeOut();
-                       data_state.user_history.push(" on_end pipeline: "+this.ns+" in: "+this.diff+" ms" );
+                       recordDiff(data_state);
                        this.after_data_state=$.extend(true, {}, data_state);
-                      dispatcher.dispatch("ON_END",this.ns,  data_state, callback);
+                      dispatcher.dispatch("ON_END",this,  data_state, callback);
                    },
                    on_init:function(data_state, callback){
-                       this.start=getStart();
-                       $('#status').fadeIn();
-                       data_state.user_history.push(" on_init pipeline: "+this.ns);
+                       recordStart(this);
+                       recordStart(data_state);
                        this.before_data_state=$.extend(true, {}, data_state);
-                      dispatcher.dispatch("ON_INIT",this.ns,  data_state, callback);
+                      dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
                    set_on_success:function(fn){
                        this.on_success=fn;
