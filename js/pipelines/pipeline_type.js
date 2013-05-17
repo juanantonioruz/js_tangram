@@ -34,12 +34,12 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                        // before transformation they are future_state_steps, after it, they are state_steps
                        return this.future_state_steps.reverse();
                    },
-                   on_end:function(data_state){
+                   on_end:function(data_state, callback){
                        recordDiff(this);
                        $('#status').fadeOut();
                        data_state.user_history.push(" on_end pipeline: "+this.ns+" in: "+this.diff+" ms" );
                        this.after_data_state=$.extend(true, {}, data_state);
-
+                      window.uiapp.dispatcher.dispatch("ON_END",this.ns,  data_state, callback);
                    },
                    on_init:function(data_state, callback){
                        this.start=getStart();
@@ -70,9 +70,12 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js"],
                            composition($.extend(true, {}, data_state),function(err, res){
 
                            if(!err){
-
-                               that.on_end(res);
+                               function callback(){
                                that.on_success(res, that);
+                               };
+
+                               that.on_end(res, callback);
+
 
                            }else{
                                //alert("quillo"+err);
