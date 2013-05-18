@@ -10,8 +10,7 @@ define(
             },
 
             jqueryIterateAndDisplayHistoryStep: function jqueryIterateAndDisplayHistoryStep(target_dom_id, title, step, model_property){
-                $(target_dom_id).append("<ul id='"+step.ns+"'><li><b>"+title+"</b>"+
-                                        "<ul><li>Data State Before Transformations<ul></ul></li>"+
+                $(target_dom_id).append("<ul id='"+step.ns+"'><li><b>"+title+"</b><ul><li>Data State Before Transformations<ul></ul></li>"+
                                         "<li>Data State  After Transformations (Time elapsed: "+step.diff+" ms)<ul></ul></li></ul></li></ul>");
                 $.each(step.before_data_state[model_property], function(i, value){
                     $("#"+step.ns).find('li ul li ul').first().append("<li>"+value+"</li>");

@@ -25,12 +25,12 @@ define(function() {
 
        //         console.log("try to dispatch: "+transformation_event_type+" "+target.ns);
                 var history_message=transformation_event_type+"/"+target.ns+((transformation_event_type=="ON_END")? " finished in "+data_state.diff+"ms":" ... timing ..." );
-                   data_state.history.push(history_message);
+                //   data_state.history.push(history_message);
                    //data_state.user_history.push(" on_end pipeline: "+this.ns+" in: "+this.diff+" ms" );
                 if(transformation_event_type=="ON_END" || transformation_event_type=="ON_INIT"){
                     if(contains(history_message, "state_step_"))
                         history_message=" -------- "+history_message;
-                  $('#status').fadeIn(function(){$('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
+                  $('#right').fadeIn(function(){$('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
 });
                 }
 
