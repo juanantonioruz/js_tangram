@@ -13,14 +13,17 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
                    on_end:function(data_state, callback){
                        this.after_data_state=$.extend(true, {}, data_state);
                        recordDiff(this);
+                       recordDiff(this.after_data_state);
                        recordDiff(data_state);
                        dispatcher.dispatch("ON_END",this,  data_state, callback);
                    },
 
                    on_init:function(data_state, callback){
+                       this.before_data_state=$.extend(true, {}, data_state);
                        recordStart(this);
                        recordStart(data_state);
-                       this.before_data_state=$.extend(true, {}, data_state);
+                       recordStart(this.before_data_state);
+
                        dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
                    
