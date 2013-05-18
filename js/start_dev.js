@@ -67,7 +67,8 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
 
                 $('#center').empty();
                 $('#history_status').empty();
-                $('#history_status').append("<b>transformation event history of pipelines and steps</b><br><br>");                
+                $('#history_status').append("<b>transformation event history of pipelines and steps</b><br><br>");             
+                dispatcher.reset();
             };
 
 
@@ -149,7 +150,7 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
 
             function apply_pipeline_with_listener_to_run_pipeline_in_parallel(){
                 clean_out();
-
+                
                 var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(
                     on_success_pipe("success11111")
                 ).set_on_error(get_alert("error 1"));

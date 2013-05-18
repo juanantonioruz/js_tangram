@@ -39,7 +39,7 @@ define(function() {
 
                 var pipeline_listeners=domain_tree[target.ns+"/"+transformation_event_type];
                 if(pipeline_listeners){
-                    console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
+                  //  console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
 
                     pipeline_listeners.map(function(o){
                         if(o.parallel){
@@ -69,7 +69,11 @@ define(function() {
                     domain_tree[ns_listened+"/"+transformation_event_type]=[{pipeline:pipeline, parallel:parallel_or_sync}];
                 }
                 
+            },
+            reset:function(){
+                        domain_tree={};
             }
+            
         };
     })();
     return dispatcher;
