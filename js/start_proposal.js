@@ -19,8 +19,9 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                               setTimeout(function () {
                                                   data_state.user_dashboard=json_data.user_data;
                                                   // only for demo display result
-                                                  $('#proposal').append("<p><b>Data User DashBoard: </b>"+
-                                                                        toJson(data_state.user_dashboard)+"</p>");
+                                                  data_state["state_step_query_server_user_dashboard"].demo.data=data_state.user_dashboard;
+                                                  // $('#proposal').append("<p><b>Data User DashBoard: </b>"+
+                                                  //                       toJson(data_state.user_dashboard)+"</p>");
                                                   callback(null, data_state);
                                               }, timeOut);
                                           })
@@ -29,10 +30,10 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                               setTimeout(function () {
                                                   if(data_state.user_dashboard.uuri=="/object_test")
                                                   data_state.object_data=json_data.test_objects;                                                      
-
+                                                  data_state["state_step_query_server_object_uri"].demo.data=json_data.test_objects;
                                                   // only for demo display result
-                                                  $('#proposal').append("<p><b>ObjectData related to user uri: </b>"+
-                                                                        toJson(data_state.object_data)+"</p>");
+                                                  // $('#proposal').append("<p><b>ObjectData related to user uri: </b>"+
+                                                  //                       toJson(data_state.object_data)+"</p>");
                                                   callback(null, data_state);
                                               }, timeOut);
                                           })

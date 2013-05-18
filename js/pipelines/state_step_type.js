@@ -20,6 +20,7 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
 
                    on_init:function(data_state, callback){
                        this.before_data_state=$.extend(true, {}, data_state);
+                       data_state[this.ns]={demo:{}};
                        recordStart(this);
                        recordStart(data_state);
                        recordStart(this.before_data_state);

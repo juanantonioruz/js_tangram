@@ -10,15 +10,17 @@ define(function() {
 
                 if(transformation_event_type=="ON_INIT"){
                     
-                    $('#proposal').append("<h2>"+target.ns+"</h2>");
+//                    $('#proposal').append("<h2>"+target.ns+"</h2>");
 
                 }
 
 
 
                 if(transformation_event_type=="ON_END"){
-                    
-                    $('#proposal').append("<span>ENDING: "+target.ns+" :::::::: Time Elapsed: "+target.diff+"</span><br>");
+                    $('#proposal').append("DONE: <b>"+target.ns+".</b> In Time: "+target.diff+"<br>");                 
+                    if(data_state[target.ns])
+                    $('#proposal').append("<span>"+toJson(data_state[target.ns].demo.data)+"</span><br><br>");                    
+
 
                 }
 
