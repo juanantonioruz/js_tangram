@@ -193,11 +193,13 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
                $('#compose_sync_pipelines_on_init').click(function(){apply_pipeline_with_listener_to_run_pipeline_synchronous();});
 
 
+              dispatcher.reset_filters();
+
                dispatcher.filter( function(data_state, callback){
                    var that=this;
                    setTimeout(function () {
                        var history_message=that.transformation_event_type+"/"+
-                               that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.data_state.diff+"ms":" ... timing ..." );
+                               that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
                        if(contains(history_message, "state_step_"))
                            history_message=" -------- "+history_message;
 

@@ -10,6 +10,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
            var timeOut=1000;
 
            var p=function(){
+               
                $('body').append("<b id='fn_transformation'>starting simulation ew init</b><hr><div id='proposal'></div>");
 
 
@@ -56,12 +57,13 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
 
            };
+dispatcher.reset_filters();
 
            dispatcher.filter( function(data_state, callback){
                var that=this;
                setTimeout(function () {
                    var history_message=that.transformation_event_type+"/"+
-                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.data_state.diff+"ms":" ... timing ..." );
+                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
                    if(contains(history_message, "state_step_"))
                        history_message=" -------- "+history_message;
                    $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");

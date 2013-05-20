@@ -98,7 +98,9 @@ define(["js/async.js"], function(async) {
             filter:function(_fn){
                 filters.push(_fn);
             },
-
+            reset_filters:function(){
+                filters=[];
+            },
             reset:function(){
                 domain_tree={};
             }
