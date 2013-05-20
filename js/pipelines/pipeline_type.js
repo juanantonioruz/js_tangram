@@ -1,5 +1,5 @@
 define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
-       function(Fiber, StateStep,async, dispatcher) {
+       function( Fiber, StateStep,async, dispatcher) {
            
 
            var Pipeline=Fiber.extend(function(){
@@ -39,7 +39,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        recordDiff(this);
                        recordDiff(data_state);
                        this.after_data_state=$.extend(true, {}, data_state);
-                      dispatcher.dispatch("ON_END",this,  data_state, callback);
+                           dispatcher.dispatch("ON_END",this,  data_state, callback);
                    },
                    on_init:function(data_state, callback){
                        recordStart(this);
@@ -60,7 +60,9 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                    apply_transformations:function(data_state){
                        var that=this;
                        // this function composition use the method transform of each statestep in the context of each step (bind) ...
-                       var composition=async.compose.apply(null, this.getSteps().map(function(o){return o.transform.bind(o);}));
+                       var composition=async.compose.apply(null, this.getSteps().map(function(o){
+                           return o.transform.bind(o);
+                       }));
 
 
                       

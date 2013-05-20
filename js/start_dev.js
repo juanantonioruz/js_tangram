@@ -6,6 +6,7 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
         function(app_data, json_data, dispatcher, Pipeline, display, async) {
 
             // console.log(toJson(json_data));
+            dispatcher.Pipeline=Pipeline;
 
             var good_morning_fn=function(data_state, callback){
                 setTimeout(function () {
@@ -169,8 +170,13 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
                 var pipe_listener=new Pipeline("pipelineListen")
                         .addTransformation("i_am_the_slowest", the_slower_fn).set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
 
+                var pipe_listener2=new Pipeline("pipelineListen2")
+                        .addTransformation("i_am_the_slowest", the_slower_fn).set_on_success(on_success_pipe("successlistenter2")).set_on_error(get_alert("error  listener"));
+
+                dispatcher.listen("ON_INIT","pipeline_pipeline1",  pipe_listener2, false);
 
                 dispatcher.listen("ON_INIT","pipeline_pipeline1",  pipe_listener, false);
+
                 pipe_1.apply_transformations({history:["testing sync"]});
             };
 

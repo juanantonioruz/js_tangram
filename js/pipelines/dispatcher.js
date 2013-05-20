@@ -1,4 +1,4 @@
-define(function() {
+define( function() {
     
     var dispatcher=(function(){
         var domain_tree={};
@@ -37,27 +37,41 @@ define(function() {
                 }
 
 
-
+                
 
                 var pipeline_listeners=domain_tree[target.ns+"/"+transformation_event_type];
                 if(pipeline_listeners){
+                   
                   //  console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
 
-                    pipeline_listeners.map(function(o){
-                        if(o.parallel){
-                            o.pipeline.apply_transformations(data_state);
-                            callback();
-                        }else{
-                            //console.log("chained in runtime synchronous");
-                            var actual=o.pipeline.on_success;
-                            var changed=function(res, pipeline){
-                                actual(res,pipeline);
-                                callback();
-                            };
-                            o.pipeline.on_success=changed;
-                            o.pipeline.apply_transformations(data_state);
-                        }
+                    var paralels=pipeline_listeners.filter(function(element, index, array){return (element.parallel)?true:false;});
+                    var syncq=pipeline_listeners.filter(function(element, index, array){return (!element.parallel)?true:false;});
+
+                    paralels.map(function(o){
+                        //running in parallel
+                        // here we can have problems with mutable data_state in async
+
+                                o.pipeline.apply_transformations(data_state);
                     });
+
+
+                    if(syncq.length>0){
+                        // we have to do a pipeline with this pipelines...
+                        // at the end we call the callback
+
+                        var compose=  new this.Pipeline("pipeline_compose!")
+                                .set_on_success(function(res, pipeline){callback();})
+                                .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
+
+                        syncq.map(function(o){compose.addPipe(o.pipeline);});
+                        compose.apply_transformations(data_state);                        
+                        
+                    }else{
+                        // there is no async pipelines so we continue the execution flow
+                        callback();
+                    }
+
+                    
                 }else{
                     callback();
                 }
@@ -77,6 +91,7 @@ define(function() {
             }
             
         };
+
     })();
     return dispatcher;
 

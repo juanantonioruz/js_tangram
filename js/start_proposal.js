@@ -10,7 +10,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
            var timeOut=1000;
 
            var p=function(){
-               $('body').append("<h1 id='fn_transformation'>starting simulation ew init</h1><div id='proposal'></div>");
+               $('body').append("<b id='fn_transformation'>starting simulation ew init</b><hr><div id='proposal'></div>");
 
 
                var pipeline1=new Pipeline("Welcome_to_the_user")

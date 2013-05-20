@@ -18,7 +18,7 @@ Flow Simulation
 11. ew_components_objectviewer(init, object_data.resources)  > here is processed all the data to display  
     11.1   navbar -> top navbar ::: $.tmpl('object_viewer_nav_with_header', object_data.resources);  
     11.2 process children div class=children ...   
-    11.3 foreach children append new div with init plugin components_object_[child.type](child)  
+    11.3 foreach children append new div with init plugin components_object_\[child.type\](child)  
 12. END ew_components_objectviewer.content transition, page_body.fadeOut, pagebody.html(visual_data)  
 
 
