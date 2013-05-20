@@ -21,7 +21,9 @@
     function getDiff(start){return (new Date).getTime() - start;};
     function recordStart(o) {o['start']= getStart();};
     function recordDiff(o){var dif=getDiff(o['start']); o['diff']= dif; return dif;};
-
+ function contains(context, search){
+            return (context.indexOf(search) !== -1);
+        }
 
     </script>
 

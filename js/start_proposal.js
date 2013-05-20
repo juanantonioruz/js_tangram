@@ -27,7 +27,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                           function (data_state, callback){
                                               setTimeout(function () {
                                                   if(data_state.user_dashboard.uuri=="/object_test")
-                                                  data_state.object_data=json_data.test_objects;                                                      
+                                                      data_state.object_data=json_data.test_objects;                                                      
                                                   // only for demo display result
                                                   data_state["state_step_query_server_object_uri"].demo.data=json_data.test_objects;
 
@@ -56,6 +56,31 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
 
            };
+
+           dispatcher.filter( function(data_state, callback){
+               var that=this;
+               setTimeout(function () {
+                   var history_message=that.transformation_event_type+"/"+
+                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.data_state.diff+"ms":" ... timing ..." );
+                   if(contains(history_message, "state_step_"))
+                       history_message=" -------- "+history_message;
+                   $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
+
+                   callback(null, data_state);
+               }, 10);}
+                            );
+
+           dispatcher.filter( function(data_state, callback){
+               var that=this;
+               setTimeout(function () {
+                   if(that.transformation_event_type=="ON_END"){
+                       $('#proposal').append("DONE: <b>"+that.target.ns+".</b> In Time: "+that.target.diff+"<br>");                 
+                       if(data_state[that.target.ns])
+                           $('#proposal').append("<span>"+toJson(data_state[that.target.ns].demo.data)+"</span><br><br>");                    
+                   }
+                   callback(null, data_state);
+               }, 10);}
+                            );
 
            return p;
 
