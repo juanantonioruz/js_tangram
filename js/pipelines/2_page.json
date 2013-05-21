@@ -1,0 +1,365 @@
+define(function (){
+return {
+            display_name: "Actions Demo",
+            type: "object",
+            children: [
+                {
+                    display_name: "Testing the view action with an object link",
+                    type: "object",
+                    help_message: "These actions can be applied to any type of object, I'm using text here!",
+                    children: [
+                        {
+                            display_name: "A simple label",
+                            type: "text",
+                            value: "You can right click me!",
+                            actions:[
+                                {
+                                    type: "view",
+                                    page_type:"object",
+                                    uri:"/object_test",
+                                    display_name:"View This Object"
+                                },
+                                {
+                                    type: "quick_view",
+                                    page_type:"object",
+                                    uri:"/object_test",
+                                    display_name:"quick View This Object"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    display_name: "Testing the view action with a task link",
+                    type: "object",
+                    children: [
+                        {
+                            display_name: "A simple label",
+                            type: "text",
+                            value: "You can right click me!",
+                            actions:[
+                                {
+                                    type: "view",
+                                    page_type:"task",
+                                    uri:"../filr/OiFXLy8BALwkwKkAvVoB/task.json",
+                                    display_name:"View This Task"
+                                },
+                                {
+                                    type: "quick_view",
+                                    page_type:"task",
+                                    uri:"../filr/OiFXLy8BALwkwKkAvVoB/task.json",
+                                    display_name:"View This Task"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    display_name: "Testing the meta view",
+                    type: "object",
+                    children:[
+                        {
+                            display_name:"There is a graph hidden under me",
+                            type: "text",
+                            value: "you'll see",
+                            actions:[
+                                {
+                                    type:"meta_view",
+                                    form:
+                                    {
+                                        display_name: "Medium Bar Charts",
+                                        type: "object",
+                                        children: [
+                                            {
+                                                display_name: "A sample bar chart with size set to medium",
+                                                type: "chart_bar",
+                                                size: 'medium',
+                                                values: [
+                                                    { name: "Series One", values: [100,200,300,400] },
+                                                    { name: "Series Two", values:[200,100,0,300]}
+                                                ],
+                                                x_axis_labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                                                value_format_string: "$%d"
+                                            },
+                                            {
+                                                display_name: "Just testing other things",
+                                                type: "object",
+                                                children: [
+                                                    {
+                                                        display_name: "A text box",
+                                                        type: "text",
+                                                        value:"something",
+                                                        actions: {
+                                                            edit: {}
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    display_name: "Testing the meta edit",
+                    type: "object",
+                    children:[
+                        {
+                            display_name:"You could change this section of the form",
+                            type: "text",
+                            value: "click and you'll see",
+                            actions:[
+                                {
+                                    type:"meta_edit",
+                                    form:
+                                    {
+                                        display_name: "This is the form you can use to change the parent",
+                                        type: "object",
+                                        children: [
+                                            {
+                                                display_name: "Just testing other things",
+                                                type: "object",
+                                                children: [
+                                                    {
+                                                        display_name: "A text box",
+                                                        type: "text",
+                                                        value:"something",
+                                                        actions: {
+                                                            edit: {}
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    display_name: "Testing the find and replace action",
+                    type: "object",
+                    children: [
+                        {
+                            type: "embedded_user",
+                            display_name: "Embedded Objects",
+                            help_message: "This is not working 100% yet but you'll get the idea: This is a summary of a user, by clicking the replace button you are taken to a user search where you can pick a user to replace this one.",
+                            value: 'filr/ideate/entity/People/records/000373/resource.json', //the uri of the embedded user
+                            children: [
+                                {
+                                    type: "image",
+                                    value: "http://www.geekalerts.com/u/a-team-rc-van.jpg",
+                                    display_name: "Picture"
+                                },
+                                {
+                                    type: "text",
+                                    display_name: "Name",
+                                    value: "Mr T"
+                                },
+                                {
+                                    type: "text",
+                                    display_name: "Department",
+                                    value: "Department of Gold"
+                                }
+                            ],
+                            actions:[
+                                {
+                                    type: "find_and_replace",
+                                    search_data: {
+                                        selected_facets:[
+                                            { name: "type", value: "People"}
+                                        ]
+                                    }
+
+                                }
+                            ]
+                        },
+                    ]
+                },
+                {
+                    display_name: "Testing the graph action",
+                    type: "object",
+                    help_message: "This wont work at the moment as we need a valid uri",
+                    children: [
+                        {
+                            display_name:"There is a graph hidden under me",
+                            type: "text",
+                            value: "you'll see",
+                            actions:[
+                                {
+                                    type: 'graph',
+                                    uri: 'some_uri'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    display_name: "Testing reorder action",
+                    type: "object",
+                    children: [
+                        {
+                            display_name: "You can drag me around",
+                            type: "text",
+                            value: "Try it!",
+                            actions:[
+                                {
+                                    type: "reorder",
+                                    group_id: "1"
+                                }
+                            ]
+                        },
+                        {
+                            display_name: "You can drag me around and my children move too",
+                            type: "object",
+                            children: [
+                                {
+                                    display_name: "I'll go too",
+                                    type: "text",
+                                    value: "Try it!"
+                                }
+                            ],
+                            actions:[
+                                {
+                                    type: "reorder",
+                                    group_id: "1"
+                                }
+                            ]
+                        },
+                        {
+                            display_name: "You can drag me around too",
+                            type: "text",
+                            value: "Try it!",
+                            actions:[
+                                {
+                                    type: "reorder",
+                                    group_id: "1"
+                                }
+                            ]
+                        }
+                    ],
+                    actions: [
+                        {
+                            type: "reorder",
+                            uri: "SomeUri.json"
+                        }
+                    ]
+                },
+                {
+                    display_name: "How actions render on different types of objects",
+                    type: "object",
+                    help_message: "These actions do not do anything so please dont click them.",
+                    children:[
+                        {
+                            display_name: "Object level action",
+                            type: "object",
+                            children: [
+                                {
+                                    display_name: "Just a label",
+                                    type: "text",
+                                    value: "with no action"
+                                },
+                                {
+                                    display_name: "Just a label",
+                                    type: "text",
+                                    value: "with no action"
+                                },
+                                {
+                                    display_name: "Just a label",
+                                    type: "text",
+                                    value: "with no action"
+                                }
+                            ],
+                            actions: [
+                                {
+                                    type: "view"
+                                }
+                            ]
+                        },
+                        {
+                            display_name: "Actions in table rows",
+                            type:"object",
+                            children: [
+                                {
+                                    display_name: "Table Layout Example",
+                                    help_message: "Showing cell level and row level action button",
+                                    type: "object_table",
+                                    mutable: false,
+                                    column_headers: [
+                                        { display_name: "ID", object_display_name: "ID" },
+                                        { display_name: "Name", object_display_name: "Name" },
+                                        { display_name: "Department", object_display_name: "Department" },
+                                        { display_name: "Role", object_display_name: "Role" }
+                                    ],
+                                    children: [
+                                        {
+                                            display_name: "Matthew Griffiths",
+                                            type: "object_table_row",
+                                            uri: '/update',
+                                            children:[
+                                                {
+                                                    type: "text",
+                                                    display_name: "ID",
+                                                    value: "01",
+                                                    display_type: "table_cell"
+                                                },
+                                                {
+                                                    type: "text",
+                                                    display_name: "Name",
+                                                    value: "Matthew Griffiths",
+                                                    display_type: "table_cell",
+                                                    actions:[
+                                                        { type: "view"}
+                                                    ]
+                                                },
+                                                {
+                                                    type: "select",
+                                                    display_name: "Department",
+                                                    value: "1",
+                                                    values: [
+                                                        { name: "Department of Fun", value: "0" },
+                                                        { name: "Department of Games", value: "1" }
+                                                    ],
+                                                    actions: {
+                                                        edit: {
+                                                            uri: "/save_test"
+                                                        }
+                                                    },
+                                                    display_type: "table_cell"
+                                                },
+                                                {
+                                                    type: "text",
+                                                    display_name: "Role",
+                                                    value: "Master of the universe",
+                                                    actions: {
+                                                        edit: {}
+                                                    },
+                                                    display_type: "table_cell"
+                                                },
+                                                {
+                                                    type: "text",
+                                                    display_type: "table_cell",
+                                                    actions:[
+                                                        { type: "view"}
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    actions: {
+                                        edit: {
+                                            uri: '/save_test'
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+});
+

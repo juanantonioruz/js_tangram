@@ -85,6 +85,25 @@ define(["js/async.js"], function(async) {
 
 
             },
+            remove:function(transformation_event_type, ns_listened, pipeline){
+                   var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
+
+                
+
+                if (actual_listeners) {
+                    for(var i=0; i<actual_listeners.length; i++){
+                        if(actual_listeners[i].pipeline.ns==pipeline.ns){
+
+                            actual_listeners.splice(i,1);
+
+                        }
+
+                    }
+                }else{ 
+                    // TODO: the listener doesnt exist yet, so it cant be removed
+                }
+             
+            },
             
             listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
                 var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
@@ -101,6 +120,7 @@ define(["js/async.js"], function(async) {
             reset_filters:function(){
                 filters=[];
             },
+
             reset:function(){
                 domain_tree={};
             }
