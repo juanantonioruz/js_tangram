@@ -7,35 +7,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
            var timeOut=1000;
 
-           var show_child=new Pipeline("show_childs").
-                   addTransformation("loading_child_template",
-                                     function(data_state, callback){
-                                         var my_col=data_state.object_data.body.resources;
-                                         if(!data_state.childs){
-                                             data_state.childs=[];
-                                         }
-                                         
-                                         if(data_state.childs.length<my_col.length){
-                                             data_state.current_child=my_col[data_state.childs.length];
-                                             data_state.childs.push(data_state.current_child);
-                                             data_state["state_step_loading_child_template"].demo.data="iterating more";
-
-
-                                         }else{
-                                             dispatcher.remove("ON_END","state_step_loading_child_template",  show_child);
-                                             data_state["state_step_loading_child_template"].demo.data="finish iteration";
-                                         }
-                                                  callback(null, data_state);                                         
-                                     }
-                                    ).
-                   set_on_success(
-                       function(results, pipeline){
-                           alert("finishing show_pipeline");
-
-                       }).
-                   set_on_error(function(err, pipeline){
-                           alert("error showing_pipeline");
-                   });
+           
 
            var p=function(){
                
@@ -85,8 +57,8 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 // now i need to iterate over this collectino and run pipelines in relation to each data type loaded
 
 //maybe i need a  next function to call itself if still  there are elements availables
-           dispatcher.listen("ON_END","state_step_query_server_object_uri",  show_child, false);
-           dispatcher.listen("ON_END","state_step_loading_child_template",  show_child, false);
+//           dispatcher.listen("ON_END","state_step_query_server_object_uri",  show_child, false);
+ //          dispatcher.listen("ON_END","state_step_loading_child_template",  show_child, false);
            
 
 
