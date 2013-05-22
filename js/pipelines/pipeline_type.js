@@ -98,7 +98,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                    // same api as state step, it is used when we compose  pipelines
                    transform:function(data_state, callback){
                        var that=this;
-                       console.log("try to transform "+this.ns);
+//                       console.log("try to transform "+this.ns);
 
                        var actual_on_success=this.on_success;
                        var extended_on_success=function(res, that){

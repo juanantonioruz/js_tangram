@@ -7,52 +7,55 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
            var timeOut=1000;
 
-           
 
            var p=function(){
                
                $('body').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
 
                
-                var foreach_pipeline=new Foreach_Pipeline("Welcome_to_the_foreach", "the_model")
-                       .addTransformation("foreach_transformation", 
+               var foreach_pipeline=new Foreach_Pipeline("foreach_pipeline", "the_model")
+                       .addTransformation("find_display_data_transformation", 
                                           function (data_state, callback){
                                               var that=this;
-
                                               setTimeout(function () {
-                                                  // only for demo display result
-                                                 // var my_data=data_state["state_step_query_server_object_uri"].demo.data;
-
-                                                 // my_data=my_data.body.resources[0];
-                                                  var my_data={display_name:"example"};
-                                                  
-                                             //     var data_model=my_data.header[this.model_key];
-                                                  data_state["state_step_foreach_transformation"].demo.data="inside for each: display_name:  "+data_state.current_data.display_name;
+                                                  data_state["state_step_find_display_data_transformation"].demo.data="Obtaining 'display_data' value in foreach:  "+data_state.current_data.display_name;
                                                   if(!data_state.display_names){
-                                                     data_state.display_names=[]; 
-                                                      }
+                                                      data_state.display_names=[]; 
+                                                  }
                                                   data_state.display_names.push(data_state.current_data.display_name);
                                                   callback(null, data_state);
                                               }, timeOut);
-                                          }).set_on_success(
-                       function(results, pipeline){
-                           $('#fn_transformation').html(" fin de foreach!");
-                           console.log(toJson(results));
+                                          })
+                       .addTransformation("find_value_transformation", 
+                                          function (data_state, callback){
+                                              var that=this;
+                                              setTimeout(function () {
+                                                  data_state["state_step_find_value_transformation"].demo.data="Obtaining 'value' value in foreach:  "+data_state.current_data.value;
+                                                  if(!data_state.values){
+                                                      data_state.values=[]; 
+                                                  }
+                                                  data_state.values.push(data_state.current_data.value);
+                                                  callback(null, data_state);
+                                              }, timeOut);
+                                          })
 
-                       })
-                   .set_on_error(
-                       function(error, pipeline){
-                           alert("error"+toJson(error));});
-
-
-
+                       .set_on_success(
+                           function(results, pipeline){
+                               $('#fn_transformation').html(" fin de foreach!");
+                           })
+                       .set_on_error(
+                           function(error, pipeline){
+                               alert("error"+toJson(error));});
+               
 
 
                var pipeline1=new Pipeline("Welcome_to_the_user")
-                   .addTransformation("loading_content_please_wait", 
+                       .addTransformation("loading_content_please_wait", 
                                           function (data_state, callback){
-                                                  $('#left').append("<h1 id='loading'>Loading content, please wait ...</h1>");
-                                                  callback(null, data_state);
+                                              // only for demo display result
+                                              data_state["state_step_loading_content_please_wait"].demo.data="display message to user loading content";
+                                              $('#left').append("<h1 id='loading'>Loading content, please wait ...</h1>");
+                                              callback(null, data_state);
                                           })
                        .addTransformation("query_server_user_dashboard", 
                                           function (data_state, callback){
@@ -63,7 +66,6 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                                   callback(null, data_state);
                                               }, timeOut);
                                           })
-                      
                        .addTransformation("query_server_object_uri", 
                                           function (data_state, callback){
                                               setTimeout(function () {
@@ -75,54 +77,45 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                                   callback(null, data_state);
                                               }, timeOut);
                                           })
-                .addPipe(foreach_pipeline)
-                      ;
+                       .addPipe(foreach_pipeline)
+                       .set_on_success(
+                           function(results, pipeline){
+                               $('#loading').fadeOut(1000, function(){
+                                   $('#loading')
+                                       .html('The content is already loaded!')
+                                       .css('background-color', 'yellow')
+                                       .fadeIn(1000, function(){
+                                           $('#left').append("displays_names of body.resources[0].header.children:::<hr><ul></ul>");
+                                           $.each(results.display_names, function(i, value){
+                                               $('#left ul').append("<li>Display_data: "+((value)?value : "undefined value in json_data")+"</li>");
+                                           });
+                                           $('#left').append("values of body.resources[0].header.children:::<hr><ul></ul>");
+                                           $.each(results.values, function(i, value){
+                                               $('#left ul').last().append("<li>Value: "+((value)?value : "undefined value in json_data")+"</li>");
+                                           });
 
-               pipeline1
-                   .set_on_success(
-                       function(results, pipeline){
-                             $('#loading').fadeOut(1000, function(){
-                                 $('#loading')
-                                     .html('The content is already loaded!')
-                                     .css('background-color', 'yellow')
-                                     .fadeIn(1000, function(){
-                                         $('#left').append("displays_names of body.resources[0].header.children:::<hr><ul></ul>");
-                                         $.each(results.display_names, function(i, value){
-                                             $('#left ul').append("<li>"+value+"</li>");
-                                         });
-                                     });
-                                 
+                                       });
 
-                                 
+                               });
+                               $('#fn_transformation').html(" process ended!");
+//                               console.log(toJson(results));
 
-                             });
-                           $('#fn_transformation').html(" process ended!");
-                           console.log(toJson(results));
-
-                       })
-                   .set_on_error(
-                       function(error, pipeline){
-                           alert("error"+toJson(error));})
-                   .apply_transformations(State());
-        
+                           })
+                       .set_on_error(
+                           function(error, pipeline){
+                               alert("error"+toJson(error));})
+                       .apply_transformations(State());
+               
            };
+
+
+
 
            // EOP
            dispatcher.reset();
-// here i can hear the on_end event, so the collection on json data is loaded
-// now i need to iterate over this collectino and run pipelines in relation to each data type loaded
-
-//maybe i need a  next function to call itself if still  there are elements availables
-//           dispatcher.listen("ON_END","state_step_query_server_object_uri",  show_child, false);
- //          dispatcher.listen("ON_END","state_step_loading_child_template",  show_child, false);
            
-
-
-
-          // Filtering all tansformations ::: AOP 
-
+           // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();
-
 
            // filtering for timming
            dispatcher.filter( function(data_state, callback){
@@ -148,7 +141,6 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                    }
                    callback(null, data_state);
                }, 10);});
-
 
            return p;
 
