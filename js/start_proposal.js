@@ -28,7 +28,10 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                                   
                                              //     var data_model=my_data.header[this.model_key];
                                                   data_state["state_step_foreach_transformation"].demo.data="inside for each: display_name:  "+data_state.current_data.display_name;
-
+                                                  if(!data_state.display_names){
+                                                     data_state.display_names=[]; 
+                                                      }
+                                                  data_state.display_names.push(data_state.current_data.display_name);
                                                   callback(null, data_state);
                                               }, timeOut);
                                           }).set_on_success(
@@ -42,7 +45,15 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                            alert("error"+toJson(error));});
 
 
+
+
+
                var pipeline1=new Pipeline("Welcome_to_the_user")
+                   .addTransformation("loading_content_please_wait", 
+                                          function (data_state, callback){
+                                                  $('#left').append("<h1 id='loading'>Loading content, please wait ...</h1>");
+                                                  callback(null, data_state);
+                                          })
                        .addTransformation("query_server_user_dashboard", 
                                           function (data_state, callback){
                                               setTimeout(function () {
@@ -70,6 +81,21 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                pipeline1
                    .set_on_success(
                        function(results, pipeline){
+                             $('#loading').fadeOut(1000, function(){
+                                 $('#loading')
+                                     .html('The content is already loaded!')
+                                     .css('background-color', 'yellow')
+                                     .fadeIn(1000, function(){
+                                         $('#left').append("displays_names of body.resources[0].header.children:::<hr><ul></ul>");
+                                         $.each(results.display_names, function(i, value){
+                                             $('#left ul').append("<li>"+value+"</li>");
+                                         });
+                                     });
+                                 
+
+                                 
+
+                             });
                            $('#fn_transformation').html(" process ended!");
                            console.log(toJson(results));
 
