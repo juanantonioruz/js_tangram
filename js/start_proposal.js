@@ -7,11 +7,40 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
            var timeOut=1000;
 
+           // EOP
+           dispatcher.reset();
+           
+           // Filtering all transformations ::: AOP 
+           dispatcher.reset_filters();
 
-           var p=function(){
-               
-               $('body').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
+           // filtering for timming
+           dispatcher.filter( function(data_state, callback){
+               var that=this;
+               setTimeout(function () {
+                   var history_message=that.transformation_event_type+"/"+
+                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
+                   if(contains(history_message, "state_step_"))
+                       history_message=" -------- "+history_message;
+                   $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
 
+                   callback(null, data_state);
+               }, 10);});
+
+           // filtering to demo display 
+           dispatcher.filter( function(data_state, callback){
+               var that=this;
+               setTimeout(function () {
+                   if(that.transformation_event_type=="ON_END"){
+                       $('#proposal').append("DONE: <b>"+that.target.ns+".</b> In Time: "+that.target.diff+"<br>");                 
+                       if(data_state[that.target.ns])
+                           $('#proposal').append("<span>"+toJson(data_state[that.target.ns].demo.data)+"</span><br><br>");                    
+                   }
+                   callback(null, data_state);
+               }, 10);});
+
+           $('body').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
+   
+        return function(){
                
                var foreach_pipeline=new Foreach_Pipeline("foreach_pipeline", "the_model")
                        .addTransformation("find_display_data_transformation", 
@@ -38,7 +67,6 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                                   callback(null, data_state);
                                               }, timeOut);
                                           })
-
                        .set_on_success(
                            function(results, pipeline){
                                $('#fn_transformation').html(" fin de foreach!");
@@ -46,8 +74,6 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                        .set_on_error(
                            function(error, pipeline){
                                alert("error"+toJson(error));});
-               
-
 
                var pipeline1=new Pipeline("Welcome_to_the_user")
                        .addTransformation("loading_content_please_wait", 
@@ -98,7 +124,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
                                });
                                $('#fn_transformation').html(" process ended!");
-//                               console.log(toJson(results));
+                               //                               console.log(toJson(results));
 
                            })
                        .set_on_error(
@@ -111,37 +137,8 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
 
 
-           // EOP
-           dispatcher.reset();
            
-           // Filtering all tansformations ::: AOP 
-           dispatcher.reset_filters();
 
-           // filtering for timming
-           dispatcher.filter( function(data_state, callback){
-               var that=this;
-               setTimeout(function () {
-                   var history_message=that.transformation_event_type+"/"+
-                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
-                   if(contains(history_message, "state_step_"))
-                       history_message=" -------- "+history_message;
-                   $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
-
-                   callback(null, data_state);
-               }, 10);});
-
-           // filtering to demo display 
-           dispatcher.filter( function(data_state, callback){
-               var that=this;
-               setTimeout(function () {
-                   if(that.transformation_event_type=="ON_END"){
-                       $('#proposal').append("DONE: <b>"+that.target.ns+".</b> In Time: "+that.target.diff+"<br>");                 
-                       if(data_state[that.target.ns])
-                           $('#proposal').append("<span>"+toJson(data_state[that.target.ns].demo.data)+"</span><br><br>");                    
-                   }
-                   callback(null, data_state);
-               }, 10);});
-
-           return p;
+           
 
        });
