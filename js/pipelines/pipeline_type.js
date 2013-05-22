@@ -23,6 +23,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        return this;
                    },
 
+
                    getStateStep:function(ns){
                        for(var i=0 ; i<this.future_state_steps.length; i++){
                            var internalStateStep= this.future_state_steps[i];
@@ -79,7 +80,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
 
 
                            }else{
-                               //alert("quillo"+err);
+                       
                                console.log("big one pipeline error: "+that.ns+"\n"+toJson(data_state));
 
                                    that.on_error(err, that);
@@ -94,7 +95,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
 
                        
                    },
-                   // same api as state step, it is used when we compose async pipelines
+                   // same api as state step, it is used when we compose  pipelines
                    transform:function(data_state, callback){
                        var that=this;
                        console.log("try to transform "+this.ns);
