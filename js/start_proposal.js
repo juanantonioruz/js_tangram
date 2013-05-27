@@ -9,53 +9,63 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
 
            var p=function(){
-               
+                $('body').append("<h1>openstack testing</h1>");
                $('body').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
 
                
-               var foreach_pipeline=new Foreach_Pipeline("foreach_pipeline", "the_model")
-                       .addTransformation("find_display_data_transformation", 
-                                          function (data_state, callback){
-                                              var that=this;
-                                              setTimeout(function () {
-                                                  data_state["state_step_find_display_data_transformation"].demo.data="Obtaining 'display_data' value in foreach:  "+data_state.current_data.display_name;
-                                                  if(!data_state.display_names){
-                                                      data_state.display_names=[]; 
-                                                  }
-                                                  data_state.display_names.push(data_state.current_data.display_name);
-                                                  callback(null, data_state);
-                                              }, timeOut);
-                                          })
-                       .addTransformation("find_value_transformation", 
-                                          function (data_state, callback){
-                                              var that=this;
-                                              setTimeout(function () {
-                                                  data_state["state_step_find_value_transformation"].demo.data="Obtaining 'value' value in foreach:  "+data_state.current_data.value;
-                                                  if(!data_state.values){
-                                                      data_state.values=[]; 
-                                                  }
-                                                  data_state.values.push(data_state.current_data.value);
-                                                  callback(null, data_state);
-                                              }, timeOut);
-                                          })
+               // var foreach_pipeline=new Foreach_Pipeline("foreach_pipeline", "the_model")
+               //         .addTransformation("find_display_data_transformation", 
+               //                            function (data_state, callback){
+               //                                var that=this;
+               //                                setTimeout(function () {
+               //                                    data_state["state_step_find_display_data_transformation"].demo.data="Obtaining 'display_data' value in foreach:  "+data_state.current_data.display_name;
+               //                                    if(!data_state.display_names){
+               //                                        data_state.display_names=[]; 
+               //                                    }
+               //                                    data_state.display_names.push(data_state.current_data.display_name);
+               //                                    callback(null, data_state);
+               //                                }, timeOut);
+               //                            })
+               //         .addTransformation("find_value_transformation", 
+               //                            function (data_state, callback){
+               //                                var that=this;
+               //                                setTimeout(function () {
+               //                                    data_state["state_step_find_value_transformation"].demo.data="Obtaining 'value' value in foreach:  "+data_state.current_data.value;
+               //                                    if(!data_state.values){
+               //                                        data_state.values=[]; 
+               //                                    }
+               //                                    data_state.values.push(data_state.current_data.value);
+               //                                    callback(null, data_state);
+               //                                }, timeOut);
+               //                            })
 
-                       .set_on_success(
-                           function(results, pipeline){
-                               $('#fn_transformation').html(" fin de foreach!");
-                           })
-                       .set_on_error(
-                           function(error, pipeline){
-                               alert("error"+toJson(error));});
+               //         .set_on_success(
+               //             function(results, pipeline){
+               //                 $('#fn_transformation').html(" fin de foreach!");
+               //             })
+               //         .set_on_error(
+               //             function(error, pipeline){
+               //                 alert("error"+toJson(error));});
                
 
 
-               var pipeline1=new Pipeline("Welcome_to_the_user")
+               var pipeline1=new Pipeline("testing openstack api ")
                        .addTransformation("loading_content_please_wait", 
                                           function (data_state, callback){
                                               // only for demo display result
+
+                                              $.ajax({
+                                                  type: "GET",
+                                                  url: "http://localhost:3000/tenants",
+                                                  headers: { "X-Auth-Token": "tokentoken" }
+                                              }).done(function( msg ) {
+                                                  $('body').append( "<pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                                                   callback(null, data_state);
+                                              });
+
                                               data_state["state_step_loading_content_please_wait"].demo.data="display message to user loading content";
                                               $('#left').append("<h1 id='loading'>Loading content, please wait ...</h1>");
-                                              callback(null, data_state);
+                                             
                                           })
                        .addTransformation("query_server_user_dashboard", 
                                           function (data_state, callback){
@@ -77,7 +87,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                                   callback(null, data_state);
                                               }, timeOut);
                                           })
-                       .addPipe(foreach_pipeline)
+                     //  .addPipe(foreach_pipeline)
                        .set_on_success(
                            function(results, pipeline){
                                $('#loading').fadeOut(1000, function(){
@@ -85,14 +95,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                                        .html('The content is already loaded!')
                                        .css('background-color', 'yellow')
                                        .fadeIn(1000, function(){
-                                           $('#left').append("displays_names of body.resources[0].header.children:::<hr><ul></ul>");
-                                           $.each(results.display_names, function(i, value){
-                                               $('#left ul').append("<li>Display_data: "+((value)?value : "undefined value in json_data")+"</li>");
-                                           });
-                                           $('#left').append("values of body.resources[0].header.children:::<hr><ul></ul>");
-                                           $.each(results.values, function(i, value){
-                                               $('#left ul').last().append("<li>Value: "+((value)?value : "undefined value in json_data")+"</li>");
-                                           });
+                                           $('#left').append("ENDING OPENSTACKS CALLS");
 
                                        });
 
@@ -131,16 +134,16 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                }, 10);});
 
            // filtering to demo display 
-           dispatcher.filter( function(data_state, callback){
-               var that=this;
-               setTimeout(function () {
-                   if(that.transformation_event_type=="ON_END"){
-                       $('#proposal').append("DONE: <b>"+that.target.ns+".</b> In Time: "+that.target.diff+"<br>");                 
-                       if(data_state[that.target.ns])
-                           $('#proposal').append("<span>"+toJson(data_state[that.target.ns].demo.data)+"</span><br><br>");                    
-                   }
-                   callback(null, data_state);
-               }, 10);});
+           // dispatcher.filter( function(data_state, callback){
+           //     var that=this;
+           //     setTimeout(function () {
+           //         if(that.transformation_event_type=="ON_END"){
+           //             $('#proposal').append("DONE: <b>"+that.target.ns+".</b> In Time: "+that.target.diff+"<br>");                 
+           //             if(data_state[that.target.ns])
+           //                 $('#proposal').append("<span>"+toJson(data_state[that.target.ns].demo.data)+"</span><br><br>");                    
+           //         }
+           //         callback(null, data_state);
+           //     }, 10);});
 
            return p;
 
