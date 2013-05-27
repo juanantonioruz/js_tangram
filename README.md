@@ -40,3 +40,7 @@ Run the app locally:
 
 ** Startup template for working with heroku and javascript cloned from:   
 https://github.com/jamiew/heroku-static-site 
+
+
+
+
