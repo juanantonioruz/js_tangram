@@ -6,36 +6,49 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
        function(json_data, dispatcher, Foreach_Pipeline,Pipeline, State,  display, async) {
 
            var timeOut=1000;
+           var user;
+           var password;
 
+           function clean(){
+                                  $('#content').empty();
+                   $('#history_status').empty();
+
+           };
 
            var p=function(){
                 $('#left').append("<h1 id='loading'>openstack testing</h1>");
-               $('#left').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
 
+               $('#left').append("<div id='register_form'><h3>Login: </h3>Stack User: <input type='text' id='stack_user' value='demo'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
+               $('#stack_logging').on('click', function(){
+                    user=$('#stack_user').val();
+                    password=$('#stack_password').val();
+                   $('#left').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
+                   clean();
+                    pipeline1.apply_transformations(State());
+               
+               });
                
                var foreach_pipeline=new Foreach_Pipeline("foreach_tenant", "the_model")
-                       .addTransformation("servers_of_tenant", 
+                       .addTransformation("endpoints_of_tenant", 
                                           function (data_state, callback){
-                                              var that=this;
-                                              setTimeout(function () {
-
-
-
-                                                  $('#content').prepend( "<pre><code class='json'>"+toJson(data_state.current_data)+"</code></pre>" );
-                                                   $.ajax({
-                                                  type: "GET",
-                                                  url: "http://localhost:3000/tenant_servers/"+data_state.current_data.id
-                                                  
+                                             $('#left').append("<h4 class='left_message'>Loading endpoints of "+data_state.current_data.name+", please wait ...</h4>"); 
+                                              $.ajax({
+                                                  type: "POST",
+                                                  url: "http://localhost:3000/endpoints",
+                                                  data:{s_user:user, s_pw:password, tenant_name:data_state.current_data.name}
                                               }).done(function( msg ) {
-                                                  $('#content').prepend( "<br>Servers of this tenant id: "+data_state.current_data.id
-+"<br><pre><code class='json'>{}"+toJson(msg)+"</code></pre>" );
-  //                                                alert(toJson(msg));
-                                                   callback(null, data_state);
-                                              });
-                                              }, timeOut);
-                                          })
-                       
+                                                  if(!msg.error){
+                                                      $('#content').prepend( "<h2>End Points for "+data_state.current_data.name+" Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
 
+                                                
+                                                   callback(null, data_state);
+                                                  }else{
+                                                      callback(msg.error, data_state);
+                                                  }
+                                              });
+
+
+                                          })
                        .set_on_success(
                            function(results, pipeline){
                                $('#fn_transformation').html(" fin de foreach!");
@@ -48,22 +61,49 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
 
                var pipeline1=new Pipeline("testing openstack api ")
-                       .addTransformation("loading_content_please_wait", 
+                       .addTransformation("loading_tokens_please_wait", 
                                           function (data_state, callback){
- 
-                                              $('#left').append("<h1 class='left_message'>Loading tenants, please wait ...</h1>");
+                                             
+
+                                              $('#left').append("<h1 class='left_message'>Loading tokens, please wait ...</h1>");
                                               $.ajax({
-                                                  type: "GET",
-                                                  url: "http://localhost:3000/tenants",
-                                                  headers: { "X-Auth-Token": "tokentoken" }
+                                                  type: "POST",
+                                                  url: "http://localhost:3000/tokens",
+                                                  data:{s_user:user, s_pw:password}
                                               }).done(function( msg ) {
-                                                  $('#content').prepend( "<h2>Loading tenants</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
-                                                  data_state.the_model=msg.tenants;
+                                                  if(!msg.error){
+                                                      $('#content').prepend( "<h2>Tokens Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                                                      data_state.token_id=msg.access.token.id;
+                                                
                                                    callback(null, data_state);
+                                                  }else{
+                                                      callback(msg.error, data_state);
+                                                  }
                                               });
                                              
                                           })
-                       
+                         .addTransformation("loading_tenants_please_wait", 
+                                          function (data_state, callback){
+
+
+                                              $.ajax({
+                                                  type: "POST",
+                                                  url: "http://localhost:3000/tenants",
+                                                  data:{token:data_state.token_id}
+                                              }).done(function( msg ) {
+                                                  if(!msg.error){
+                                                      $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                                                      //do that to use with foreach pipeline
+
+                                                      data_state.the_model=msg.tenants;
+                                                 
+                                                   callback(null, data_state);
+                                                  }else{
+                                                      callback(msg.error, data_state);
+                                                  }
+                                              });
+                                             
+                                          })
                        
                        // .addTransformation("testing user admin token", 
                        //                    function (data_state, callback){
@@ -77,7 +117,7 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                        //                            callback(null, data_state);
                        //                        });
                        //                    })
-                       // .addPipe(foreach_pipeline)
+                        .addPipe(foreach_pipeline)
                        .set_on_success(
                            function(results, pipeline){
                                $('#loading').fadeOut(1000, function(){
@@ -98,7 +138,9 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
                        .set_on_error(
                            function(error, pipeline){
                                alert("error"+toJson(error));})
-                       .apply_transformations(State());
+
+               //        .apply_transformations(State())
+               ;
                
            };
 

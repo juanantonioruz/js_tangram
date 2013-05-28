@@ -20,6 +20,7 @@ var sys = require('util'),
 function toJson(o){
     return JSON.stringify(o, null, 4);
 };
+app.use(exp.bodyParser());
 
 app.use('/js', exp.static(__dirname + '/js'));
 app.use('/styles', exp.static(__dirname + '/styles'));
@@ -35,10 +36,26 @@ app.get('/', function(req, res) {
     });
 });
 
-app.get('/tenants', function(req, res){
+app.post('/tokens', function(req, res){
+  // res.send(req.body.s_user+":"+req.body.s_pw);    
 
-    rest.get('http://192.168.1.22:35357/v2.0/tenants',
-             {headers:{ "X-Auth-Token": auth_token_admin }}).on('complete', function(result) {
+   rest.postJson('http://192.168.1.22:35357/v2.0/tokens',
+            {"auth": {"passwordCredentials": {"username":req.body.s_user, "password":req.body.s_pw}}} ).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+            sys.puts("NO communication ERROR: "+toJson(result));
+        }
+    });
+});
+
+app.post('/tenants', function(req, res){
+
+    rest.get('http://192.168.1.22:5000/v2.0/tenants',
+             {headers:{ "X-Auth-Token": req.body.token }}).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
             res.send('Error: ' + result.message);
@@ -48,8 +65,22 @@ app.get('/tenants', function(req, res){
             sys.puts(toJson(result));
         }
     });
+});
 
+app.post('/endpoints', function(req, res){
 
+    rest.postJson('http://192.168.1.22:35357/v2.0/tokens',
+            {"auth": {"passwordCredentials": {"username":req.body.s_user, "password":req.body.s_pw}, "tenantName":req.body.tenant_name}} ).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+            sys.puts("NO communication ERROR: "+toJson(result));
+        }
+    });
+});
 
 app.get('/tenant/:id', function(req, res){
 
@@ -107,7 +138,6 @@ app.get('/tenant_servers/:id', function(req, res){
     //     // callback(null, data_state);
     // });
 
-});
 
 app.listen(3000);
 
