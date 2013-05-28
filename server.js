@@ -5,6 +5,11 @@ var http = require('http');
 // }).listen(1337, '127.0.0.1');
 
 
+var auth_token_admin="tokentoken";
+
+
+
+
 var fs = require("fs");
 var exp = require("express");
 var __dirname=".";
@@ -32,7 +37,8 @@ app.get('/', function(req, res) {
 
 app.get('/tenants', function(req, res){
 
-    rest.get('http://192.168.1.22:35357/v2.0/tenants', {headers:{ "X-Auth-Token": "tokentoken" }}).on('complete', function(result) {
+    rest.get('http://192.168.1.22:35357/v2.0/tenants',
+             {headers:{ "X-Auth-Token": auth_token_admin }}).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
             res.send('Error: ' + result.message);
@@ -42,6 +48,53 @@ app.get('/tenants', function(req, res){
             sys.puts(toJson(result));
         }
     });
+
+
+
+app.get('/tenant/:id', function(req, res){
+
+    rest.get('http://192.168.1.22:35357/v2.0/tenants/'+req.params.id,
+             {headers:{ "X-Auth-Token": auth_token_admin }}).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+            sys.puts(toJson(result));
+        }
+    });
+});
+
+
+app.get('/tokens/:id', function(req, res){
+
+    rest.get('http://192.168.1.22:35357/v2.0/tokens/'+req.params.id,
+             {headers:{ "X-Auth-Token": auth_token_admin }}).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+            sys.puts(toJson(result));
+        }
+    });
+});
+app.get('/tenant_servers/:id', function(req, res){
+    sys.puts("*************"+req.params.id);
+    rest.get('http://192.168.1.22:3333/v2.0/'+req.params.id+'/servers',
+             {headers:{ "X-Auth-Token": auth_token_admin}}).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+            sys.puts(toJson(result));
+        }
+    });
+});
 
 
     // $.ajax({

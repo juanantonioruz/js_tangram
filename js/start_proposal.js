@@ -9,88 +9,79 @@ define(["js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines
 
 
            var p=function(){
-                $('body').append("<h1>openstack testing</h1>");
-               $('body').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
+                $('#left').append("<h1 id='loading'>openstack testing</h1>");
+               $('#left').append("<b id='fn_transformation'>starting simulation  init</b><hr><div id='proposal'></div>");
 
                
-               // var foreach_pipeline=new Foreach_Pipeline("foreach_pipeline", "the_model")
-               //         .addTransformation("find_display_data_transformation", 
-               //                            function (data_state, callback){
-               //                                var that=this;
-               //                                setTimeout(function () {
-               //                                    data_state["state_step_find_display_data_transformation"].demo.data="Obtaining 'display_data' value in foreach:  "+data_state.current_data.display_name;
-               //                                    if(!data_state.display_names){
-               //                                        data_state.display_names=[]; 
-               //                                    }
-               //                                    data_state.display_names.push(data_state.current_data.display_name);
-               //                                    callback(null, data_state);
-               //                                }, timeOut);
-               //                            })
-               //         .addTransformation("find_value_transformation", 
-               //                            function (data_state, callback){
-               //                                var that=this;
-               //                                setTimeout(function () {
-               //                                    data_state["state_step_find_value_transformation"].demo.data="Obtaining 'value' value in foreach:  "+data_state.current_data.value;
-               //                                    if(!data_state.values){
-               //                                        data_state.values=[]; 
-               //                                    }
-               //                                    data_state.values.push(data_state.current_data.value);
-               //                                    callback(null, data_state);
-               //                                }, timeOut);
-               //                            })
+               var foreach_pipeline=new Foreach_Pipeline("foreach_tenant", "the_model")
+                       .addTransformation("servers_of_tenant", 
+                                          function (data_state, callback){
+                                              var that=this;
+                                              setTimeout(function () {
 
-               //         .set_on_success(
-               //             function(results, pipeline){
-               //                 $('#fn_transformation').html(" fin de foreach!");
-               //             })
-               //         .set_on_error(
-               //             function(error, pipeline){
-               //                 alert("error"+toJson(error));});
+
+
+                                                  $('#content').prepend( "<pre><code class='json'>"+toJson(data_state.current_data)+"</code></pre>" );
+                                                   $.ajax({
+                                                  type: "GET",
+                                                  url: "http://localhost:3000/tenant_servers/"+data_state.current_data.id
+                                                  
+                                              }).done(function( msg ) {
+                                                  $('#content').prepend( "<br>Servers of this tenant id: "+data_state.current_data.id
++"<br><pre><code class='json'>{}"+toJson(msg)+"</code></pre>" );
+  //                                                alert(toJson(msg));
+                                                   callback(null, data_state);
+                                              });
+                                              }, timeOut);
+                                          })
+                       
+
+                       .set_on_success(
+                           function(results, pipeline){
+                               $('#fn_transformation').html(" fin de foreach!");
+                           })
+                       .set_on_error(
+                           function(error, pipeline){
+                               alert("error"+toJson(error));});
                
+
 
 
                var pipeline1=new Pipeline("testing openstack api ")
                        .addTransformation("loading_content_please_wait", 
                                           function (data_state, callback){
-                                              // only for demo display result
-
+ 
+                                              $('#left').append("<h1 class='left_message'>Loading tenants, please wait ...</h1>");
                                               $.ajax({
                                                   type: "GET",
                                                   url: "http://localhost:3000/tenants",
                                                   headers: { "X-Auth-Token": "tokentoken" }
                                               }).done(function( msg ) {
-                                                  $('body').append( "<pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                                                  $('#content').prepend( "<h2>Loading tenants</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                                                  data_state.the_model=msg.tenants;
                                                    callback(null, data_state);
                                               });
-
-                                              data_state["state_step_loading_content_please_wait"].demo.data="display message to user loading content";
-                                              $('#left').append("<h1 id='loading'>Loading content, please wait ...</h1>");
                                              
                                           })
-                       .addTransformation("query_server_user_dashboard", 
-                                          function (data_state, callback){
-                                              setTimeout(function () {
-                                                  data_state.user_dashboard=json_data.user_data;
-                                                  // only for demo display result
-                                                  data_state["state_step_query_server_user_dashboard"].demo.data=data_state.user_dashboard;
-                                                  callback(null, data_state);
-                                              }, timeOut);
-                                          })
-                       .addTransformation("query_server_object_uri", 
-                                          function (data_state, callback){
-                                              setTimeout(function () {
-                                                  if(data_state.user_dashboard.uuri=="/object_test")
-                                                      data_state.object_data=json_data.test_objects;                                                      
-                                                  // only for demo display result
-                                                  data_state["state_step_query_server_object_uri"].demo.data=json_data.test_objects;
-                                                  data_state.the_model=json_data.test_objects.body.resources[0].header.children;
-                                                  callback(null, data_state);
-                                              }, timeOut);
-                                          })
-                     //  .addPipe(foreach_pipeline)
+                       
+                       
+                       // .addTransformation("testing user admin token", 
+                       //                    function (data_state, callback){
+                       //                        $('#left').append("<h1 class='left_message'>testing admin_token ...</h1>");
+                       //                        $.ajax({
+                       //                            type: "GET",
+                       //                            url: "http://localhost:3000/tokens/"+auth_token_user_demo,
+                       //                            headers: { "X-Auth-Token": "tokentoken" }
+                       //                        }).done(function( msg ) {
+                       //                            $('#content').prepend( "<h2>Testing admin token</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                       //                            callback(null, data_state);
+                       //                        });
+                       //                    })
+                       // .addPipe(foreach_pipeline)
                        .set_on_success(
                            function(results, pipeline){
                                $('#loading').fadeOut(1000, function(){
+                                   $('.left_message').remove();
                                    $('#loading')
                                        .html('The content is already loaded!')
                                        .css('background-color', 'yellow')
