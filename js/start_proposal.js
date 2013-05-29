@@ -51,11 +51,40 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/open_stack/show_user_tenant
                                            });
                                        });
                                });
-                           });
+                           }).apply_transformations(document.state);
                });
            };
 
+  // EOP
+           dispatcher.reset();
+           
+           // Filtering all tansformations ::: AOP 
+           dispatcher.reset_filters();
 
+           // filtering for timming
+           dispatcher.filter( function(data_state, callback){
+               var that=this;
+               setTimeout(function () {
+                   var history_message=that.transformation_event_type+"/"+
+                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
+                   if(contains(history_message, "state_step_"))
+                       history_message=" -------- "+history_message;
+                   $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
+
+                   callback(null, data_state);
+               }, 10);});
+
+           // filtering to demo display 
+           // dispatcher.filter( function(data_state, callback){
+           //     var that=this;
+           //     setTimeout(function () {
+           //         if(that.transformation_event_type=="ON_END"){
+           //             $('#proposal').append("DONE: <b>"+that.target.ns+".</b> In Time: "+that.target.diff+"<br>");                 
+           //             if(data_state[that.target.ns])
+           //                 $('#proposal').append("<span>"+toJson(data_state[that.target.ns].demo.data)+"</span><br><br>");                    
+           //         }
+           //         callback(null, data_state);
+           //     }, 10);});
            return result;
 
        });
