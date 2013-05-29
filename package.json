@@ -1,0 +1,15 @@
+{
+  "name": "js_tangram"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "jquery":"*",
+    "express":"*",
+    "restler":"*"
+  }
+  ,"engines": {
+    "node": "0.8.4",
+    "npm": "1.1.41"
+  }
+
+}
