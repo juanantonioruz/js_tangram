@@ -39,7 +39,7 @@ app.get('/', function(req, res) {
 app.post('/tokens', function(req, res){
   // res.send(req.body.s_user+":"+req.body.s_pw);    
 
-   rest.postJson('http://192.168.1.22:35357/v2.0/tokens',
+   rest.postJson('http://'+req.body.s_ip+':35357/v2.0/tokens',
             {"auth": {"passwordCredentials": {"username":req.body.s_user, "password":req.body.s_pw}}} ).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
@@ -54,7 +54,7 @@ app.post('/tokens', function(req, res){
 
 app.post('/tenants', function(req, res){
 
-    rest.get('http://192.168.1.22:5000/v2.0/tenants',
+    rest.get('http://'+req.body.s_ip+':5000/v2.0/tenants',
              {headers:{ "X-Auth-Token": req.body.token }}).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
@@ -69,7 +69,7 @@ app.post('/tenants', function(req, res){
 
 app.post('/endpoints', function(req, res){
 
-    rest.postJson('http://192.168.1.22:35357/v2.0/tokens',
+    rest.postJson('http://'+req.body.s_ip+':35357/v2.0/tokens',
             {"auth": {"passwordCredentials": {"username":req.body.s_user, "password":req.body.s_pw}, "tenantName":req.body.tenant_name}} ).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
@@ -81,7 +81,7 @@ app.post('/endpoints', function(req, res){
         }
     });
 });
-
+/*
 app.get('/tenant/:id', function(req, res){
 
     rest.get('http://192.168.1.22:35357/v2.0/tenants/'+req.params.id,
@@ -126,7 +126,7 @@ app.get('/tenant_servers/:id', function(req, res){
         }
     });
 });
-
+*/
 
     // $.ajax({
     //     type: "GET",
