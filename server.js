@@ -138,7 +138,10 @@ app.get('/tenant_servers/:id', function(req, res){
     //     // callback(null, data_state);
     // });
 
+var port = process.env.PORT || 3000;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
 
-app.listen(process.env.PORT || 3000);
 
-console.log('Server running at http://127.0.0.1:3000/');
+
