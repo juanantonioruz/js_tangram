@@ -57,31 +57,7 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
 
                $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP: <input type='text' id='stack_ip' value='192.168.1.22'><br> Stack User: <input type='text' id='stack_user' value='demo'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
 
-               function endpointsOnChangeSelect(dom_select_id, results ){
-                   return function (){
-                       var option_selected=$(dom_select_id+" option:selected").first();
-                       $('#suboptions').remove();
-                       var service_selected=option_selected.data("item");
-                       $('#register_form').append("<div id='suboptions'><h2>Currently available for: "+service_selected.name+" </h2><select id='suboptions_available'></select></div> ");
-                       if(service_selected.name=="glance"){
-                           $('#suboptions_available').append("<option>LIST IMAGES</option>");
-                           clean_interface();
-                           results.s_host=service_selected.endpoints[0].publicURL;
-
-                           
-                           document.state=results;
-
-                           show_glance_images
-                               .set_on_success(function(results, pipeline){alert("you are watching  the  images list");}).
-                               apply_transformations(document.state);
-                       };
-
-
-                   };
-               }
-               function show_tenant_endpoints_pipeline_fn(){
-                   
-               }
+              
 
                $('#stack_logging').on('click', function(){
 
@@ -94,26 +70,25 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
                    show_user_tenants_pipeline
                        .set_on_success(
                            function(results, pipeline){
-                               $('#register_form').empty();
-
-                               // --------------> NEXT PIPELINE!!!
-
-                               show_tenant_endpoints_pipeline
-                                   .set_on_success(
-                                       function(results, pipeline){
-                                           $('#register_form').empty();
-
-                                           function the_on_change_select_fn(select_dom_id){
-                                               return endpointsOnChangeSelect(select_dom_id, results);
-                                           }
 
 
 
-                                           show_fn_result_to_the_user_and_wait('Please select a service to use', 
-                                                                               show_dom_select("#endpoints", "#register_form", results.service_catalog_select,  the_on_change_select_fn, true));
+                               // show_tenant_endpoints_pipeline
+                               //     .set_on_success(
+                               //         function(results, pipeline){
+                               //             $('#register_form').empty();
 
-                                       })
-                                   .apply_transformations(results);
+                               //             function the_on_change_select_fn(select_dom_id){
+                               //                 return endpointsOnChangeSelect(select_dom_id, results);
+                               //             }
+
+
+
+                               //             show_fn_result_to_the_user_and_wait('Please select a service to use', 
+                               //                                                 show_dom_select("#endpoints", "#register_form", results.service_catalog_select,  the_on_change_select_fn, true));
+
+                               //         })
+                               //     .apply_transformations(results);
 
 
 
@@ -133,10 +108,11 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
                setTimeout(function () {
                    var history_message=that.transformation_event_type+"/"+
                            that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
-                   if(contains(history_message, "state_step_"))
+                   if(contains(history_message, "state_step_")){
                        history_message=" -------- "+history_message;
-                   else if(that.transformation_event_type=="ON_END")
-                       clean_left_status_messages();
+                        if(that.transformation_event_type=="ON_END")
+                            $('.left_message').last().fadeOut(1000);
+                   }
                    else if(that.transformation_event_type=="ON_INIT")
                        clean_history();
 
