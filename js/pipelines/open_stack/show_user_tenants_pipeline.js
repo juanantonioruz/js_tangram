@@ -30,9 +30,9 @@ define(["js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js"
                                           }).done(function( msg ) {
                                               if(!msg.error){
 
-                                                  data_state.tenants=[];
+                                                  data_state.tenants_select=[];
                                                  msg.tenants.map(function(item){
-                                                  data_state.tenants.push(item.name);
+                                                  data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
                                                   });
                                                   $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
                                                   callback(null, data_state);

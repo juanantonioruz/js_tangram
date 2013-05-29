@@ -47,7 +47,7 @@ app.post('/tokens', function(req, res){
             //            this.retry(5000); // try again after 5 sec
         } else {
             res.send(result);
-            sys.puts("NO communication ERROR: "+toJson(result));
+    //        sys.puts("NO communication ERROR: "+toJson(result));
         }
     });
 });
@@ -62,7 +62,7 @@ app.post('/tenants', function(req, res){
             //            this.retry(5000); // try again after 5 sec
         } else {
             res.send(result);
-            sys.puts(toJson(result));
+         //   sys.puts(toJson(result));
         }
     });
 });
@@ -77,10 +77,26 @@ app.post('/endpoints', function(req, res){
             //            this.retry(5000); // try again after 5 sec
         } else {
             res.send(result);
-            sys.puts("NO communication ERROR: "+toJson(result));
+          //  sys.puts("NO communication ERROR: "+toJson(result));
         }
     });
 });
+app.post('/glance/list_images', function(req, res){
+
+      rest.get('http://'+req.body.s_host+'/v2.0/images',
+             {headers:{ "X-Auth-Token": req.body.token }}).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+//            sys.puts(toJson(result));
+        }
+    });
+
+});
+
 /*
 app.get('/tenant/:id', function(req, res){
 
