@@ -61,9 +61,11 @@ define(["js/async.js"], function(async) {
                             var compose=  new Pipeline("pipeline_compose!")
                                     .set_on_success(function(res, pipeline){callback();})
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
-
-                            syncq.map(function(o){compose.addPipe(o.pipeline);});
-                            compose.apply_transformations(data_state);                        
+                            // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
+                            syncq.map(function(o){compose.addPipe($.extend(true, {}, o.pipeline));});
+                            
+                            compose.apply_transformations(data_state);                   
+                            
                             
                         }else{
                             // there is no async pipelines so we continue the execution flow

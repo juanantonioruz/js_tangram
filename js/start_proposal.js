@@ -14,13 +14,14 @@ function clean_left_status_messages(){
 
 function clean_history(){
 
-    $('#history_status').empty();
+    $('#history_status').append("<hr>");
 
 }
 
 function show_dom_select(select_dom_id, the_dom_place_to_append_the_select, the_collection, the_on_change_select_fn, store_model_in_option){
-    return function(){
 
+    return function(){
+    $(select_dom_id).remove();
         $(the_dom_place_to_append_the_select).append("<select id='"+select_dom_id.replace('#', '')+"'></select>");
         $.each(the_collection, function(i, value){
             var option=$("<option value='"+value.hidden+"'>"+value.visible+"</option>");
@@ -44,8 +45,19 @@ function show_fn_result_to_the_user_and_wait(the_message, the_function){
                          );
 }
 
+function show_message_to_the_user(the_message){
+
+    $('#loading_results').html(the_message).css('background-color', 'aquamarine').fadeIn(500, function(){
+        $('#loading_results')
+            .fadeOut(2000);
+    }
+                         );
+}
+
+
+
 define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelines/open_stack/show_user_tenants_pipeline.js","js/pipelines/open_stack/show_tenant_endpoints_pipeline.js","js/pipelines/open_stack/show_glance_images.js"],
-       function(dispatcher,  State,show_user_tenants_pipeline, show_tenant_endpoints_pipeline,show_glance_images) {
+       function(dispatcher,  State,pipelines, show_tenant_endpoints_pipeline,show_glance_images) {
 
            if(!document.state){
                document.state=State();
@@ -53,7 +65,7 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
 
            }
            var result=function(){
-               $('#left').append("<h1 id='loading'>openstack testing</h1>");
+
 
                $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP: <input type='text' id='stack_ip' value='192.168.1.22'><br> Stack User: <input type='text' id='stack_user' value='demo'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
 
@@ -67,38 +79,21 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
 
                    clean_interface();
 
-                   show_user_tenants_pipeline
-                       .set_on_success(
-                           function(results, pipeline){
-
-
-
-                               // show_tenant_endpoints_pipeline
-                               //     .set_on_success(
-                               //         function(results, pipeline){
-                               //             $('#register_form').empty();
-
-                               //             function the_on_change_select_fn(select_dom_id){
-                               //                 return endpointsOnChangeSelect(select_dom_id, results);
-                               //             }
-
-
-
-                               //             show_fn_result_to_the_user_and_wait('Please select a service to use', 
-                               //                                                 show_dom_select("#endpoints", "#register_form", results.service_catalog_select,  the_on_change_select_fn, true));
-
-                               //         })
-                               //     .apply_transformations(results);
-
-
-
-                           }).apply_transformations(document.state);
+                   pipelines.show_users
+                   .apply_transformations(document.state);
                });
            };
 
            // EOP
            dispatcher.reset();
-           
+
+           dispatcher.listen("ON_END", "pipeline_select_tenant_pipeline_for_current_user", pipelines.show_services,false);
+
+           dispatcher.listen("ON_END", "pipeline_select_service_pipeline_for_current_tenant", pipelines.show_operations,false);
+
+           dispatcher.listen("ON_END", "pipeline_show_available_operations", pipelines.load_operation,false);           
+
+
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();
 

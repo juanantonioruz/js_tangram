@@ -7,7 +7,9 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                    init: function(name,on_success, on_error) {
                        this.ns="pipeline_"+name;
                        this.future_state_steps=[];
+                       if(on_success)
                        this.on_success=on_success;
+                       if(on_error)
                        this.on_error=on_error;
                        return this;
                    },
@@ -40,7 +42,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        recordDiff(this);
                        recordDiff(data_state);
                        this.after_data_state=$.extend(true, {}, data_state);
-                           dispatcher.dispatch("ON_END",this,  data_state, callback);
+                       dispatcher.dispatch("ON_END",this,  data_state, callback);
                    },
                    on_init:function(data_state, callback){
                        recordStart(this);
@@ -128,7 +130,13 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
 
                };
            });
-
+           Pipeline.prototype.on_success=   function(error, pipeline){
+               //alert("success"+toJson(error));
+           };
+           Pipeline.prototype.on_error=   function(error, pipeline){
+               alert("error"+toJson(error));
+           };
+           
            return Pipeline;
            
        });

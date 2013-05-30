@@ -81,9 +81,9 @@ app.post('/endpoints', function(req, res){
         }
     });
 });
-app.post('/glance/list_images', function(req, res){
-
-      rest.get('http://'+req.body.s_host+'/v2.0/images',
+app.post('/operations', function(req, res){
+sys.puts('**************** http://'+req.body.s_host+req.body.s_url);
+      rest.get('http://'+req.body.s_host+req.body.s_url,
              {headers:{ "X-Auth-Token": req.body.token }}).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
