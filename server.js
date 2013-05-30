@@ -81,6 +81,22 @@ app.post('/endpoints', function(req, res){
         }
     });
 });
+
+app.post('/create_server', function(req, res){
+    sys.puts(toJson(req.body));
+    rest.postJson(req.body.endpoint+'/servers',
+            {"server": {"name": req.body.server_name, "flavorRef":req.body.flavorRef, "imageRef":req.body.imageRef}},{headers:{ "X-Auth-Token": req.body.token }} ).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+          //  sys.puts("NO communication ERROR: "+toJson(result));
+        }
+    });
+});
+
 app.post('/operations', function(req, res){
 sys.puts('**************** http://'+req.body.s_host+req.body.s_url);
       rest.get('http://'+req.body.s_host+req.body.s_url,
