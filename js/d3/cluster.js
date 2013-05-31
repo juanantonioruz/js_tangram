@@ -41,24 +41,32 @@ define( function() {
                 
                 .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
+        
         node.append("circle")
             .attr("r", radio)
+
+            .attr("opacity", function(d){return (d.data_displayed.type!="folder")?100:0;})
+            .attr("fill", function(d){return (d.selected)?"red":"blue";})
             .on("click", function(d,i){
                 var that=this;
                 
-
-                
                 var selection=d3.select(this);
                 show_message_to_the_user(d.data_displayed.type);
-                  on_success_callback();
-                selection.transition().duration(500).style("fill", "blue").attr("r", radio_max);
+                d.selected = !d.selected;
+
+                if(d.selected)
+                data_state[d.data_displayed.type+"_selected"]=d.data_displayed.data.href;
+                var color=(d.selected)?"red":"blue";
+                selection.transition().duration(500).style("fill", color).attr("r", radio_max);
+               // this works if we translate the decisions to the d3 interface  on_success_callback();
             })
             .on("mouseout", function(d,i){
                 var that=this;
+                var color=(d.selected)?"red":"blue";
 
                 var selection= d3.select(this);
                 if(selection.attr("r")>100){
-                    d3.select(this).transition().duration(500).style("fill", "black").attr("r", radio);
+                    d3.select(this).transition().duration(500).style("fill", color).attr("r", radio) ;
                 }
             })
         ;

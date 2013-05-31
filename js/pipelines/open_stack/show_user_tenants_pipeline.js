@@ -211,17 +211,24 @@ define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipeline
                                               $('#server_name').keypress( function(e){
                                                   if(e.which==13){
                                                   data_state.server_name=$('#server_name').val();
+                                                      if(data_state.flavor_selected && data_state.image_selected)
                                                   callback(null, data_state);
+                                                      else
+                                                          alert("select first and image and flavor to create this server");
+                                                      }else{
+
+                                                         
                                                       }
                                               });
                    })
                    .addTransformation("create_server_call", function (data_state, callback){
+                       
                        var data_operation=data_state.data_operation;
                        $('#left').append("<h1 class='left_message'>Finally , we are creating the server,   please wait ...</h1>");
                        $.ajax({
                            type: "POST",
                            url: "http://"+data_state.host+"/create_server",
-                           data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.nova_endpoint_url, imageRef:data_state.nova_images.images[0].links[0].href, flavorRef:data_state.nova_flavors.flavors[0].links[0].href}
+                           data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.nova_endpoint_url, imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected}
                        }).done(function( msg ) {
                            if(!msg.error){
 
@@ -267,11 +274,26 @@ results.nova_flavors.flavors[0].links[0].href);
            });
 
 
-   var d3_show_images=new Pipeline("d3_show_images")
+   var d3_show_images_and_flavors_pipeline=new Pipeline("d3_show_images_and_flavors")
            .addTransformation("d3_show_images", function(data_state, callback){
-//              alert(toJson(data_state.d3_open_stack));
-//               alert(toJson(data_state.tenants_select));
-               data_state.d3_open_stack.children[0].children.push(create_node("tenantsass", create_data("foldermoree", {name:"tenantsmoreee"})));
+               var images_node=create_node("images", create_data("folder", {name:"images"}));
+            
+               data_state.nova_images.images.map(function(item){
+                   images_node.children.push(
+                       create_node(item.name, create_data("image", {"href":item.links[0].href}
+                                                          )));
+               });
+               function get_tenant(collection, key, searching){
+                  
+                   for(var i=0; i<collection.length; i++){
+                       var interior=collection[i];
+                       if(interior[key]==searching)
+                           return interior;
+                           }
+
+                   throw "tentant dont find";
+               };
+                   get_tenant(data_state.d3_open_stack.children[0].children, "name", data_state.tenant_name).children.push(images_node);               
 
                function on_success_callback(){
                    callback(null, data_state);
@@ -279,10 +301,42 @@ results.nova_flavors.flavors[0].links[0].href);
 
                d3_cluster($.extend(true, {}, data_state.d3_open_stack),
 data_state, on_success_callback);
+               //TODO remove if we need selection
+                 callback(null, data_state);
+               
+           })
+           .addTransformation("d3_show_flavors", function(data_state, callback){
+               var flavors_node=create_node("flavors", create_data("folder", {name:"flavors"}));
+            
+               data_state.nova_flavors.flavors.map(function(item){
+                   flavors_node.children.push(
+                       create_node(item.name, create_data("flavor", 
+                                                          {href:item.links[0].href})));
+               });
+               function get_tenant(collection, key, searching){
+                  
+                   for(var i=0; i<collection.length; i++){
+                       var interior=collection[i];
+                       if(interior[key]==searching)
+                           return interior;
+                           }
+
+                   throw "tentant dont find";
+               };
+                   get_tenant(data_state.d3_open_stack.children[0].children, "name", data_state.tenant_name).children.push(flavors_node);               
+
+               function on_success_callback(){
+                   callback(null, data_state);
+               }
+
+               d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+data_state, on_success_callback);
+               //TODO remove if we need selection
+                 callback(null, data_state);
                
            });
 
-           return {d3_show_tenants:d3_show_tenants, d3_show_images:d3_show_images, create_server:pipeline_server,show_users:pipeline1, show_services:pipeline_show_services, show_operations:pipeline3, load_operation:pipeline4};
+           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, create_server:pipeline_server,show_users:pipeline1, show_services:pipeline_show_services, show_operations:pipeline3, load_operation:pipeline4};
 
        });
 

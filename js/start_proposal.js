@@ -160,7 +160,7 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
 
            // d3js hooks, running in parallel! last parameter:true!
            dispatcher.listen("ON_INIT", "state_step_create_server_show_select_tenants", pipelines.d3_show_tenants,true);   
-           dispatcher.listen("ON_END", "state_step_create_server_load_nova_images", pipelines.d3_show_images,true);                   
+           dispatcher.listen("ON_INIT", "state_step_create_server_wait_for_the_name", pipelines.d3_show_images_and_flavors,true);                   
 
 
 
