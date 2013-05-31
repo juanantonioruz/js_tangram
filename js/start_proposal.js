@@ -1,6 +1,14 @@
 require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
+// d3 related functions
+function create_node(the_name, data){
+    return {name:the_name, children:[], data_displayed:data};
+};
+
+function create_data(type, data){
+    return {type:type, data:data};
+}
 function clean_interface(){
     $('#content').empty();
 
@@ -57,11 +65,11 @@ function show_message_to_the_user(the_message){
 
 
 define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelines/open_stack/show_user_tenants_pipeline.js","js/pipelines/pipeline_type.js"],
-       function(dispatcher,  State, pipelines, Pipeline) {
+       function( dispatcher,  State, pipelines, Pipeline) {
 
            var data_state=State();
            data_state.host=document.location.host;
-
+           data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
 
            var result=function(){
 
@@ -90,28 +98,27 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
                                                   data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
                                               }).done(function( msg ) {
                                                   if(!msg.error){
-
                                                       data_state.token_id=msg.access.token.id;
                                                       $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
-                                             
+                                                      
                                                       $('#register_form').fadeOut(500).empty().fadeIn();
                                                       show_fn_result_to_the_user_and_wait("you are logged now!, please select an option: ", 
-                                                      function(){
-                                                          
-                                                          $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div>").fadeIn(100, function(){
-                                                              show_dom_select("#init_filter", "#actions_available", [{visible:"create server", hidden:"create_server"}, {visible:"listing resources", hidden:"listing_resources"}], 
-                                                                              function(select_dom_id){ 
-                                                                                  return function(){
-                                                                                      var selected=$(select_dom_id+" option:selected").first().val();
-                                                                                      data_state.action_selected=selected;
-                                                                                      show_message_to_the_user("action selected: "+selected);
-                                                                                      $('#actions_available').fadeOut();
-                                                                                      callback(null, data_state);
-                                                                                  };
-                                                                              })();
-                                                          });
+                                                                                          function(){
+                                                                                              
+                                                                                              $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div>").fadeIn(100, function(){
+                                                                                                  show_dom_select("#init_filter", "#actions_available", [{visible:"create server", hidden:"create_server"}, {visible:"listing resources", hidden:"listing_resources"}], 
+                                                                                                                  function(select_dom_id){ 
+                                                                                                                      return function(){
+                                                                                                                          var selected=$(select_dom_id+" option:selected").first().val();
+                                                                                                                          data_state.action_selected=selected;
+                                                                                                                          show_message_to_the_user("action selected: "+selected);
+                                                                                                                          $('#actions_available').fadeOut();
+                                                                                                                          callback(null, data_state);
+                                                                                                                      };
+                                                                                                                  })();
+                                                                                              });
 
-                                                      });
+                                                                                          });
                                                       
                                                   }else{
                                                       $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
@@ -125,10 +132,10 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
                                clean_interface();
                                pipelines.show_users
                                    .apply_transformations(results);
-                               }else{
-                                   pipelines.create_server
+                           }else{
+                               pipelines.create_server
                                    .apply_transformations(results);
-                               }
+                           }
                        })
 
                        .apply_transformations(data_state);
@@ -148,7 +155,13 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
            dispatcher.listen("ON_END", "pipeline_select_service_pipeline_for_current_tenant", pipelines.show_operations,false);
 
            dispatcher.listen("ON_END", "pipeline_show_available_operations", pipelines.load_operation,false);           
+           
 
+
+
+
+           dispatcher.listen("ON_INIT", "state_step_show_select_tenant", 
+                             pipelines.d3_cluster,true);           
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();

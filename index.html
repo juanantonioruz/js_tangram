@@ -8,6 +8,7 @@
     href="css/no-theme/jquery-ui-1.10.3.custom.min.css" / -->
     <link rel="stylesheet" href="styles/default.css">
 
+    <script  src="js/d3.js" ></script>
     <script  src="js/highlight.pack.js" ></script>
     <script  src="js/jquery-1.9.1.min.js" ></script>
     <script src="js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -50,10 +51,29 @@
       padding-left: 0.8em; 
 //      list-style: none; 
       }
+
+//D3JS
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
     </style>
   </head>
 
   <body >
+<div class='chart' id='chart'>
+</div>
 You can select one: <a href='?dev=true'>dev examples</a> or <a href='?proposal=true'>proposal</a>
     <div id="input_user" >
     </div>

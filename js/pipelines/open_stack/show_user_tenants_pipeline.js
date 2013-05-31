@@ -1,5 +1,5 @@
-define(["js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js"],
-       function(Foreach_Pipeline,Pipeline) {
+define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js"],
+       function(d3_cluster, Foreach_Pipeline,Pipeline) {
 
            var loading_operation_fn=function (data_state, callback){
                var data_operation=data_state.data_operation;
@@ -121,9 +121,6 @@ define(["js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js"
                                      );
            
            
-           
-
-           
            var loading_tenants_fn=function (data_state, callback){
                $.ajax({
                    type: "POST",
@@ -244,10 +241,40 @@ results.nova_flavors.flavors[0].links[0].href);
                    })
            ;
 
-           return {create_server:pipeline_server,show_users:pipeline1, show_services:pipeline2, show_operations:pipeline3, load_operation:pipeline4};
+
+
+           var d3_pipeline=new Pipeline("d3_pipeline")
+           .addTransformation("render_d3_cluster", function(data_state, callback){
+               // var open_stack={
+               //     "name": "flare",
+               //     "children": [
+               //         {
+               //             ... repeat parent/children schema
+               //          }]
+               // };
+              
+
+               var tenants=create_node("tenants", create_data("folder", {name:"tenants"}));
+               data_state.tenants_select.map(function(item){
+                   tenants.children.push(create_node(item.visible, create_data("tenant", item)));
+               } );
+               
+
+               
+               data_state.d3_open_stack.children.push(tenants);
+
+
+               function on_success_callback(){
+                   callback(null, data_state);
+               }
+               d3_cluster(data_state.d3_open_stack, on_success_callback);
+               
+           });
+
+
+           return {d3_cluster:d3_pipeline,create_server:pipeline_server,show_users:pipeline1, show_services:pipeline2, show_operations:pipeline3, load_operation:pipeline4};
 
        });
-
 
 
 
