@@ -66,7 +66,6 @@ define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipeline
 
                    });
            
-
            var loading_endpoints_fn=function (data_state, callback){
                $('#left').append("<h1 class='left_message'>Loading endpoints for: "+data_state.tenant_name+"  please wait ...</h1>");
                $.ajax({
@@ -91,7 +90,7 @@ define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipeline
            };
 
 
-           var pipeline2=new Pipeline("select_service_pipeline_for_current_tenant")
+           var pipeline_show_services=new Pipeline("select_service_pipeline_for_current_tenant")
                    .addTransformation("Loading endpoints", 
                                       loading_endpoints_fn)
                    .addTransformation("show_select_endpoints", 
@@ -243,36 +242,47 @@ results.nova_flavors.flavors[0].links[0].href);
 
 
 
-           var d3_pipeline=new Pipeline("d3_pipeline")
-           .addTransformation("render_d3_cluster", function(data_state, callback){
-               // var open_stack={
-               //     "name": "flare",
-               //     "children": [
-               //         {
-               //             ... repeat parent/children schema
-               //          }]
-               // };
+           var d3_show_tenants=new Pipeline("d3_show_tenants")
+           .addTransformation("d3_show_tenants", function(data_state, callback){
               
 
                var tenants=create_node("tenants", create_data("folder", {name:"tenants"}));
                data_state.tenants_select.map(function(item){
-                   tenants.children.push(create_node(item.visible, create_data("tenant", item)));
+                   tenants.children.push(create_node(item.visible, create_data("tenant", {})));
                } );
                
 
-               
-               data_state.d3_open_stack.children.push(tenants);
-
-
+               //  alert("here i am: "+toJson(data_state.d3_open_stack));
+            data_state.d3_open_stack.children.push(tenants);
+         
                function on_success_callback(){
                    callback(null, data_state);
                }
-               d3_cluster(data_state.d3_open_stack, on_success_callback);
+
+               d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+                          data_state, on_success_callback);
+               // this line uncommented means that the user is using the select dropmenu to select the tenant, otherwise we have to useon_success_callback and wait to be called from d3 interface
+      callback(null, data_state);
                
            });
 
 
-           return {d3_cluster:d3_pipeline,create_server:pipeline_server,show_users:pipeline1, show_services:pipeline2, show_operations:pipeline3, load_operation:pipeline4};
+   var d3_show_images=new Pipeline("d3_show_images")
+           .addTransformation("d3_show_images", function(data_state, callback){
+//              alert(toJson(data_state.d3_open_stack));
+//               alert(toJson(data_state.tenants_select));
+               data_state.d3_open_stack.children[0].children.push(create_node("tenantsass", create_data("foldermoree", {name:"tenantsmoreee"})));
+
+               function on_success_callback(){
+                   callback(null, data_state);
+               }
+
+               d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+data_state, on_success_callback);
+               
+           });
+
+           return {d3_show_tenants:d3_show_tenants, d3_show_images:d3_show_images, create_server:pipeline_server,show_users:pipeline1, show_services:pipeline_show_services, show_operations:pipeline3, load_operation:pipeline4};
 
        });
 

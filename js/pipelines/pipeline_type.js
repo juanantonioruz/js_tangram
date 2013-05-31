@@ -71,7 +71,8 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                       
 
                        function internal_call(){
-                           composition($.extend(true, {}, data_state),function(err, res){
+                           //removed $.extend(true, {}, data_state) usign instead data_state
+                           composition(data_state,function(err, res){
 
                            if(!err){
                                function callback(){

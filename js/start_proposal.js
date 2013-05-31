@@ -2,12 +2,12 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 // d3 related functions
-function create_node(the_name, data){
-    return {name:the_name, children:[], data_displayed:data};
+function create_node(the_name, _data){
+    return {name:the_name, children:[], data_displayed:_data};
 };
 
-function create_data(type, data){
-    return {type:type, data:data};
+function create_data(_type, _data){
+    return {type:_type, data:_data};
 }
 function clean_interface(){
     $('#content').empty();
@@ -155,13 +155,14 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
            dispatcher.listen("ON_END", "pipeline_select_service_pipeline_for_current_tenant", pipelines.show_operations,false);
 
            dispatcher.listen("ON_END", "pipeline_show_available_operations", pipelines.load_operation,false);           
-           
 
 
 
+           // d3js hooks, running in parallel! last parameter:true!
+           dispatcher.listen("ON_INIT", "state_step_create_server_show_select_tenants", pipelines.d3_show_tenants,true);   
+           dispatcher.listen("ON_END", "state_step_create_server_load_nova_images", pipelines.d3_show_images,true);                   
 
-           dispatcher.listen("ON_INIT", "state_step_show_select_tenant", 
-                             pipelines.d3_cluster,true);           
+
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();
