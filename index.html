@@ -17,6 +17,16 @@
     <script>
 
    
+// d3 related functions
+function create_node(the_name, _data){
+    return {name:the_name,ns:the_name, children:[], data_displayed:_data};
+};
+
+function create_data(_type, _data){
+    return {type:_type, data:_data};
+}
+
+
       function toJson(o){
       return JSON.stringify(o, null, 4);
       };
@@ -84,7 +94,9 @@ You can select one: <a href='?dev=true'>dev examples</a> or <a href='?proposal=t
         <div id="loading_results" style="padding:4px;margin-bottom:5px;"></div>
         <div id="event_history"></div></div>
       <div id="right">
-        
+        <div class='chart_history' id='chart_history'>
+        </div>
+
         <div id="logging" style="font-size:12px;">
           <ul id="history_status"></ul>
 </div></div>

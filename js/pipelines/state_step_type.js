@@ -15,10 +15,14 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
                        recordDiff(this);
                        recordDiff(this.after_data_state);
                        recordDiff(data_state);
+                       this.pipeline.step_count++;
+                       this.pipeline.steps_done.push({ns:this.ns, data_transformation:this.after_data_state});
                        dispatcher.dispatch("ON_END",this,  data_state, callback);
                    },
 
                    on_init:function(data_state, callback){
+                       
+                       console.log("this.name: "+this.ns+" pipeline: "+this.pipeline.ns+" step_count: "+this.pipeline.step_count  );
                        this.before_data_state=$.extend(true, {}, data_state);
                        data_state[this.ns]={demo:{}};
                        recordStart(this);
@@ -41,6 +45,7 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
                            }
                            that.transform_fn(data_state, internal_extended_callback);
                        };
+
                        this.on_init(data_state, internal_call);
                    }
                };

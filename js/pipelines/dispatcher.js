@@ -58,7 +58,7 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
 
-                            var compose=  new Pipeline("pipeline_compose!")
+                            var compose=  new Pipeline("sync_pipeline_compose!")
                                     .set_on_success(function(res, pipeline){callback();})
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 

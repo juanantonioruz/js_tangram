@@ -2,9 +2,9 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js"],
-       function(app_data, json_data, dispatcher, Pipeline, display, async) {
-
+define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
+       function(State, json_data, dispatcher, Pipeline, display, async, history_cluster) {
+           var app_data=State();
            // console.log(toJson(json_data));
            dispatcher.Pipeline=Pipeline;
 
@@ -53,9 +53,11 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
 
                pipeline.getSteps().map(
                    function(step){
+                       
                        display.jqueryIterateAndDisplayHistoryStep("#left", step.ns, step,  "history");
                    }
                );
+
                display.jqueryIterateAndDisplayHistoryStep("#center", pipeline.ns, pipeline, "history");
 
            };
@@ -75,45 +77,52 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
 
 
            function good_morning_and_good_afternoon_transformations_in_pipeline(){
-               return  new Pipeline("pipeline1")
+               return  new Pipeline("good_morning_and_noon")
                    .addTransformation("Good_Morning", good_morning_fn)
                    .addTransformation("Good_Afternoon", good_afternoon_fn);
 
            }
 
            function good_night_transformation_in_pipeline(){
-               return  new Pipeline("pipeline2")
+               return  new Pipeline("good_night")
                    .addTransformation("Good_Night", good_night_fn);
 
            }
 
+           function init_history(first){
+               app_data.history=[];
+               app_data.history.push(first);
+               return app_data;
+           }
+
            function apply_good_morning_and_good_afternoon_pipeline(){
                clean_out();
-               app_data.initial_state= {history:["wake up!"]};
                var  on_success_apply_good_morning_and_good_afternoon_pipeline=function(res, pipeline){
+                   
                    on_success(res, pipeline); 
-                   app_data.initial_state=res;
+                   console.dir(res);
                    $('#start_pipeline').prop("value", "good_night!").off('click').click(apply_good_night_transformation_in_pipeline);};
 
                good_morning_and_good_afternoon_transformations_in_pipeline()
                    .set_on_success(on_success_apply_good_morning_and_good_afternoon_pipeline)
                    .set_on_error(on_error)
-                   .apply_transformations(app_data.initial_state);
+                   .apply_transformations(init_history("wake up!"));
            }
 
            function apply_good_night_transformation_in_pipeline(){
                clean_out();
                function on_success_bis(res, pipeline){
                    on_success(res, pipeline); 
+                   console.dir(res);
 
-                   app_data.initial_state= {history:["wake up!"]};
+//                   app_data.initial_state= {history:["wake up!"]};
 
                    $('#start_pipeline').prop("value", "start day and noon!").off('click').click(apply_good_morning_and_good_afternoon_pipeline);
                };
 
 
                good_night_transformation_in_pipeline().set_on_success(on_success_bis).set_on_error(on_error)
-                   .apply_transformations(app_data.initial_state);
+                   .apply_transformations(app_data);
            }
            function get_alert(message){
                return function(res, pipeline){
@@ -126,7 +135,7 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
            var  on_success_pipe=function(message){
                return function(res, pipeline){
                    on_success(res, pipeline); 
-                   get_alert(message);
+                //   get_alert(message);
                    
                };};
 
@@ -137,14 +146,14 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
                var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(on_success_pipe("success11111")).set_on_error(get_alert("error 1"));
                var pipe_2=good_night_transformation_in_pipeline().set_on_success(on_success_pipe("success222")).set_on_error(get_alert("error 2"));
 
-               var compose=  new Pipeline("pipeline_compose!")
+               var compose=  new Pipeline("day_and_night!")
                        .set_on_success(get_alert("success::: composing"))
                        .set_on_error(get_alert("error on composing"));
 
                compose.addPipe(pipe_1).addPipe(pipe_2);
                //                    .addPipe(pipe_1).addPipe(pipe_2);
                
-               compose.apply_transformations({history:["composing history!!"]});
+               compose.apply_transformations(init_history("composing day and night"));
                
 
            }
@@ -159,25 +168,28 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
                        .addTransformation("i_am_the_slowest", the_slower_fn)
                        .set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
 
-               dispatcher.listen("ON_INIT","pipeline_pipeline1",  pipe_listener, true);
-               pipe_1.apply_transformations({history:["testing async"]});
+               dispatcher.listen("ON_INIT","pipeline_good_morning_and_noon",  pipe_listener, true);
+               pipe_1.apply_transformations(init_history("parallel_listener"));
            };
 
            function  apply_pipeline_with_listener_to_run_pipeline_synchronous(){
                clean_out();
                
-               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(on_success_pipe("success11111")).set_on_error(get_alert("error 1"));
-               var pipe_listener=new Pipeline("pipelineListen")
-                       .addTransformation("i_am_the_slowest", the_slower_fn).set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
+               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline();
+               var pipe_listener=new Pipeline("sync_listener")
+                       .addTransformation("i_am_the_slowest", the_slower_fn)
+                       .set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
+
+               dispatcher.listen("ON_INIT","pipeline_good_morning_and_noon",  pipe_listener, false);
 
                var pipe_listener2=new Pipeline("pipelineListen2")
-                       .addTransformation("i_am_the_slowest", the_slower_fn).set_on_success(on_success_pipe("successlistenter2")).set_on_error(get_alert("error  listener"));
+                       .addTransformation("i_am_the_slowestTT", the_slower_fn).set_on_success(on_success_pipe("successlistenter2")).set_on_error(get_alert("error  listener"));
 
-               dispatcher.listen("ON_INIT","pipeline_pipeline1",  pipe_listener2, false);
+               dispatcher.listen("ON_INIT","pipeline_good_morning_and_noon",  pipe_listener2, false);
 
-               dispatcher.listen("ON_INIT","pipeline_pipeline1",  pipe_listener, false);
 
-               pipe_1.apply_transformations({history:["testing sync"]});
+               pipe_1.set_on_success(on_success_pipe("success good morning and noon"));
+               pipe_1.apply_transformations(init_history("sync_listener"));
            };
 
            function init_display(){
@@ -197,12 +209,28 @@ define(["js/pipelines/app_data.js", "js/pipelines/json_data.js", "js/pipelines/d
 
                dispatcher.filter( function(data_state, callback){
                    var that=this;
+                   
                    setTimeout(function () {
                        var history_message=that.transformation_event_type+"/"+
                                that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
                        if(contains(history_message, "state_step_"))
                            history_message=" -------- "+history_message;
+                       else
+                           if (that.transformation_event_type=="ON_END"){
+                           if(data_state.process_history){
 
+                               var root=create_node("root", create_data("root", {name:"root"}));
+                               root.children=data_state.active_pipelines;
+                               // data_state.process_history.map(function(item){
+                               //     root.children.push(create_node(item.ns, create_data("pipeline", {})));
+                               // });
+                               
+                               history_cluster(data_state);
+
+                           }
+                       }else{
+                           
+                       }
                        $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
 
                        callback(null, data_state);

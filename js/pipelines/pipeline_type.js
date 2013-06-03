@@ -5,12 +5,17 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
            var Pipeline=Fiber.extend(function(){
                return  {
                    init: function(name,on_success, on_error) {
+                       this.step_count=0;
                        this.ns="pipeline_"+name;
                        this.future_state_steps=[];
+                       this.steps_done=[];
                        if(on_success)
                        this.on_success=on_success;
                        if(on_error)
                        this.on_error=on_error;
+
+                       this.children=[];
+
                        return this;
                    },
                    // this method to add statesteps
@@ -24,7 +29,6 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        this.future_state_steps.push(pipe);
                        return this;
                    },
-
 
                    getStateStep:function(ns){
                        for(var i=0 ; i<this.future_state_steps.length; i++){
@@ -42,12 +46,27 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        recordDiff(this);
                        recordDiff(data_state);
                        this.after_data_state=$.extend(true, {}, data_state);
+                       // trying to track global history
+                       var index=data_state.active_pipelines.indexOf(this);
+                       console.log(index+" en data_state.active_pipelines.lengt: "+data_state.active_pipelines.length);
+                       var result=data_state.active_pipelines.splice(index, 1)[0];
+                       var active_length=data_state.active_pipelines.length;
+                       console.log(" after splice: "+active_length);        
+
+                       if(active_length)
+                           data_state.active_pipelines[active_length-1].children.push(result);
+                       else
+                           data_state.children.push(result);
                        dispatcher.dispatch("ON_END",this,  data_state, callback);
+                       
                    },
                    on_init:function(data_state, callback){
                        recordStart(this);
                        recordStart(data_state);
                        this.before_data_state=$.extend(true, {}, data_state);
+                       
+                       data_state.active_pipelines.push(this);
+
                       dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
                    set_on_success:function(fn){
@@ -58,12 +77,14 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        this.on_error=fn;
                        return this;
                    },
-                   
 
                    apply_transformations:function(data_state){
                        var that=this;
+
+
                        // this function composition use the method transform of each statestep in the context of each step (bind) ...
                        var composition=async.compose.apply(null, this.getSteps().map(function(o){
+                           o.pipeline=that;
                            return o.transform.bind(o);
                        }));
 

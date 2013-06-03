@@ -1,14 +1,6 @@
 require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
-// d3 related functions
-function create_node(the_name, _data){
-    return {name:the_name, children:[], data_displayed:_data};
-};
-
-function create_data(_type, _data){
-    return {type:_type, data:_data};
-}
 function clean_interface(){
     $('#content').empty();
 
@@ -172,7 +164,7 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
                var that=this;
                setTimeout(function () {
                    var history_message=that.transformation_event_type+"/"+
-                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
+                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+" ms":" ... timing ..." );
                    if(contains(history_message, "state_step_")){
                        history_message=" -------- "+history_message;
                        if(that.transformation_event_type=="ON_END")
@@ -180,7 +172,6 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
                    }
                    else if(that.transformation_event_type=="ON_INIT")
                        clean_history();
-
 
                    $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
 
