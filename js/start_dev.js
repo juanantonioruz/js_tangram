@@ -2,8 +2,8 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
-       function(State, json_data, dispatcher, Pipeline, display, async, history_cluster) {
+define(["js/filters.js", "js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
+       function(filters, State, json_data, dispatcher, Pipeline, display, async, history_cluster) {
            var app_data=State();
            // console.log(toJson(json_data));
            dispatcher.Pipeline=Pipeline;
@@ -228,7 +228,7 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
                                 );
 
            // debug_pipelines defined on index.html
-           dispatcher.filter(debug_pipelines(history_cluster, "#pipelines"));
+           dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));
 
 
            }
