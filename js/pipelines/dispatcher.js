@@ -50,6 +50,8 @@ define(["js/async.js"], function(async) {
                             //running in parallel
                             // here we can have problems with mutable data_state in async
 
+                            o.pipeline.parallel=true;
+
                             o.pipeline.apply_transformations(data_state);
                         });
 

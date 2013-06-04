@@ -38,15 +38,17 @@ return function (data_state, callback){
                            this.target.active_parent=data_state.active_pipelines[data_state.active_pipelines.length-1];
                        else
                            this.target.active_parent=data_state;
-
+if(!this.target.parallel)
                        data_state.active_pipelines.push(this.target);
 
 
                    }else{
+
+if(!this.target.parallel){
                        var index=data_state.active_pipelines.indexOf(this.target);
 
                        data_state.active_pipelines.splice(index, 1);
-
+}
                        this.target.active_parent.children.push(this.target);
 
                        // display results

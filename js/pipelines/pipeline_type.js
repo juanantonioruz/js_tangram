@@ -15,7 +15,8 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        this.on_error=on_error;
 
                        this.children=[];
-
+                       // default synchronous behavior
+                       this.parallel=false;
                        return this;
                    },
                    // this method to add statesteps
