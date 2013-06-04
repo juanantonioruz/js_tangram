@@ -15,11 +15,11 @@ define( function() {
 
 
 
-    function render(root){
+    function render(root, div_id){
 
-        $('#chart').empty();
-        $('#chart').hide();
-        var svg = d3.select("#chart").append("svg")
+        $(div_id).empty();
+        $(div_id).hide();
+        var svg = d3.select(div_id).append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
@@ -41,11 +41,10 @@ define( function() {
                 
                 .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-        
+        // pipelines and root
         node.append("circle")
+            .attr("display",function(d){ if(d.ns.indexOf("state_step_")>-1) return "visible"; return "none";})
             .attr("r", radio)
-
-         
             .attr("fill","red")
         ;
 
@@ -53,10 +52,10 @@ define( function() {
             .attr("dx", function(d) { return d.children ? -8 : 8; })
             .attr("dy", 3)
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-            .text(function(d) { return d.ns; });
+            .text(function(d) { return d.ns.replace("pipeline_", "").replace("state_step_", ""); });
 
         d3.select(self.frameElement).style("height", height + "px");        
-        $('#chart').fadeIn(1000, function(){
+        $(div_id).fadeIn(1000, function(){
 
                
         });

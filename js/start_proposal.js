@@ -56,8 +56,8 @@ function show_message_to_the_user(the_message){
 
 
 
-define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelines/open_stack/show_user_tenants_pipeline.js","js/pipelines/pipeline_type.js"],
-       function( dispatcher,  State, pipelines, Pipeline) {
+define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelines/open_stack/show_user_tenants_pipeline.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
+       function( dispatcher,  State, pipelines, Pipeline, history_cluster) {
 
            var data_state=State();
            data_state.host=document.location.host;
@@ -161,22 +161,34 @@ define([ "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelin
 
            // filtering for timming
            dispatcher.filter( function(data_state, callback){
-               var that=this;
-               setTimeout(function () {
-                   var history_message=that.transformation_event_type+"/"+
-                           that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+" ms":" ... timing ..." );
+       
+
+                   var history_message=this.transformation_event_type+"/"+
+                           this.target.ns+((this.transformation_event_type=="ON_END")? " finished in "+this.target.diff+" ms":" ... timing ..." );
                    if(contains(history_message, "state_step_")){
                        history_message=" -------- "+history_message;
-                       if(that.transformation_event_type=="ON_END")
+                       if(this.transformation_event_type=="ON_END")
                            $('.left_message').last().fadeOut(200, function(){ $('.left_message').last().remove();});
-                   }
-                   else if(that.transformation_event_type=="ON_INIT")
+                   }else{
+                    if(this.transformation_event_type=="ON_INIT"){
                        clean_history();
+                    }else{
 
+                             
+
+                    }
+                   }
+                   
                    $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
 
                    callback(null, data_state);
-               }, 10);});
+
+});
+
+           
+           // debug_pipelines defined on index.html
+
+           dispatcher.filter(debug_pipelines(history_cluster, "#pipelines"));
 
            // filtering to demo display 
            // dispatcher.filter( function(data_state, callback){

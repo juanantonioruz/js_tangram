@@ -100,7 +100,7 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
                var  on_success_apply_good_morning_and_good_afternoon_pipeline=function(res, pipeline){
                    
                    on_success(res, pipeline); 
-                   console.dir(res);
+               
                    $('#start_pipeline').prop("value", "good_night!").off('click').click(apply_good_night_transformation_in_pipeline);};
 
                good_morning_and_good_afternoon_transformations_in_pipeline()
@@ -113,7 +113,7 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
                clean_out();
                function on_success_bis(res, pipeline){
                    on_success(res, pipeline); 
-                   console.dir(res);
+             
 
 //                   app_data.initial_state= {history:["wake up!"]};
 
@@ -126,9 +126,9 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
            }
            function get_alert(message){
                return function(res, pipeline){
-                   var extended_message=message+" in pipeline: "+ ((pipeline)? pipeline.ns: "no_pipeline")+"\n"+toJson((res)? res : "no res!");
+                   //var extended_message=message+" in pipeline: "+ ((pipeline)? pipeline.ns: "no_pipeline")+"\n"+toJson((res)? res : "no res!");
 
-                   console.log(extended_message);
+                   //console.log(extended_message);
                    // alert(extended_message);
                };
            }
@@ -143,10 +143,10 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
                
                clean_out();
 
-               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(on_success_pipe("success11111")).set_on_error(get_alert("error 1"));
-               var pipe_2=good_night_transformation_in_pipeline().set_on_success(on_success_pipe("success222")).set_on_error(get_alert("error 2"));
+               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(on_success_pipe("success11111")).set_on_error(function(err, data_state){alert(err);});
+               var pipe_2=good_night_transformation_in_pipeline().set_on_success(on_success_pipe("success222")).set_on_error(function(err, data_state){alert(err);});
 
-               var compose=  new Pipeline("day_and_night!")
+               var compose=  new Pipeline("day_and_night")
                        .set_on_success(get_alert("success::: composing"))
                        .set_on_error(get_alert("error on composing"));
 
@@ -217,17 +217,7 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
                            history_message=" -------- "+history_message;
                        else
                            if (that.transformation_event_type=="ON_END"){
-                           if(data_state.process_history){
-
-                               var root=create_node("root", create_data("root", {name:"root"}));
-                               root.children=data_state.active_pipelines;
-                               // data_state.process_history.map(function(item){
-                               //     root.children.push(create_node(item.ns, create_data("pipeline", {})));
-                               // });
-                               
-                               history_cluster(data_state);
-
-                           }
+                           
                        }else{
                            
                        }
@@ -236,6 +226,10 @@ define(["js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines
                        callback(null, data_state);
                    }, 10);}
                                 );
+
+           // debug_pipelines defined on index.html
+           dispatcher.filter(debug_pipelines(history_cluster, "#pipelines"));
+
 
            }
            

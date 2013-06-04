@@ -15,6 +15,7 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
                        recordDiff(this);
                        recordDiff(this.after_data_state);
                        recordDiff(data_state);
+
                        this.pipeline.step_count++;
                        this.pipeline.steps_done.push({ns:this.ns, data_transformation:this.after_data_state});
                        dispatcher.dispatch("ON_END",this,  data_state, callback);
@@ -22,7 +23,7 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
 
                    on_init:function(data_state, callback){
                        
-                       console.log("this.name: "+this.ns+" pipeline: "+this.pipeline.ns+" step_count: "+this.pipeline.step_count  );
+               //        console.log("this.name: "+this.ns+" pipeline: "+this.pipeline.ns+" step_count: "+this.pipeline.step_count  );
                        this.before_data_state=$.extend(true, {}, data_state);
                        data_state[this.ns]={demo:{}};
                        recordStart(this);

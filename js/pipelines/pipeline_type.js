@@ -46,26 +46,14 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        recordDiff(this);
                        recordDiff(data_state);
                        this.after_data_state=$.extend(true, {}, data_state);
-                       // trying to track global history
-                       var index=data_state.active_pipelines.indexOf(this);
-                       console.log(index+" en data_state.active_pipelines.lengt: "+data_state.active_pipelines.length);
-                       var result=data_state.active_pipelines.splice(index, 1)[0];
-                       var active_length=data_state.active_pipelines.length;
-                       console.log(" after splice: "+active_length);        
 
-                       if(active_length)
-                           data_state.active_pipelines[active_length-1].children.push(result);
-                       else
-                           data_state.children.push(result);
-                       dispatcher.dispatch("ON_END",this,  data_state, callback);
+                       dispatcher.dispatch("ON_END", this, data_state, callback);
                        
                    },
                    on_init:function(data_state, callback){
                        recordStart(this);
                        recordStart(data_state);
                        this.before_data_state=$.extend(true, {}, data_state);
-                       
-                       data_state.active_pipelines.push(this);
 
                       dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
