@@ -5,7 +5,7 @@ define( function() {
     radio=4.5,
     radio_max=150,
     width = 1060,
-    height = 200;
+    height = 300;
 
     var cluster = d3.layout.cluster()
             .size([height, width - 160]);
@@ -13,9 +13,29 @@ define( function() {
     var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
 
+    function _create_node(the_name){
+        return {ns:the_name, children:[]};
+    };
 
+    function recursive(colector, container){
+       if(colector.children)
+         for(var i=0; i<colector.children.length; i++){
+
+            var child=colector.children[i];
+             console.log(child);
+            var element=_create_node(child.ns);
+             container.children.push(element);
+             recursive(child, element);
+        }
+    }
 
     function render(root, div_id){
+
+        var int_root=_create_node(root.ns);
+
+       recursive(root, int_root);
+        
+        console.dir(int_root);
 
         $(div_id).empty();
         $(div_id).hide();
@@ -25,7 +45,7 @@ define( function() {
                 .append("g")
                 .attr("transform", "translate(40,0)");
 
-        var nodes = cluster.nodes(root),
+        var nodes = cluster.nodes(int_root),
             links = cluster.links(nodes);
 
         var link = svg.selectAll(".link")

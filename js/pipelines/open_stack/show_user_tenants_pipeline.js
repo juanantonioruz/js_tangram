@@ -1,7 +1,8 @@
-define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js"],
-       function(d3_cluster, Foreach_Pipeline,Pipeline) {
+define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js"],
+       function(dispatcher, d3_cluster, Foreach_Pipeline,Pipeline) {
 
            var loading_operation_fn=function (data_state, callback){
+
                var data_operation=data_state.data_operation;
                $('#left').append("<h1 class='left_message'>Loading "+data_operation.title+",  please wait ...</h1>");
                $.ajax({
@@ -26,6 +27,7 @@ define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipeline
                                       loading_operation_fn);
 
            var pipeline3=new Pipeline("show_available_operations")
+
                    .addTransformation("available_service_operations", function(data_state, callback){
                        data_state.suboptions_select=[];
                        if(data_state.option_service_selected.data("item").name=="glance"){
@@ -37,8 +39,11 @@ define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipeline
                            data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
                        }
 
+                       var target_pipeline=this.pipeline;
                        function show_service_select(){
+                          
                            var the_on_change_select_fn=function(select_dom_id){
+
                                return function(){
                                    //                                   alert(toJson(data_state.option_service_selected.data('item')));
                                    var selected=$(select_dom_id+" option:selected").first();
@@ -54,15 +59,20 @@ define(["js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipeline
                                    clean_interface();
                                    //                                               show_tenant_endpoints_pipeline_fn();
                                    show_message_to_the_user("you have selected operation: "+selected.val());
-                                   callback(null, data_state);
+
+                                   dispatcher.dispatch("select_service", target_pipeline,data_state, 
+                                                       function(res,pipeline){alert("here");} );
+
                                };
                            };
                            //TODO: fn in start proposal, with global scope
                            show_dom_select("#suboptions", '#register_form',data_state.suboptions_select,  the_on_change_select_fn, true)();
+                           callback(null, data_state);
                        }
                        //TODO fn in start proposal, with global scope
                        show_fn_result_to_the_user_and_wait('Please select an option  available ', 
                                                            show_service_select);
+
 
                    });
            

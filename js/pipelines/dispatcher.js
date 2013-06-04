@@ -1,17 +1,19 @@
 define(["js/async.js"], function(async) {
-    
+        var contador=0;    
     var dispatcher=(function(){
         var domain_tree={};
         var filters=[];
 
-       
+
         return {
             dispatch:function(transformation_event_type, target, data_state,callback){
 
+                
 
+                // this line works because is inyected in start_dev... so TODO: its necesary to change!
                 var Pipeline=this.Pipeline;
                 
-                var that=this;
+
 
                  if(filters.length>0 ){
 
@@ -33,19 +35,19 @@ define(["js/async.js"], function(async) {
 
                 
                 function continue_listeners(){
-                    var pipeline_listeners=domain_tree[target.ns+"/"+transformation_event_type];
 
                     
-
+                    var pipeline_listeners=domain_tree[target.ns+"/"+transformation_event_type];
 
                     if(pipeline_listeners){
+
 
                         
                         //  console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
 
                         var paralels=pipeline_listeners.filter(function(element, index, array){return (element.parallel)?true:false;});
                         var syncq=pipeline_listeners.filter(function(element, index, array){return (!element.parallel)?true:false;});
-
+                        
                         paralels.map(function(o){
                             //running in parallel
                             // here we can have problems with mutable data_state in async
@@ -59,8 +61,8 @@ define(["js/async.js"], function(async) {
                         if(syncq.length>0){
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
-
-                            var compose=  new Pipeline("sync_compose")
+                            contador++;
+                            var compose=  new Pipeline("sync_compose_"+transformation_event_type+"_"+contador)
                                     .set_on_success(function(res, pipeline){callback();})
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
@@ -76,16 +78,10 @@ define(["js/async.js"], function(async) {
 
                         
                     }else{
+
                         callback();
                     }
                 };
-                
-
-
-                
-
-
-
 
 
             },
@@ -116,7 +112,7 @@ define(["js/async.js"], function(async) {
                 }else{ 
                     domain_tree[ns_listened+"/"+transformation_event_type]=[{pipeline:pipeline, parallel:parallel_or_sync}];
                 }
-                
+
             },
             filter:function(_fn){
                 filters.push(_fn);
@@ -128,6 +124,7 @@ define(["js/async.js"], function(async) {
             reset:function(){
                 domain_tree={};
             }
+
             
         };
 
