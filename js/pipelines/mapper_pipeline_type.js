@@ -4,7 +4,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
            var Mapper_Pipeline=Pipeline.extend(function(base){
                return  {
                    init: function(name, map, model_key, on_success, on_error) {
-                       base.init("mapper_"+name, on_success,on_error);
+                       base.init("mapper_"+model_key+"_"+name, on_success,on_error);
                        this.map=map;
                        this.model_key=model_key;
                        return this;

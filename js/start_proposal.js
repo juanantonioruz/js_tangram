@@ -83,7 +83,7 @@ define(["js/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.
 
           // dispatcher.listen("ON_END", "pipeline_select_service_pipeline_for_current_tenant", pipelines.show_operations,false);
 
-           dispatcher.listen("service_selected","pipeline_show_available_operations", pipelines.load_operation, false);
+         //  dispatcher.listen("operation_selected","pipeline_show_available_operations", pipelines.load_operation, false);
 
            dispatcher.listen("try_to_log","pipeline_register", pipelines.load_tokens, false);
 
@@ -92,6 +92,8 @@ define(["js/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.
            dispatcher.listen("tenant_selected","state_step_show_select_tenant", pipelines.show_services, false);
 
            dispatcher.listen("service_selected","state_step_show_select_endpoints", pipelines.show_operations, false);
+
+           dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
 
            dispatcher.listen("tenant_selected","state_step_create_server_show_select_tenants",
                              pipelines.create_server_for_selected_tenant, false);

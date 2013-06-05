@@ -22,24 +22,43 @@ define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_
                });
            };
            
-           var pipeline4=new Pipeline("loading_operation")
+           var pipeline_load_operation=new Pipeline("loading_operation")
                    .addTransformation("loading_operation", 
                                       loading_operation_fn);
 
-           var pipeline_show_operations=new Pipeline("show_available_operations")
+           var pipeline_glance_operations=new Pipeline("glance_operations")
 
-                   .addTransformation("available_service_operations", function(data_state, callback){
+                   .addTransformation("loading_glance_operations", function(data_state, callback){
                        data_state.suboptions_select=[];
-                       if(data_state.option_service_selected.data("item").name=="glance"){
                            data_state.suboptions_select.push({item:{service_type:"image", url:"/v2.0/images"}, visible:"LIST IMAGES", hidden:'images'});
-                       }
-                       if(data_state.option_service_selected.data("item").name=="nova"){
+
+                   
+                       callback(null, data_state);
+
+                   })
+                   .addTransformation("select_available_service_operations", select_available_service_operations_fn)
+;
+  
+           var pipeline_nova_operations=new Pipeline("nova_operations")
+
+                   .addTransformation("laoding_nova_operations", function(data_state, callback){
+                       data_state.suboptions_select=[];
                            data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
                            data_state.suboptions_select.push({item:{service_type:"compute", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"});
                            data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
-                       }
 
-                       var target_pipeline=this.pipeline;
+
+                   
+                       callback(null, data_state);
+
+                   })
+                   .addTransformation("select_available_service_operations", select_available_service_operations_fn)
+;         
+
+function select_available_service_operations_fn(data_state, callback){
+                   
+
+                       var target_state_step=this;
                        function show_service_select(){
                            
                            var the_on_change_select_fn=function(select_dom_id){
@@ -55,12 +74,14 @@ define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_
                                    data_state.operation_option.data('item').host=data_state.option_service_selected.data("item").endpoints[0].publicURL;
                                    data_state.operation_option.data('item').title=selected.val();
                                    data_state.data_operation=data_state.operation_option.data("item");
+                                   data_state.option_service_selected_name=data_state.option_service_selected.data("item").name;
+                                   
                                    // clean interface is a function declared in start_proposal
                                    clean_interface();
                                    //                                               show_tenant_endpoints_pipeline_fn();
                                    show_message_to_the_user("you have selected operation: "+selected.val());
 
-                                   dispatcher.dispatch("service_selected", target_pipeline,data_state,  function(res,pipeline){console.info("service_selected");} );
+                                   dispatcher.dispatch("operation_selected", target_state_step,data_state,  function(res,pipeline){console.info("operation_selected");} );
 
                                };
                            };
@@ -73,8 +94,15 @@ define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_
                                                            show_service_select);
 
 
-                   });
-           
+                   };
+
+
+           var pipeline_show_operations=new Mapper_Pipeline("operation_choosen", 
+                                                            {"glance":pipeline_glance_operations, 
+                                                             "nova":pipeline_nova_operations}, 
+                                                            "option_service_selected_name");
+
+
            var loading_endpoints_fn=function (data_state, callback){
                $('#left').append("<h1 class='left_message'>Loading endpoints for: "+data_state.tenant_name+"  please wait ...</h1>");
                $.ajax({
@@ -111,6 +139,7 @@ define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_
                                                   return function (){
                                                       var option_selected=$(select_dom_id+" option:selected").first();
                                                       data_state.option_service_selected=option_selected;
+                                                      data_state.option_service_selected_name=option_selected.data("item").name;
                                                       show_message_to_the_user("you have selected service: "+data_state.option_service_selected.val());
                                                       dispatcher.dispatch("service_selected", state_step, data_state,function(res,pipeline){console.log("service_selected!");});
                                                       
@@ -420,7 +449,7 @@ define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_
 
 
 
-           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, create_server:pipeline_server,show_users:pipeline_listing_resources, show_services:pipeline_show_services, show_operations:pipeline_show_operations, load_operation:pipeline4, load_tokens:pipeline_load_tokens, register:pipeline_register, mapper_action_choosen:pipeline_mapper_action_choosen, create_server_for_selected_tenant:pipeline_create_server_for_selected_tenant};
+           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, create_server:pipeline_server,show_users:pipeline_listing_resources, show_services:pipeline_show_services, show_operations:pipeline_show_operations, load_operation:pipeline_load_operation, load_tokens:pipeline_load_tokens, register:pipeline_register, mapper_action_choosen:pipeline_mapper_action_choosen, create_server_for_selected_tenant:pipeline_create_server_for_selected_tenant};
 
        });
 
