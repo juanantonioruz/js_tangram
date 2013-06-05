@@ -60,8 +60,7 @@ define([ "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_
                                    //                                               show_tenant_endpoints_pipeline_fn();
                                    show_message_to_the_user("you have selected operation: "+selected.val());
 
-                                   dispatcher.dispatch("select_service", target_pipeline,data_state, 
-                                                       function(res,pipeline){alert("here");} );
+                                   dispatcher.dispatch("service_selected", target_pipeline,data_state,  function(res,pipeline){alert("here");} );
 
                                };
                            };
@@ -284,6 +283,49 @@ results.nova_flavors.flavors[0].links[0].href);
            });
 
 
+
+           var load_tokens=new Pipeline("load_tokens")
+                   .addTransformation("loading_tokens_please_wait", 
+                                          function (data_state, callback){
+                                              var target_pipeline=this.pipeline;
+                                              $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
+                                              $.ajax({
+                                                  type: "POST",
+                                                  url: "http://"+data_state.host+"/tokens",
+                                                  data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
+                                              }).done(function( msg ) {
+                                                  if(!msg.error){
+                                                      data_state.token_id=msg.access.token.id;
+                                                      $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                                                      
+                                                      $('#register_form').fadeOut(500).empty().fadeIn();
+                                                      show_fn_result_to_the_user_and_wait("you are logged now!, please select an option: ", 
+                                                                                          function(){
+                                                                                              
+                                                                                              $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div>").fadeIn(100, function(){
+                                                                                                  show_dom_select("#init_filter", "#actions_available", [{visible:"create server", hidden:"create_server"}, {visible:"listing resources", hidden:"listing_resources"}], 
+                                                                                                                  function(select_dom_id){ 
+                                                                                                                      return function(){
+                                                                                                                          var selected=$(select_dom_id+" option:selected").first().val();
+                                                                                                                          data_state.action_selected=selected;
+                                                                                                                          show_message_to_the_user("action selected: "+selected);
+                                                                                                                          $('#actions_available').fadeOut();
+
+                                                                                                                          dispatcher.dispatch("action_selected", target_pipeline,data_state,  function(res,pipeline){alert("action_selected");} );
+                                                                                                                      };
+                                                                                                                  })();
+                                                                                              });
+
+                                                                                          });
+                                                     callback(null, data_state);   
+                                                  }else{
+                                                      $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
+                                                      callback(msg.error, data_state);
+                                                  }
+                                              });
+                                              
+                                          });
+
    var d3_show_images_and_flavors_pipeline=new Pipeline("d3_show_images_and_flavors")
            .addTransformation("d3_show_images", function(data_state, callback){
                var images_node=create_node("images", create_data("folder", {name:"images"}));
@@ -346,7 +388,7 @@ data_state, on_success_callback);
                
            });
 
-           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, create_server:pipeline_server,show_users:pipeline1, show_services:pipeline_show_services, show_operations:pipeline3, load_operation:pipeline4};
+           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, create_server:pipeline_server,show_users:pipeline1, show_services:pipeline_show_services, show_operations:pipeline3, load_operation:pipeline4, load_tokens:load_tokens};
 
        });
 

@@ -22,7 +22,7 @@ define( function() {
          for(var i=0; i<colector.children.length; i++){
 
             var child=colector.children[i];
-             console.log(child);
+//             console.log(child);
             var element=_create_node(child.ns);
              container.children.push(element);
              recursive(child, element);
@@ -35,7 +35,7 @@ define( function() {
 
        recursive(root, int_root);
         
-        console.dir(int_root);
+   //     console.dir(int_root);
 
         $(div_id).empty();
         $(div_id).hide();

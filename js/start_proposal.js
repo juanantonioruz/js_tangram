@@ -57,18 +57,21 @@ function show_message_to_the_user(the_message){
 
 
 
-define(["js/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelines/open_stack/show_user_tenants_pipeline.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
-       function(filters,  dispatcher,  State, pipelines, Pipeline, history_cluster) {
+define(["js/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/pipelines/open_stack/show_user_tenants_pipeline.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
+       function(filters,  dispatcher,  State, pipelines, Mapper_Pipeline, Pipeline, history_cluster) {
 
            var data_state=State();
            data_state.host=document.location.host;
+           // this line is for d3js visualization of open_stack resources, TODO: should get out of here
            data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
+var mapper=new Mapper_Pipeline("action_choosen", {"listing_resources":pipelines.show_users, "create_server":pipelines.create_server}, "action_selected");
 
            var result=function(){
 
                var pipeline4=new Pipeline("register")
                        .addTransformation("show_register_form", 
                                           function (data_state, callback){
+                                                                     var target_pipeline=this.pipeline;
                                               $('#right').prepend("<h3 class='left_message'>show_register_form,  ...</h3>");
                                               $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP: <input type='text' id='stack_ip' value='192.168.1.22'><br> Stack User: <input type='text' id='stack_user' value='demo'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
 
@@ -78,58 +81,22 @@ define(["js/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.
                                                   data_state.user=$('#stack_user').val();
                                                   data_state.password=$('#stack_password').val();
                                                   data_state.ip=$('#stack_ip').val();
-                                                  callback(null, data_state);
-                                              });
 
-                                          })
-                       .addTransformation("loading_tokens_please_wait", 
-                                          function (data_state, callback){
-                                              $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
-                                              $.ajax({
-                                                  type: "POST",
-                                                  url: "http://"+data_state.host+"/tokens",
-                                                  data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
-                                              }).done(function( msg ) {
-                                                  if(!msg.error){
-                                                      data_state.token_id=msg.access.token.id;
-                                                      $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
-                                                      
-                                                      $('#register_form').fadeOut(500).empty().fadeIn();
-                                                      show_fn_result_to_the_user_and_wait("you are logged now!, please select an option: ", 
-                                                                                          function(){
-                                                                                              
-                                                                                              $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div>").fadeIn(100, function(){
-                                                                                                  show_dom_select("#init_filter", "#actions_available", [{visible:"create server", hidden:"create_server"}, {visible:"listing resources", hidden:"listing_resources"}], 
-                                                                                                                  function(select_dom_id){ 
-                                                                                                                      return function(){
-                                                                                                                          var selected=$(select_dom_id+" option:selected").first().val();
-                                                                                                                          data_state.action_selected=selected;
-                                                                                                                          show_message_to_the_user("action selected: "+selected);
-                                                                                                                          $('#actions_available').fadeOut();
-                                                                                                                          callback(null, data_state);
-                                                                                                                      };
-                                                                                                                  })();
-                                                                                              });
-
-                                                                                          });
-                                                      
-                                                  }else{
-                                                      $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
-                                                      callback(msg.error, data_state);
-                                                  }
+                                                      dispatcher.dispatch("try_to_log", target_pipeline,data_state,  function(res,pipeline){alert("try_to_log");} );
                                               });
-                                              
+                                               callback(null, data_state);
                                           })
-                       .set_on_success(function(results, pipeline){
-                           if(results.action_selected=="listing_resources"){
-                               clean_interface();
-                               pipelines.show_users
-                                   .apply_transformations(results);
-                           }else{
-                               pipelines.create_server
-                                   .apply_transformations(results);
-                           }
-                       })
+                       
+                       // .set_on_success(function(results, pipeline){
+                       //     if(results.action_selected=="listing_resources"){
+                       //         clean_interface();
+                       //         pipelines.show_users
+                       //             .apply_transformations(results);
+                       //     }else{
+                       //         pipelines.create_server
+                       //             .apply_transformations(results);
+                       //     }
+                       // })
 
                        .apply_transformations(data_state);
 
@@ -148,7 +115,10 @@ define(["js/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.
            dispatcher.listen("ON_END", "pipeline_select_service_pipeline_for_current_tenant", pipelines.show_operations,false);
 
            //         dispatcher.listen("ON_END", "pipeline_show_available_operations", pipelines.load_operation,false);           
-           dispatcher.listen("select_service","pipeline_show_available_operations", pipelines.load_operation, false);
+           dispatcher.listen("service_selected","pipeline_show_available_operations", pipelines.load_operation, false);
+
+           dispatcher.listen("try_to_log","pipeline_register", pipelines.load_tokens, false);
+           dispatcher.listen("action_selected","pipeline_load_tokens", mapper, false);
 
 
            // d3js hooks, running in parallel! last parameter:true!

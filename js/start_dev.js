@@ -2,11 +2,12 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-define(["js/filters.js", "js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
-       function(filters, State, json_data, dispatcher, Pipeline, display, async, history_cluster) {
+define(["js/filters.js", "js/pipelines/state_type.js", "js/pipelines/json_data.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/pipelines/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
+       function(filters, State, json_data, dispatcher,Mapper_Pipeline, Pipeline, display, async, history_cluster) {
            var app_data=State();
            // console.log(toJson(json_data));
            dispatcher.Pipeline=Pipeline;
+           app_data.mapper_condition_example=true;
 
            var good_morning_fn=function(data_state, callback){
                setTimeout(function () {
@@ -77,9 +78,12 @@ define(["js/filters.js", "js/pipelines/state_type.js", "js/pipelines/json_data.j
 
 
            function good_morning_and_good_afternoon_transformations_in_pipeline(){
-               return  new Pipeline("good_morning_and_noon")
+               var ey= new Pipeline("good_morning_and_noon")
                    .addTransformation("Good_Morning", good_morning_fn)
                    .addTransformation("Good_Afternoon", good_afternoon_fn);
+               var ay= new Pipeline("ay")
+                   .addTransformation("Good_N", good_night_fn);
+               return new Mapper_Pipeline("choose_hour", {true:ey, false:ay}, "mapper_condition_example");
 
            }
 
