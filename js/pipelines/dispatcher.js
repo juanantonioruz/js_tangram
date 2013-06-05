@@ -37,7 +37,7 @@ define(["js/async.js"], function(async) {
                 function continue_listeners(){
 
                     
-                    var pipeline_listeners=domain_tree[target.ns+"/"+transformation_event_type];
+                    var pipeline_listeners=domain_tree[target.ns.split("*")[0]+"/"+transformation_event_type];
 
                     if(pipeline_listeners){
 
@@ -62,23 +62,32 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
                             contador++;
-                            var compose=  new Pipeline("sync_compose_"+transformation_event_type+"_"+contador)
-                                    .set_on_success(function(res, pipeline){callback();})
+                            var compose=  new Pipeline("sync_compose_"+transformation_event_type+"*"+contador)
+                                    .set_on_success(function(res, pipeline){
+                                        if(callback)
+                                        callback();
+                                    })
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
-                            syncq.map(function(o){compose.addPipe($.extend(true, {}, o.pipeline));});
+                            syncq.map(function(o){
+                                var clone_pipe=$.extend(true, {}, o.pipeline);
+                                clone_pipe.ns+="*"+contador;
+
+                                compose.addPipe(clone_pipe);
+                            });
                             
                             compose.apply_transformations(data_state);                   
                             
                             
                         }else{
                             // there is no async pipelines so we continue the execution flow
+                            if(callback)
                             callback();
                         }
 
                         
                     }else{
-
+                        if(callback)
                         callback();
                     }
                 };

@@ -5,8 +5,10 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
            var StateStep=Fiber.extend(function(){
                return  {
                    init: function(name, _fn) {
+                        StateStep.prototype.contador++;
 
-                       this.ns="state_step_"+name;
+
+                       this.ns="state_step_"+name+"*"+StateStep.prototype.contador;
                        this.transform_fn=_fn;
                    },
 
@@ -51,6 +53,9 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
                    }
                };
 
-           });  
+           }); 
+
+           StateStep.prototype.contador=0;
+
            return StateStep;
        });

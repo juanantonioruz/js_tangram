@@ -211,42 +211,13 @@ define(["js/filters.js", "js/pipelines/state_type.js", "js/pipelines/json_data.j
 
               dispatcher.reset_filters();
 
-               dispatcher.filter( function(data_state, callback){
-                   var that=this;
-                   
-                   setTimeout(function () {
-                       var history_message=that.transformation_event_type+"/"+
-                               that.target.ns+((that.transformation_event_type=="ON_END")? " finished in "+that.target.diff+"ms":" ... timing ..." );
-                       if(contains(history_message, "state_step_"))
-                           history_message=" -------- "+history_message;
-                       else
-                           if (that.transformation_event_type=="ON_END"){
-                           
-                       }else{
-                           
-                       }
-                       $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
+               dispatcher.filter( filters.timming);
 
-                       callback(null, data_state);
-                   }, 10);}
-                                );
-
-           // debug_pipelines defined on index.html
-           dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));
-
+               // debug_pipelines defined on index.html
+               dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));
 
            }
            
-           
-
-
-
-           
-
-
-
-           
-
            
            return init_display;
 

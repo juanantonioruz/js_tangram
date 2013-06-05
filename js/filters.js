@@ -27,7 +27,7 @@ function debug_pipelines(render, div_id){
                 // display results
                 // var root=create_node("root", create_data("root", {name:"root"}));
                 // root.children=data_state.active_pipelines;
-                
+                 if(data_state.active_pipelines.length==0)
                 render(data_state, div_id);
 
             }else{
@@ -42,5 +42,31 @@ function debug_pipelines(render, div_id){
         callback(null, data_state);
     };
 }
-    return {d3_debug_pipelines:debug_pipelines};
+
+function timming_filter(data_state, callback){
+               
+
+               var history_message=this.transformation_event_type+"/"+
+                       this.target.ns+((this.transformation_event_type=="ON_END")? " finished in "+this.target.diff+" ms":" ... timing ..." );
+               if(contains(history_message, "state_step_")){
+                   history_message=" -------- "+history_message;
+                   if(this.transformation_event_type=="ON_END")
+                       $('.left_message').last().fadeOut(200, function(){ $('.left_message').last().remove();});
+               }else{
+                   if(this.transformation_event_type=="ON_INIT"){
+                       clean_history();
+                   }else{
+
+                       
+
+                   }
+               }
+               
+               $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
+
+               callback(null, data_state);
+
+           }
+
+    return {d3_debug_pipelines:debug_pipelines, timming:timming_filter};
 });
