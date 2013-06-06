@@ -1,4 +1,4 @@
-define(["/js/open_stack/loadings.js"], function (loadings) {
+define(["js/open_stack/loadings.js"], function (loadings) {
     return describe("open_stack_loadings", function() {
         
         function Callback(){

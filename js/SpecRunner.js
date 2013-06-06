@@ -4,8 +4,8 @@ require.config({
     paths: {
         jquery: 'jquery-1.9.1.min',
         jasmine: '../jasmine/lib/jasmine-1.3.1/jasmine',
-        'jasmine-html': '../jasmine/lib/jasmine-1.3.1/jasmine-html',
-        spec: '../../pepe'
+        'jasmine-html': '../jasmine/lib/jasmine-1.3.1/jasmine-html'
+//        spec: '../../pepe'
     },
     shim: {
         
@@ -34,7 +34,7 @@ require(['jquery', 'jasmine-html'], function ($, jasmine) {
 
     var specs = [];
 
-    specs.push('../jasmine/spec/LoadingsSpec');
+    specs.push('../spec/LoadingsSpec');
 
 
 

@@ -1,4 +1,4 @@
-define(["/js/common.js", "/js/pipelines/dispatcher.js"],
+define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            return {
                tokens:function (data_state, callback){

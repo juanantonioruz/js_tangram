@@ -23,6 +23,7 @@ function toJson(o){
 app.use(exp.bodyParser());
 
 app.use('/js', exp.static(__dirname + '/js'));
+app.use('/spec', exp.static(__dirname + '/spec'));
 app.use('/styles', exp.static(__dirname + '/styles'));
 app.use('/images', exp.directory(__dirname + '/public/images'));
 app.use('/jasmine', exp.static(__dirname + '/jasmine-standalone-1.3.1'));
@@ -34,6 +35,12 @@ app.use('/jasmine', exp.static(__dirname + '/jasmine-standalone-1.3.1'));
 
 app.get('/', function(req, res) {
     fs.readFile(__dirname + '/index.html', 'utf8', function(err, text){
+        res.send(text);
+    });
+});
+
+app.get('/SpecRunner', function(req, res) {
+    fs.readFile(__dirname + '/SpecRunner.html', 'utf8', function(err, text){
         res.send(text);
     });
 });
