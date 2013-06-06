@@ -52,7 +52,7 @@ define([  "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach
                        get_tenant(data_state.d3_open_stack.children[0].children, "name", data_state.tenant_name).children.push(flavors_node);               
 
                        function on_success_callback(){
-                           callback(null, data_state);
+                     //      callback(null, data_state);
                        }
 
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),
@@ -64,7 +64,8 @@ define([  "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach
 
            var d3_show_tenants=new Pipeline("d3_show_tenants")
                    .addTransformation("d3_show_tenants", function(data_state, callback){
-                       
+                       console.log("d3_show_tenants");
+                       data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
                        var tenants=create_node("tenants", create_data("folder", {name:"tenants"}));
                        data_state.tenants_select.map(function(item){
                            tenants.children.push(create_node(item.visible, create_data("tenant", {})));
@@ -75,7 +76,7 @@ define([  "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach
                        data_state.d3_open_stack.children.push(tenants);
                        
                        function on_success_callback(){
-                           callback(null, data_state);
+                  //         callback(null, data_state);
                        }
 
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),

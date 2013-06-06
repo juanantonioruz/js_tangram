@@ -48,12 +48,12 @@ define( function() {
             .attr("opacity", function(d){return (d.data_displayed.type!="folder")?100:0;})
             .attr("fill", function(d){return (d.selected)?"red":"blue";})
             .on("click", function(d,i){
-                var that=this;
+
                 
                 var selection=d3.select(this);
                 show_message_to_the_user(d.data_displayed.type);
                 d.selected = !d.selected;
-
+                alert(d.data_displayed.type);
                 if(d.selected)
                 data_state[d.data_displayed.type+"_selected"]=d.data_displayed.data.href;
                 var color=(d.selected)?"red":"blue";
@@ -61,7 +61,7 @@ define( function() {
                // this works if we translate the decisions to the d3 interface  on_success_callback();
             })
             .on("mouseout", function(d,i){
-                var that=this;
+
                 var color=(d.selected)?"red":"blue";
 
                 var selection= d3.select(this);

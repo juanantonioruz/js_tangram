@@ -11,6 +11,7 @@ function debug_pipelines(render, div_id){
                     this.target.active_parent=data_state.active_pipelines[data_state.active_pipelines.length-1];
                 else
                     this.target.active_parent=data_state;
+               
                 if(!this.target.parallel)
                     data_state.active_pipelines.push(this.target);
 
@@ -22,11 +23,10 @@ function debug_pipelines(render, div_id){
 
                     data_state.active_pipelines.splice(index, 1);
                 }
+                // this lines to ensure that there are not duplicates entries
+                if(this.target.active_parent.children.indexOf(this.target)==-1)
                 this.target.active_parent.children.push(this.target);
 
-                // display results
-                // var root=create_node("root", create_data("root", {name:"root"}));
-                // root.children=data_state.active_pipelines;
                  if(data_state.active_pipelines.length==0)
                 render(data_state, div_id);
 
@@ -35,6 +35,8 @@ function debug_pipelines(render, div_id){
             }
         }else{
             if(event_type=="ON_INIT"){
+                // this lines to ensure that there are not duplicates entries
+                if(this.target.pipeline.children.indexOf(this.target)==-1)
                 this.target.pipeline.children.push(this.target);
             }else{
             }

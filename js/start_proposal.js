@@ -63,7 +63,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            var data_state=State();
            data_state.host=document.location.host;
            // this line is for d3js visualization of open_stack resources, TODO: should get out of here
-           data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
+
 
 
            var result=function(){
@@ -87,6 +87,9 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
 
            dispatcher.listen("tenant_selected","state_step_create_server_show_select_tenants",  pipelines.create_server_for_selected_tenant, false);
+
+
+
 
 
            // d3js hooks, running in parallel! last parameter:true!

@@ -19,7 +19,12 @@ define(["js/async.js"], function(async) {
 
                 //TODO filters have to be an array not only one... reverse!!!
 
-                     var composition=async.compose.apply(null, filters.map(function(o){return o.bind({data_state:data_state, target:target, transformation_event_type:transformation_event_type});}));
+                     var composition=async.compose.apply(null, 
+                                                         filters.map(
+                                                             function(o){
+                                                                 return o.bind(
+                                                                     {data_state:data_state, target:target, 
+                                                                      transformation_event_type:transformation_event_type});}));
                      composition(data_state, function(err, result){
                          //TODO error catching?? !
                              continue_listeners();              
@@ -62,7 +67,7 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
                             contador++;
-                            var compose=  new Pipeline("sync_compose_"+transformation_event_type+"*"+contador)
+                            var compose=  new Pipeline("sync_compose_"+transformation_event_type)
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
                                         callback();
@@ -71,21 +76,17 @@ define(["js/async.js"], function(async) {
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
                                 var clone_pipe=$.extend(true, {}, o.pipeline);
-                                clone_pipe.ns+="*"+contador;
+
 
                                 compose.addPipe(clone_pipe);
                             });
                             
-                            compose.apply_transformations(data_state);                   
-                            
-                            
+                            compose.apply_transformations(data_state);
                         }else{
                             // there is no async pipelines so we continue the execution flow
                             if(callback)
                             callback();
                         }
-
-                        
                     }else{
                         if(callback)
                         callback();
