@@ -1,4 +1,4 @@
-define(["js/pipelines/dispatcher.js"],
+define(["/js/pipelines/dispatcher.js"],
        function(dispatcher) {
            return {register_form:function (data_state, callback){
                var target_pipeline=this.pipeline;

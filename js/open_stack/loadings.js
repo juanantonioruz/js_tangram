@@ -1,17 +1,20 @@
-define(["js/pipelines/dispatcher.js"],
-       function(dispatcher) {
+define(["/js/common.js", "/js/pipelines/dispatcher.js"],
+       function(common, dispatcher) {
            return {
                tokens:function (data_state, callback){
-                   
+
                    $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
                    $.ajax({
                        type: "POST",
                        url: "http://"+data_state.host+"/tokens",
                        data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
-                   }).done(function( msg ) {
-                       if(!msg.error){
+                   })
+
+                       .done(function( msg ) {
+                           //&& msg.indexOf("Error")>=-1
+                       if(!msg.error ){
                            data_state.token_id=msg.access.token.id;
-                           $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                           $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
                            
                            $('#register_form').fadeOut(500).empty().fadeIn();
 
@@ -34,7 +37,7 @@ define(["js/pipelines/dispatcher.js"],
                    }).done(function( msg ) {
                        if(!msg.error){
 
-                           $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );                                                  
+                           $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
 
                            data_state[data_operation.title]=msg;
                            callback(null, data_state);
@@ -59,7 +62,7 @@ define(["js/pipelines/dispatcher.js"],
                                data_state.service_catalog_select.push({item:item, hidden:item.name,visible:item.name+":"+item.type });
                            });
                            data_state.token_id=msg.access.token.id;
-                           $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );                                                  
+                           $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
                            callback(null, data_state);
                        }else{
                            callback(msg.error, data_state);
@@ -79,7 +82,7 @@ define(["js/pipelines/dispatcher.js"],
                            msg.tenants.map(function(item){
                                data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
                            });
-                           $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                           $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
                            callback(null, data_state);
                        }else{
                            callback(msg.error, data_state);

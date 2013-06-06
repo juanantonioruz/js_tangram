@@ -1,4 +1,4 @@
-define(["js/async.js"], function(async) {
+define(["/js/async.js"], function(async) {
         var contador=0;    
     var dispatcher=(function(){
         var domain_tree={};
