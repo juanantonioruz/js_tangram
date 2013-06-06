@@ -4,7 +4,7 @@ define(function(){
         ,ns:"root"
         , history:[]
         , process_history:[]
-        ,active_pipelines:[]
+
         ,children:[]
     };
                      };

@@ -95,6 +95,10 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            // d3js hooks, running in parallel! last parameter:true!
            dispatcher.listen("ON_INIT", "state_step_create_server_show_select_tenants", d3_pipelines.d3_show_tenants,true);   
 
+           dispatcher.listen("tenant_selected", "state_step_create_server_show_select_tenants", d3_pipelines.d3_show_tenant_data ,false);   
+
+
+
            dispatcher.listen("ON_INIT", "state_step_create_server_wait_for_the_name", d3_pipelines.d3_show_images_and_flavors,true);                   
 
            // Filtering all tansformations ::: AOP 

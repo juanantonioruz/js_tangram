@@ -1,5 +1,5 @@
-define([  "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
-       function(dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
+define([  "js/open_stack/loadings.js", "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
+       function(loadings, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
            var d3_show_images_and_flavors_pipeline=new Pipeline("d3_show_images_and_flavors")
                    .addTransformation("d3_show_images", function(data_state, callback){
                        var images_node=create_node("images", create_data("folder", {name:"images"}));
@@ -86,6 +86,9 @@ define([  "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach
                        
                    });
 
-           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline};
+           var show_tenant_data_pipe=new Pipeline("selected_d3_tenant")
+           .addTransformation("loading_endpoints", loadings.endpoints);
+
+           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, d3_show_tenant_data:show_tenant_data_pipe};
 
        });

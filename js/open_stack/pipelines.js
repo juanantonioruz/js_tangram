@@ -21,7 +21,7 @@ define([ "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stac
 
 
            var pipeline_show_services=new Pipeline("select_service_pipeline_for_current_tenant")
-                   .addTransformation("Loading endpoints", 
+                   .addTransformation("Loading_endpoints", 
                                       loadings.endpoints)
                    .addTransformation("show_select_endpoints", 
                                       selects.endpoints      
