@@ -2,28 +2,28 @@ define(["js/pipelines/dispatcher.js"],
        function(dispatcher) {
            return {
                tokens:function (data_state, callback){
-                                          
-                                          $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
-                                          $.ajax({
-                                              type: "POST",
-                                              url: "http://"+data_state.host+"/tokens",
-                                              data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
-                                          }).done(function( msg ) {
-                                              if(!msg.error){
-                                                  data_state.token_id=msg.access.token.id;
-                                                  $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
-                                                  
-                                                  $('#register_form').fadeOut(500).empty().fadeIn();
+                   
+                   $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
+                   $.ajax({
+                       type: "POST",
+                       url: "http://"+data_state.host+"/tokens",
+                       data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
+                   }).done(function( msg ) {
+                       if(!msg.error){
+                           data_state.token_id=msg.access.token.id;
+                           $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );
+                           
+                           $('#register_form').fadeOut(500).empty().fadeIn();
 
-                                                  callback(null, data_state);   
-                                              }else{
-                                                  $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
-                                                  callback(msg.error, data_state);
-                                              }
-                                          });
-                                          
-                                      },
-              operation:function (data_state, callback){
+                           callback(null, data_state);   
+                       }else{
+                           $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
+                           callback(msg.error, data_state);
+                       }
+                   });
+                   
+               },
+               operation:function (data_state, callback){
 
                    var data_operation=data_state.data_operation;
                    $('#left').append("<h1 class='left_message'>Loading "+data_operation.title+",  please wait ...</h1>");
@@ -88,44 +88,44 @@ define(["js/pipelines/dispatcher.js"],
                },
 
                glance_operations:function(data_state, callback){
-                       data_state.suboptions_select=[];
-                           data_state.suboptions_select.push({item:{service_type:"image", url:"/v2.0/images"}, visible:"LIST IMAGES", hidden:'images'});
+                   data_state.suboptions_select=[];
+                   data_state.suboptions_select.push({item:{service_type:"image", url:"/v2.0/images"}, visible:"LIST IMAGES", hidden:'images'});
 
                    
-                       callback(null, data_state);
+                   callback(null, data_state);
 
-                   },
+               },
 
                nova_operations:function(data_state, callback){
-                       data_state.suboptions_select=[];
-                           data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
-                           data_state.suboptions_select.push({item:{service_type:"compute", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"});
-                           data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
+                   data_state.suboptions_select=[];
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
 
 
                    
-                       callback(null, data_state);
+                   callback(null, data_state);
 
-                   },
+               },
                create_server:function (data_state, callback){
-                       
-                       var data_operation=data_state.data_operation;
-                       $('#left').append("<h1 class='left_message'>Finally , we are creating the server,   please wait ...</h1>");
-                       $.ajax({
-                           type: "POST",
-                           url: "http://"+data_state.host+"/create_server",
-                           data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.nova_endpoint_url, imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected}
-                       }).done(function( msg ) {
-                           if(!msg.error){
+                   
+                   var data_operation=data_state.data_operation;
+                   $('#left').append("<h1 class='left_message'>Finally , we are creating the server,   please wait ...</h1>");
+                   $.ajax({
+                       type: "POST",
+                       url: "http://"+data_state.host+"/create_server",
+                       data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.nova_endpoint_url, imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected}
+                   }).done(function( msg ) {
+                       if(!msg.error){
 
-                               $('#content').prepend( "<h2>Create server response: </h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );                                                  
+                           $('#content').prepend( "<h2>Create server response: </h2><pre><code class='json'>"+toJson(msg)+"</code></pre>" );                                                  
 
-                               callback(null, data_state);
-                           }else{
-                               callback(msg.error, data_state);
-                           }
-                       });
-                   }
+                           callback(null, data_state);
+                       }else{
+                           callback(msg.error, data_state);
+                       }
+                   });
+               }
            };
 
 

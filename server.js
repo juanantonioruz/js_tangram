@@ -25,6 +25,8 @@ app.use(exp.bodyParser());
 app.use('/js', exp.static(__dirname + '/js'));
 app.use('/styles', exp.static(__dirname + '/styles'));
 app.use('/images', exp.directory(__dirname + '/public/images'));
+app.use('/jasmine', exp.static(__dirname + '/jasmine-standalone-1.3.1'));
+
 
 
 // app.use('/js', express.static("./js/require.js"));
