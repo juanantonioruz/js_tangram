@@ -1,8 +1,29 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            return {
-               tokens:function (data_state, callback){
+               prepare_tokens:function (data_state, callback){
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/tokens", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}};
+                   data_state.dao=dao_object;
+                   $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
+                   callback(null, data_state);
+                   
+               },
 
+                loaded_tokens:function (data_state, callback){
+                    if(data_state.dao.result){
+                        data_state.token_id=data_state.dao.result.access.token.id;
+
+                        $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
+                        $('#register_form').fadeOut(500).empty().fadeIn();
+                        callback(null, data_state);
+                       } else
+                   callback(data_state.dao.error, data_state);
+                   
+                   
+               },
+
+               tokens:function (data_state, callback){
+                  
                    $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
                    $.ajax({
                        type: "POST",

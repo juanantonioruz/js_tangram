@@ -1,5 +1,5 @@
-define([ "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
-       function(selects, loadings,html_helper, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
+define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
+       function(dao, selects, loadings,html_helper, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
 
            
            var pipeline_load_operation=new Pipeline("loading_operation")
@@ -95,7 +95,9 @@ define([ "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stac
 
 
            var pipeline_load_tokens=new Pipeline("load_tokens_and_select_actions")
-                   .addTransformation("loading_tokens",loadings.tokens)
+                   .addTransformation("prepare_tokens",loadings.prepare_tokens)
+                   .addTransformation("dao_tokens",dao.dao)
+                   .addTransformation("loaded_tokens",loadings.loaded_tokens)
                    .addTransformation("select_actions", selects.actions );
 
            

@@ -5,9 +5,6 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
            var StateStep=Fiber.extend(function(){
                return  {
                    init: function(name, _fn) {
-
-
-
                        this.ns="state_step_"+name;
                        this.transform_fn=_fn;
                    },
