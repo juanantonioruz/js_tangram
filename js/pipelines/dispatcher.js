@@ -7,7 +7,7 @@ define(["js/async.js"], function(async) {
 
         return {
             dispatch:function(transformation_event_type, target, data_state,callback){
-
+                console.log("event_type"+transformation_event_type+"-"+target.ns);
                 
 
                 // this line works because is inyected in start_dev... so TODO: its necesary to change!

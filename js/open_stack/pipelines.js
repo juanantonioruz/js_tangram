@@ -1,5 +1,5 @@
-define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/pipelines/dispatcher.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
-       function(dao, selects, loadings,html_helper, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
+define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
+       function(dao, selects, loadings,html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
 
            
            var pipeline_load_operation=function(){

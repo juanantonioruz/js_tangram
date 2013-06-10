@@ -2,53 +2,14 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-define(["js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/ew_related/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
-       function(filters, State, dispatcher,Mapper_Pipeline, Pipeline, display, async, history_cluster) {
+define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/ew_related/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
+       function(pipes, filters, State, dispatcher,Mapper_Pipeline, Pipeline, display, async, history_cluster) {
            var app_data=State();
            // console.log(toJson(json_data));
            dispatcher.Pipeline=Pipeline;
            app_data.mapper_condition_example=true;
 
-           var good_morning_fn=function(data_state, callback){
-               setTimeout(function () {
-                   var user_history=[];
-                   user_history.push("take a shower");
-                   user_history.push("have breakfast");
-                   data_state.history.push.apply(data_state.history, user_history);
-                   callback(null, data_state);
-               }, 250);
-           };
-
-           var good_afternoon_fn=function(data_state, callback){
-               setTimeout(function () {
-                   var user_history=[];
-                   user_history.push("have lunch");
-                   user_history.push("have a nap");
-                   data_state.history.push.apply(data_state.history, user_history);
-                   callback(null, data_state);
-               }, 250);
-           };
-
-           var good_night_fn=function(data_state, callback){
-               setTimeout(function () {
-                   var user_history=[];
-                   user_history.push("have dinner");
-                   user_history.push("go to bed");
-                   data_state.history.push.apply(data_state.history, user_history);
-                   // to throw an error                    callback("that's an error!!", data_state);
-                   callback(null, data_state);
-               }, 250);
-           };
-           
-           var the_slower_fn=function(data_state, callback){
-               setTimeout(function () {
-                   var user_history=[];
-                   user_history.push("i am the slowest");
-                   data_state.history.push.apply(data_state.history, user_history);
-                   callback(null, data_state);
-               }, 2000);
-           };
-
+         
 
            var on_success=function(res, pipeline){
 
@@ -77,21 +38,9 @@ define(["js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/
 
 
 
-           function good_morning_and_good_afternoon_transformations_in_pipeline(){
-               var ey= new Pipeline("good_morning_and_noon")
-                   .addTransformation("Good_Morning", good_morning_fn)
-                   .addTransformation("Good_Afternoon", good_afternoon_fn);
-               var ay= new Pipeline("ay")
-                   .addTransformation("Good_N", good_night_fn);
-               return new Mapper_Pipeline("choose_hour", {true:ey, false:ay}, "mapper_condition_example");
+     
 
-           }
-
-           function good_night_transformation_in_pipeline(){
-               return  new Pipeline("good_night")
-                   .addTransformation("Good_Night", good_night_fn);
-
-           }
+     
 
            function init_history(first){
                app_data.history=[];
@@ -99,35 +48,7 @@ define(["js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/
                return app_data;
            }
 
-           function apply_good_morning_and_good_afternoon_pipeline(){
-               clean_out();
-               var  on_success_apply_good_morning_and_good_afternoon_pipeline=function(res, pipeline){
-                   
-                   on_success(res, pipeline); 
-               
-                   $('#start_pipeline').prop("value", "good_night!").off('click').click(apply_good_night_transformation_in_pipeline);};
-
-               good_morning_and_good_afternoon_transformations_in_pipeline()
-                   .set_on_success(on_success_apply_good_morning_and_good_afternoon_pipeline)
-                   .set_on_error(on_error)
-                   .apply_transformations(init_history("wake up!"));
-           }
-
-           function apply_good_night_transformation_in_pipeline(){
-               clean_out();
-               function on_success_bis(res, pipeline){
-                   on_success(res, pipeline); 
-             
-
-//                   app_data.initial_state= {history:["wake up!"]};
-
-                   $('#start_pipeline').prop("value", "start day and noon!").off('click').click(apply_good_morning_and_good_afternoon_pipeline);
-               };
-
-
-               good_night_transformation_in_pipeline().set_on_success(on_success_bis).set_on_error(on_error)
-                   .apply_transformations(app_data);
-           }
+          
            function get_alert(message){
                return function(res, pipeline){
                    //var extended_message=message+" in pipeline: "+ ((pipeline)? pipeline.ns: "no_pipeline")+"\n"+toJson((res)? res : "no res!");
@@ -143,74 +64,44 @@ define(["js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/
                    
                };};
 
-           function apply_composition_pipelines_day_and_night(){
-               
-               clean_out();
-
-               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(on_success_pipe("success11111")).set_on_error(function(err, data_state){alert(err);});
-               var pipe_2=good_night_transformation_in_pipeline().set_on_success(on_success_pipe("success222")).set_on_error(function(err, data_state){alert(err);});
-
-               var compose=  new Pipeline("day_and_night")
-                       .set_on_success(get_alert("success::: composing"))
-                       .set_on_error(get_alert("error on composing"));
-
-               compose.addPipe(pipe_1).addPipe(pipe_2);
-               //                    .addPipe(pipe_1).addPipe(pipe_2);
-               
-               compose.apply_transformations(init_history("composing day and night"));
-               
-
-           }
-
-           function apply_pipeline_with_listener_to_run_pipeline_in_parallel(){
-               clean_out();
-               
-               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline().set_on_success(
-                   on_success_pipe("success11111")
-               ).set_on_error(get_alert("error 1"));
-               var pipe_listener= new Pipeline("pipelineListen")
-                       .addTransformation("i_am_the_slowest", the_slower_fn)
-                       .set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
-
-               dispatcher.listen("ON_INIT","pipeline_good_morning_and_noon",  pipe_listener, true);
-               pipe_1.apply_transformations(init_history("parallel_listener"));
-           };
-
-           function  apply_pipeline_with_listener_to_run_pipeline_synchronous(){
-               clean_out();
-               
-               var pipe_1=good_morning_and_good_afternoon_transformations_in_pipeline();
-               var pipe_listener=new Pipeline("sync_listener")
-                       .addTransformation("i_am_the_slowest", the_slower_fn)
-                       .set_on_success(on_success_pipe("successlistenter")).set_on_error(get_alert("error  listener"));
-
-               dispatcher.listen("ON_INIT","pipeline_good_morning_and_noon",  pipe_listener, false);
-
-               var pipe_listener2=new Pipeline("pipelineListen2")
-                       .addTransformation("i_am_the_slowestTT", the_slower_fn).set_on_success(on_success_pipe("successlistenter2")).set_on_error(get_alert("error  listener"));
-
-               dispatcher.listen("ON_INIT","pipeline_good_morning_and_noon",  pipe_listener2, false);
-
-
-               pipe_1.set_on_success(on_success_pipe("success good morning and noon"));
-               pipe_1.apply_transformations(init_history("sync_listener"));
-           };
+       
 
            function init_display(){
+               dispatcher.reset();
+              dispatcher.reset_filters();
+               
                $('#input_user').append(
                    '<input type="button" id="start_pipeline" value="start day and noon!"/><br>'+
                        '<input type="button" id="compose_pipelines" value="start composition pipelines: \'start day and noon\' and \'start night\'" /><br>'+
                        '<input type="button" id="compose_parallel_pipelines_on_init" value="start pipeline and on_init pipeline event start async pipeline \'slower\'"/><br>'+
                        '<input type="button" id="compose_sync_pipelines_on_init" value="start pipeline and on_init pipeline event start sync pipeline \'slower\'"/><br>');
                
-               $('#start_pipeline').click(apply_good_morning_and_good_afternoon_pipeline);
-               $('#compose_pipelines').click(function(){apply_composition_pipelines_day_and_night();});
-               $('#compose_parallel_pipelines_on_init').click(function(){apply_pipeline_with_listener_to_run_pipeline_in_parallel();});
-               $('#compose_sync_pipelines_on_init').click(function(){apply_pipeline_with_listener_to_run_pipeline_synchronous();});
+               $('#start_pipeline').click(
 
+                   function(){
+                       pipes.good_morning_and_good_afternoon().apply_transformations(init_history("wake up!"));
+                   });
 
-              dispatcher.reset_filters();
+              $('#compose_pipelines').click(function(){
+                  pipes.day_and_night().apply_transformations(init_history("composing day and night"));
+              });
+               $('#compose_parallel_pipelines_on_init').click(function(){
+                    pipes.parallel_example().apply_transformations(init_history("parallel_listener"));
 
+               });
+               $('#compose_sync_pipelines_on_init').click(function(){
+                 //  apply_pipeline_with_listener_to_run_pipeline_synchronous();
+                   pipes.sync_example().apply_transformations(init_history("sync_listener"));
+
+               });
+
+               dispatcher.listen("ON_END","pipeline_good_morning_and_noon", pipes.active_gn_button, false);
+
+               dispatcher.listen("ON_INIT","pipeline_parallel_example",  pipes.listener_slower, true);
+
+               dispatcher.listen("ON_INIT","pipeline_sync_example",  pipes.listener_slower, false);
+
+               dispatcher.listen("start_night","state_step_active_gn_button", pipes.good_night, false);
                dispatcher.filter( filters.timming);
 
                // debug_pipelines defined on index.html
