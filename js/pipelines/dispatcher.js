@@ -7,13 +7,13 @@ define(["js/async.js"], function(async) {
 
         return {
             dispatch:function(transformation_event_type, target, data_state,callback){
-                console.log("event_type"+transformation_event_type+"-"+target.ns);
+
                 
 
                 // this line works because is inyected in start_dev... so TODO: its necesary to change!
                 var Pipeline=this.Pipeline;
                 
-
+               
 
                  if(filters.length>0 ){
 
@@ -77,7 +77,7 @@ define(["js/async.js"], function(async) {
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
-                                console.dir(o);
+//                                console.dir(o);
 //                                alert("invoking");
 
                                 compose.addPipe(o.pipeline());
@@ -127,7 +127,7 @@ define(["js/async.js"], function(async) {
 
             },
             filter:function(_fn){
-                filters.push(_fn);
+                filters.unshift(_fn);
             },
             reset_filters:function(){
                 filters=[];

@@ -1,7 +1,7 @@
 define(function(){
     return function(){return {
-        init:getStart()
-        ,ns:"root"
+
+       ns:"root"
         , history:[]
         , process_history:[]
 

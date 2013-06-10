@@ -1,7 +1,10 @@
 define( function() {
-function debug_pipelines(render, div_id){
-    
-    function is_pipeline(ns){
+    function getStart(){return (new Date).getTime();};
+    function getDiff(start){return (new Date).getTime() - start;};
+    function recordStart(o) {o['start']= getStart();};
+    function recordDiff(o){var dif=getDiff(o['start']); o['diff']= dif; return dif;};
+
+ function is_pipeline(ns){
        return  ns.indexOf("pipeline_")>-1;
     };
      function is_state_step(ns){
@@ -15,9 +18,40 @@ function debug_pipelines(render, div_id){
         return event_type=="ON_END";
         }
 
+var debug_filters=false;
+
+function profiling(data_state, callback){
+    if(debug_filters)    console.log(">profiling");
+ var event_type=this.transformation_event_type;
+    if(is_on_init(event_type)){
+        recordStart(this.target);
+        recordStart(data_state);
+    }else if(is_on_end(event_type)){
+        recordDiff(this.target);
+        recordDiff(data_state);
+    }
+        callback(null, data_state);
+}
+
+function clone_data(data_state, callback){
+        if(debug_filters)  console.log(">clone_data");
+ var event_type=this.transformation_event_type;
+    if(is_on_init(event_type)){
+         this.target.before_data_state=$.extend(true, {}, data_state);
+
+    }else if(is_on_end(event_type)){
+        this.target.after_data_state=$.extend(true, {}, data_state);
+    }
+        callback(null, data_state);
+}
+
+
+function debug_pipelines(render, div_id){
+    
     var active_pipelines=[];
 
     return function (data_state, callback){
+             if(debug_filters)        console.log(">debug d3 pipelines");
         var ns=this.target.ns;
         var event_type=this.transformation_event_type;
 
@@ -64,7 +98,7 @@ function debug_pipelines(render, div_id){
 }
 
 function timming_filter(data_state, callback){
-               
+               if(debug_filters)      console.log(">show profiling");
 
                var history_message=this.transformation_event_type+"/"+
                        this.target.ns+((this.transformation_event_type=="ON_END")? " finished in "+this.target.diff+" ms":" ... timing ..." );
@@ -88,5 +122,5 @@ function timming_filter(data_state, callback){
 
            }
 
-    return {d3_debug_pipelines:debug_pipelines, timming:timming_filter};
+    return {d3_debug_pipelines:debug_pipelines, show_profiling:timming_filter, profiling:profiling, clone_data:clone_data};
 });

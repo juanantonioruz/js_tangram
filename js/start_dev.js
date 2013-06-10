@@ -102,7 +102,20 @@ define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.
                dispatcher.listen("ON_INIT","pipeline_sync_example",  pipes.listener_slower, false);
 
                dispatcher.listen("start_night","state_step_active_gn_button", pipes.good_night, false);
-               dispatcher.filter( filters.timming);
+
+               dispatcher.filter( filters.clone_data);
+
+               dispatcher.filter( filters.profiling);
+
+               dispatcher.filter( filters.show_profiling);
+
+
+
+               
+
+
+
+
 
                // debug_pipelines defined on index.html
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));

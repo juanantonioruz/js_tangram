@@ -105,10 +105,18 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            dispatcher.reset_filters();
 
            // filtering for timming
-           dispatcher.filter( filters.timming);
+
+
+
+
+       
+           dispatcher.filter( filters.clone_data);
+
+           dispatcher.filter( filters.profiling);
+
+           dispatcher.filter( filters.show_profiling);
 
            dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));
-
            return result;
 
        });

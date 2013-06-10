@@ -42,21 +42,13 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        // the funcions for composing have to be rearranged in reverse order
                        return this.future_state_steps.reverse();
                    },
-                   on_end:function(data_state, callback){
-                       recordDiff(this);
-                       recordDiff(data_state);
-                       this.after_data_state=$.extend(true, {}, data_state);
-
-                       dispatcher.dispatch("ON_END", this, data_state, callback);
-                       
-                   },
                    on_init:function(data_state, callback){
-                       recordStart(this);
-                       recordStart(data_state);
-                       this.before_data_state=$.extend(true, {}, data_state);
-
                       dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
+                   on_end:function(data_state, callback){
+                       dispatcher.dispatch("ON_END", this, data_state, callback);
+                   },
+                  
                    set_on_success:function(fn){
                        this.on_success=fn;
                        return this;
