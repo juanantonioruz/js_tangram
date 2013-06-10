@@ -118,7 +118,27 @@ define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.
 
 
                // debug_pipelines defined on index.html
-               dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));
+               dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",
+                                                            {"mouse_event_name":"click",
+                                                             fn:function(){
+
+                                                                 var message= "BEFORE: "+toJson(this.before_data_state.history)+"\n"+"AFTER: "+toJson(this.after_data_state.history);
+
+                                                                 $('#history').fadeOut(
+                                                                     function(){
+
+                                                                         $('#history').html("").append("<pre><code class='json'>"+message+"</code></pre>");
+                                                                         $('#history').fadeIn( function(){
+                                                                             setTimeout(function () {
+                                                                                 $('#history').fadeOut(1500, function(){$('#history').html('');});
+                                                                                   },3000);
+                                                                         });
+                                                                     }
+                                                                     
+                                                                 );
+                                                             }}
+
+                                                           ));
 
            }
            

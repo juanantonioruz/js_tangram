@@ -116,7 +116,10 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.filter( filters.show_profiling);
 
-           dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines"));
+           dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click",
+                                                             fn:function(){
+                                                                 console.log(this.ns);
+                                                             }}));
            return result;
 
        });

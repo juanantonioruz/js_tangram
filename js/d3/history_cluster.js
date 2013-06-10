@@ -13,8 +13,8 @@ define( function() {
     var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
 
-    function _create_node(the_name){
-        return {ns:the_name, children:[]};
+    function _create_node(item){
+        return {ns:item.ns,item:item, children:[]};
     };
 
     function recursive(colector, container){
@@ -23,15 +23,15 @@ define( function() {
 
             var child=colector.children[i];
 //             console.log(child);
-            var element=_create_node(child.ns);
+            var element=_create_node(child);
              container.children.push(element);
              recursive(child, element);
         }
     }
 
-    function render(root, div_id){
+    function render(root, div_id, item_fn){
 
-        var int_root=_create_node(root.ns);
+        var int_root=_create_node(root);
 
        recursive(root, int_root);
         
@@ -66,8 +66,8 @@ define( function() {
             .attr("display",function(d){ if(d.ns.indexOf("state_step_")>-1) return "visible"; return "none";})
             .attr("r", radio+20)
             .attr("fill","red")
-            .on("click", function(d,i){
-               console.dir(d);
+            .on(item_fn.mouse_event_name, function(d,i){
+              item_fn.fn.call(d.item);
                 // not necesary but this works if(d3.select(this).attr("display"))
 
             })

@@ -57,7 +57,7 @@ function logging_filter(data_state, callback){
 
 
 
-function debug_pipelines(render, div_id){
+function d3_debug_pipelines_filter(render, div_id, item_fn){
     
     var active_pipelines=[];
 
@@ -85,21 +85,16 @@ function debug_pipelines(render, div_id){
                     var index=active_pipelines.indexOf(this.target);
                     active_pipelines.splice(index, 1);
                 }
-                // this lines to ensure that there are not duplicates entries
-                // TODO eliminate
-//                if(this.target.active_parent.children.indexOf(this.target)==-1)
                 this.target.active_parent.children.push(this.target);
 
                  if(active_pipelines.length==0)
-                render(data_state, div_id);
+                render(data_state, div_id,item_fn);
 
             }else{
                 //active_pipelines.push(this.target);
             }
         }else{
             if(is_on_init(event_type)){
-                // this lines to ensure that there are not duplicates entries
-//                if(this.target.pipeline.children.indexOf(this.target)==-1)
                 this.target.pipeline.children.push(this.target);
             }else{
             }
@@ -133,5 +128,5 @@ function timming_filter(data_state, callback){
 
            }
 
-    return {logging:logging_filter, d3_debug_pipelines:debug_pipelines, show_profiling:timming_filter, profiling:profiling, clone_data:clone_data};
+    return {logging:logging_filter, d3_debug_pipelines:d3_debug_pipelines_filter, show_profiling:timming_filter, profiling:profiling, clone_data:clone_data};
 });
