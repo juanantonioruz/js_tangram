@@ -45,6 +45,17 @@ function clone_data(data_state, callback){
         callback(null, data_state);
 }
 
+function logging_filter(data_state, callback){
+        if(debug_filters)  console.log(">logging");
+ var event_type=this.transformation_event_type;
+ var ns=this.target.ns;
+
+    console.log("-> "+ event_type+"/"+ns);
+
+        callback(null, data_state);
+}
+
+
 
 function debug_pipelines(render, div_id){
     
@@ -122,5 +133,5 @@ function timming_filter(data_state, callback){
 
            }
 
-    return {d3_debug_pipelines:debug_pipelines, show_profiling:timming_filter, profiling:profiling, clone_data:clone_data};
+    return {logging:logging_filter, d3_debug_pipelines:debug_pipelines, show_profiling:timming_filter, profiling:profiling, clone_data:clone_data};
 });

@@ -110,7 +110,7 @@ define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.
                dispatcher.filter( filters.show_profiling);
 
 
-
+               dispatcher.filter( filters.logging);
                
 
 
