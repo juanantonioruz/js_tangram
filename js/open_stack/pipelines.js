@@ -2,52 +2,69 @@ define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/lo
        function(dao, selects, loadings,html_helper, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
 
            
-           var pipeline_load_operation=new Pipeline("loading_operation")
+           var pipeline_load_operation=function(){
+               return new Pipeline("loading_operation")
                    .addTransformation("loading_operation", 
                                       loadings.operation);
+           };
 
-
-           var pipeline_show_operations=new Mapper_Pipeline("operation_choosen", 
+           var pipeline_show_operations=function(){
+               
+               return new Mapper_Pipeline("operation_choosen", 
                                                             {
-                                                                "glance":new Pipeline("glance_operations")
+                                                                "glance":
+                                                                function(){
+                                                                    return new Pipeline("glance_operations")
                                                                     .addTransformation("loading_glance_operations", loadings.glance_operations)
-                                                                    .addTransformation("select_available_service_operations", selects.available_service_operations), 
+                                                                    .addTransformation("select_available_service_operations", selects.available_service_operations);
+                                                                    }, 
 
-                                                                "nova":new Pipeline("nova_operations")
+
+                                                                "nova":function(){
+                                                                    return new Pipeline("nova_operations")
                                                                     .addTransformation("laoding_nova_operations", loadings.nova_operations)
-                                                                    .addTransformation("select_available_service_operations", selects.available_service_operations)
+                                                                    .addTransformation("select_available_service_operations", selects.available_service_operations);
+                                                                    }
                                                             }, 
-                                                            "option_service_selected_name");
+                                   "option_service_selected_name");
+               };
 
 
-           var pipeline_show_services=new Pipeline("select_service_pipeline_for_current_tenant")
+           var pipeline_show_services=function(){
+               return new Pipeline("select_service_pipeline_for_current_tenant")
                    .addTransformation("Loading_endpoints", 
                                       loadings.endpoints)
                    .addTransformation("show_select_endpoints", 
                                       selects.endpoints      
                                      );
+               };
            
 
-           var pipeline_listing_resources=new Pipeline("select_tenant_pipeline_for_current_user")
+           var pipeline_listing_resources=function(){
+             //  alert("listing resources");
+               return new Pipeline("select_tenant_pipeline_for_current_user")
                    .addTransformation("loading_tenants_please_wait", 
                                       function(data_state, callback){ 
                                           $('#chart').fadeOut().html('').fadeIn();
                                           return loadings.tenants(data_state, callback);})
                    .addTransformation("show_select_tenant", 
                                       selects.tenants);
+               };
 
-           var pipeline_server=new Pipeline("create_server")
+           var pipeline_server=function(){
+              // alert("create server");
+               return new Pipeline("create_server")
                    .addTransformation("create_server_loading_tenants", 
                                       loadings.tenants)
                    .addTransformation("create_server_show_select_tenants", 
                                       selects.tenants);
+           };
 
 
-           var pipeline_create_server_for_selected_tenant=new Pipeline("create_server_for_selected_tenant")
-                   .addTransformation("create_server_loading_endpoints", 
-                                      loadings.endpoints)
-                   .addTransformation("create_server_select_nova_endpoint", 
-                                      function(data_state, callback){
+           var pipeline_create_server_for_selected_tenant=function(){
+               return new Pipeline("create_server_for_selected_tenant")
+                   .addTransformation("create_server_loading_endpoints", loadings.endpoints)
+                   .addTransformation("create_server_select_nova_endpoint",  function(data_state, callback){
                                           var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
                                               return (element.type == "compute");
                                           });
@@ -89,25 +106,33 @@ define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/lo
                              results.nova_flavors.flavors[0].links[0].href);
                        
                    });
+               };
 
            
 
 
 
-           var pipeline_load_tokens=new Pipeline("load_tokens_and_select_actions")
+           var pipeline_load_tokens=function(){
+               return new Pipeline("load_tokens_and_select_actions")
                    .addTransformation("prepare_tokens",loadings.prepare_tokens)
                    .addTransformation("dao_tokens",dao.dao)
                    .addTransformation("loaded_tokens",loadings.loaded_tokens)
                    .addTransformation("select_actions", selects.actions );
+               };
 
            
 
-           var pipeline_register=new Pipeline("register")
+           var pipeline_register=function(){
+               return new Pipeline("register")
                    .addTransformation("show_register_form", html_helper.register_form  );
+               };
 
-           var pipeline_mapper_action_choosen=new Mapper_Pipeline("action_choosen", 
+           var pipeline_mapper_action_choosen= function(){
+         //      alert("new action choosem");
+                       return new Mapper_Pipeline("action_choosen", 
                                                                   {"listing_resources":pipeline_listing_resources, 
                                                                    "create_server":pipeline_server}, "action_selected");
+                       };
 
 
 

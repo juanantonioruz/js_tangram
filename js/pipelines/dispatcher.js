@@ -56,10 +56,12 @@ define(["js/async.js"], function(async) {
                         paralels.map(function(o){
                             //running in parallel
                             // here we can have problems with mutable data_state in async
+                            //TODO fix that with the new changes
+                            console.dir(o);
+                            var pipi=o.pipeline();
+                           pipi.parallel=true;
 
-                            o.pipeline.parallel=true;
-
-                            o.pipeline.apply_transformations(data_state);
+                            pipi.apply_transformations(data_state);
                         });
 
 
@@ -67,7 +69,7 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
                             contador++;
-                            var compose=  new Pipeline("sync_compose_"+transformation_event_type)
+                            var compose= new Pipeline("sync_compose_"+transformation_event_type+"*"+contador)
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
                                         callback();
@@ -75,10 +77,10 @@ define(["js/async.js"], function(async) {
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
-                                var clone_pipe=$.extend(true, {}, o.pipeline);
+                                console.dir(o);
+//                                alert("invoking");
 
-
-                                compose.addPipe(clone_pipe);
+                                compose.addPipe(o.pipeline());
                             });
                             
                             compose.apply_transformations(data_state);

@@ -21,7 +21,6 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                    },
                    // this method to add statesteps
                    addTransformation:function(ns, transformation_fn){
-                    
                        this.future_state_steps.push(new StateStep(ns, transformation_fn));
                        return this;
                    },

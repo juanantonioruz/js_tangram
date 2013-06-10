@@ -1,30 +1,47 @@
 define( function() {
 function debug_pipelines(render, div_id){
+    
+    function is_pipeline(ns){
+       return  ns.indexOf("pipeline_")>-1;
+    };
+     function is_state_step(ns){
+       return !is_pipeline(ns);
+     };
+    function is_on_init(event_type){
+        return event_type=="ON_INIT";
+        }
+
+    function is_on_end(event_type){
+        return event_type=="ON_END";
+        }
+
     var active_pipelines=[];
+
     return function (data_state, callback){
         var ns=this.target.ns;
-        
         var event_type=this.transformation_event_type;
-        if(ns.indexOf("pipeline_")>-1){
-            if(event_type=="ON_INIT"){
+
+        if(is_pipeline(ns)){
+            if(is_on_init(event_type)){
 
                 if(active_pipelines.length>0)
                     this.target.active_parent=active_pipelines[active_pipelines.length-1];
                 else
                     this.target.active_parent=data_state;
                
-                if(!this.target.parallel)
+                if(!this.target.parallel){
                     active_pipelines.push(this.target);
+                }
 
 
-            }else if(event_type=="ON_END"){
+            }else if(is_on_end(event_type)){
 
                 if(!this.target.parallel){
                     var index=active_pipelines.indexOf(this.target);
-
                     active_pipelines.splice(index, 1);
                 }
                 // this lines to ensure that there are not duplicates entries
+                // TODO eliminate
                 if(this.target.active_parent.children.indexOf(this.target)==-1)
                 this.target.active_parent.children.push(this.target);
 
@@ -35,7 +52,7 @@ function debug_pipelines(render, div_id){
                 //active_pipelines.push(this.target);
             }
         }else{
-            if(event_type=="ON_INIT"){
+            if(is_on_init(event_type)){
                 // this lines to ensure that there are not duplicates entries
                 if(this.target.pipeline.children.indexOf(this.target)==-1)
                 this.target.pipeline.children.push(this.target);

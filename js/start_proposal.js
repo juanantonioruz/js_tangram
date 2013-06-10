@@ -68,7 +68,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            var result=function(){
 
-               pipelines.register
+               pipelines.register()
                    .apply_transformations(data_state);
 
            };
@@ -84,7 +84,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.listen("service_selected","state_step_show_select_endpoints", pipelines.show_operations, false);
 
-           dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
+          dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
 
            dispatcher.listen("tenant_selected","state_step_create_server_show_select_tenants",  pipelines.create_server_for_selected_tenant, false);
 
