@@ -64,8 +64,13 @@ define( function() {
         // pipelines and root
         node.append("circle")
             .attr("display",function(d){ if(d.ns.indexOf("state_step_")>-1) return "visible"; return "none";})
-            .attr("r", radio)
+            .attr("r", radio+20)
             .attr("fill","red")
+            .on("click", function(d,i){
+               console.dir(d);
+                // not necesary but this works if(d3.select(this).attr("display"))
+
+            })
         ;
 
         node.append("text")

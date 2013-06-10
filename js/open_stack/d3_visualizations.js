@@ -23,7 +23,7 @@ define([  "js/open_stack/loadings.js", "js/pipelines/dispatcher.js", "js/d3/clus
                        get_tenant(data_state.d3_open_stack.children[0].children, "name", data_state.tenant_name).children.push(images_node);               
 
                        function on_success_callback(){
-                           callback(null, data_state);
+                          // callback(null, data_state);
                        }
 
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),

@@ -87,7 +87,7 @@ function debug_pipelines(render, div_id){
                 }
                 // this lines to ensure that there are not duplicates entries
                 // TODO eliminate
-                if(this.target.active_parent.children.indexOf(this.target)==-1)
+//                if(this.target.active_parent.children.indexOf(this.target)==-1)
                 this.target.active_parent.children.push(this.target);
 
                  if(active_pipelines.length==0)
@@ -99,7 +99,7 @@ function debug_pipelines(render, div_id){
         }else{
             if(is_on_init(event_type)){
                 // this lines to ensure that there are not duplicates entries
-                if(this.target.pipeline.children.indexOf(this.target)==-1)
+//                if(this.target.pipeline.children.indexOf(this.target)==-1)
                 this.target.pipeline.children.push(this.target);
             }else{
             }
