@@ -2,7 +2,7 @@ define( function() {
 
     
     var
-    radio=4.5,
+    radio=10,
     radio_max=150,
     width = 1360,
     height = 600;
@@ -64,7 +64,7 @@ define( function() {
         // pipelines and root
         node.append("circle")
             .attr("display",function(d){ if(d.ns.indexOf("state_step_")>-1) return "visible"; return "none";})
-            .attr("r", radio+20)
+            .attr("r", radio)
             .attr("fill","red")
             .on(item_fn.mouse_event_name, function(d,i){
               item_fn.fn.call(d.item);

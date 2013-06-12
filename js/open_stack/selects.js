@@ -1,6 +1,6 @@
-define(["js/pipelines/dispatcher.js"],
-       function(dispatcher) {
-           return {
+define(["js/common.js", "js/pipelines/dispatcher.js"],
+       function(common, dispatcher) {
+           var result= {
              
                available_service_operations:function (data_state, callback){
                
@@ -101,6 +101,7 @@ define(["js/pipelines/dispatcher.js"],
 
 
            },
+
                actions:function(data_state, callback){
                    var target_pipeline=this.pipeline;
                    show_fn_result_to_the_user_and_wait("you are logged now!, please select an option: ", 
@@ -126,6 +127,6 @@ define(["js/pipelines/dispatcher.js"],
                }
               
            };
-
+           return common.naming_fns(result, "select_");
 
        });

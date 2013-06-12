@@ -80,9 +80,9 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.listen("action_selected","pipeline_load_tokens_and_select_actions", pipelines.mapper_action_choosen, false);
 
-           dispatcher.listen("tenant_selected","state_step_show_select_tenant", pipelines.show_services, false);
+           dispatcher.listen("tenant_selected","state_step_select_tenants", pipelines.show_services, false);
 
-           dispatcher.listen("service_selected","state_step_show_select_endpoints", pipelines.show_operations, false);
+           dispatcher.listen("service_selected","state_step_select_endpoints", pipelines.show_operations, false);
 
           dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
 

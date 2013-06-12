@@ -1,6 +1,6 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
-           return {
+           var result= {
                prepare_tokens:function (data_state, callback){
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/tokens", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}};
                    data_state.dao=dao_object;
@@ -47,6 +47,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    });
                    
                },
+
                operation:function (data_state, callback){
 
                    var data_operation=data_state.data_operation;
@@ -131,6 +132,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
+
                create_server:function (data_state, callback){
                    
                    var data_operation=data_state.data_operation;
@@ -152,5 +154,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                }
            };
 
+           return common.naming_fns(result);
 
        });

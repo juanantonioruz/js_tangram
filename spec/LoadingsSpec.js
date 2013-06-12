@@ -12,10 +12,14 @@ define(["js/common.js", "js/open_stack/loadings.js"], function (common, loadings
 
     return describe("open_stack_tests", function() {
 
+
+
+
+
         function call_fn(fn, match_fn){
             var op=new Callback();
             runs(function() {
-                fn(data_state, op.callback);
+                fn.fn(data_state, op.callback);
             });
             
             waitsFor(function() {

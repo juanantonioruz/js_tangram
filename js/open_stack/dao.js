@@ -1,6 +1,6 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
-           return {
+           var result= {
                // need dao={method, action, data}
                // return dao.result || dao.error
                dao:function (data_state, callback){
@@ -22,9 +22,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            callback(msg.error, data_state);
                        }
                    });
-                   
                }
            };
+           return common.naming_fns(result);
 
 
        });

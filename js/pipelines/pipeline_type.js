@@ -20,8 +20,8 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        return this;
                    },
                    // this method to add statesteps
-                   addTransformation:function(ns, transformation_fn){
-                       this.future_state_steps.push(new StateStep(ns, transformation_fn));
+                   addTransformation:function(transformation_fn){
+                       this.future_state_steps.push(new StateStep(transformation_fn.name, transformation_fn.fn));
                        return this;
                    },
                    // this method to add pipes 
