@@ -44,7 +44,9 @@ define(["js/async.js"], function(async) {
                 
                 function continue_listeners(){
 
-                    
+                    if(target.class_name=="Pipeline"){
+                    }else if (target.class_name=="StateStep"){
+                    }
                     var pipeline_listeners=domain_tree[target.ns.split("*")[0]+"/"+transformation_event_type];
 
                     if(pipeline_listeners){
@@ -60,7 +62,7 @@ define(["js/async.js"], function(async) {
                             //running in parallel
                             // here we can have problems with mutable data_state in async
                             //TODO fix that with the new changes
-                            console.dir(o);
+//                             console.dir(o);
                             var pipi=o.pipeline();
                             pipi.parallel=true;
 

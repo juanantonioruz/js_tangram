@@ -41,6 +41,6 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
            }); 
 
            StateStep.prototype.contador=0;
-
+           StateStep.prototype.class_name="StateStep";
            return StateStep;
        });

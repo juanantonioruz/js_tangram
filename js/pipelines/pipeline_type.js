@@ -138,7 +138,7 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
            Pipeline.prototype.on_error=   function(error, pipeline){
                alert("error"+toJson(error));
            };
-           
+           Pipeline.prototype.class_name="Pipeline";
            return Pipeline;
            
        });
