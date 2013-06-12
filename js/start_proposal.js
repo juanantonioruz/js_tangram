@@ -108,7 +108,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
 
 
-               dispatcher.filter( filters.logging);
+           dispatcher.filter( filters.logging);
        
            dispatcher.filter( filters.clone_data);
 

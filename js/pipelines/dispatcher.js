@@ -1,11 +1,14 @@
 define(["js/async.js"], function(async) {
-        var contador=0;    
+    var contador=0;    
+
     var dispatcher=(function(){
+
         var domain_tree={};
         var filters=[];
 
 
         return {
+
             dispatch:function(transformation_event_type, target, data_state,callback){
 
                 
@@ -13,25 +16,25 @@ define(["js/async.js"], function(async) {
                 // this line works because is inyected in start_dev... so TODO: its necesary to change!
                 var Pipeline=this.Pipeline;
                 
-               
+                
 
-                 if(filters.length>0 ){
+                if(filters.length>0 ){
 
-                //TODO filters have to be an array not only one... reverse!!!
+                    //TODO filters have to be an array not only one... reverse!!!
 
-                     var composition=async.compose.apply(null, 
-                                                         filters.map(
-                                                             function(o){
-                                                                 return o.bind(
-                                                                     {data_state:data_state, target:target, 
-                                                                      transformation_event_type:transformation_event_type});}));
-                     composition(data_state, function(err, result){
-                         //TODO error catching?? !
-                             continue_listeners();              
-                     });
-                 }else{
-                     continue_listeners();              
-                 }
+                    var composition=async.compose.apply(null, 
+                                                        filters.map(
+                                                            function(o){
+                                                                return o.bind(
+                                                                    {data_state:data_state, target:target, 
+                                                                     transformation_event_type:transformation_event_type});}));
+                    composition(data_state, function(err, result){
+                        //TODO error catching?? !
+                        continue_listeners();              
+                    });
+                }else{
+                    continue_listeners();              
+                }
                 // //     if(!pipeline_listeners) pipeline_listeners=[];
                 // //     var ff=filters.map(function(o){return {parallel:false, pipeline:o};});
 
@@ -59,7 +62,7 @@ define(["js/async.js"], function(async) {
                             //TODO fix that with the new changes
                             console.dir(o);
                             var pipi=o.pipeline();
-                           pipi.parallel=true;
+                            pipi.parallel=true;
 
                             pipi.apply_transformations(data_state);
                         });
@@ -72,13 +75,13 @@ define(["js/async.js"], function(async) {
                             var compose= new Pipeline("sync_compose_"+transformation_event_type+"*"+contador)
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
-                                        callback();
+                                            callback();
                                     })
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
-//                                console.dir(o);
-//                                alert("invoking");
+                                //                                console.dir(o);
+                                //                                alert("invoking");
 
                                 compose.addPipe(o.pipeline());
                             });
@@ -87,18 +90,19 @@ define(["js/async.js"], function(async) {
                         }else{
                             // there is no async pipelines so we continue the execution flow
                             if(callback)
-                            callback();
+                                callback();
                         }
                     }else{
                         if(callback)
-                        callback();
+                            callback();
                     }
                 };
 
 
             },
+
             remove:function(transformation_event_type, ns_listened, pipeline){
-                   var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
+                var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
 
                 
 
@@ -114,7 +118,7 @@ define(["js/async.js"], function(async) {
                 }else{ 
                     // TODO: the listener doesnt exist yet, so it cant be removed
                 }
-             
+                
             },
             
             listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
@@ -126,9 +130,11 @@ define(["js/async.js"], function(async) {
                 }
 
             },
+
             filter:function(_fn){
                 filters.unshift(_fn);
             },
+
             reset_filters:function(){
                 filters=[];
             },
