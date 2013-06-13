@@ -3,8 +3,10 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
            
 
            var Pipeline=Fiber.extend(function(){
+               var that=this;
                return  {
                    init: function(name,on_success, on_error) {
+                     
                        this.step_count=0;
                        this.ns="pipeline_"+name;
                        this.future_state_steps=[];

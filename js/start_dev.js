@@ -101,7 +101,7 @@ define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.
 
                dispatcher.listen("ON_INIT","pipeline_sync_example",  pipes.listener_slower, false);
 
-               dispatcher.listen("start_night","state_step_active_gn_button", pipes.good_night, false);
+               dispatcher.listen("start_night","state_step_dev_active_gn_button", pipes.good_night, false);
 
                dispatcher.filter( filters.clone_data);
 

@@ -50,13 +50,13 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            // EOP
            dispatcher.reset();
 
-           dispatcher.listen("try_to_log","pipeline_register", pipelines.load_tokens, false);
+           dispatcher.listen("try_to_log","pipeline_register", pipelines.load_tokens_and_select_actions, false);
 
-           dispatcher.listen("action_selected","pipeline_load_tokens_and_select_actions", pipelines.mapper_action_choosen, false);
+           dispatcher.listen("action_selected","pipeline_load_tokens_and_select_actions", pipelines.action_choosen, false);
 
-           dispatcher.listen("tenant_selected","pipeline_select_tenant_pipeline_for_current_user|state_step_select_tenants", pipelines.show_services, false);
+           dispatcher.listen("tenant_selected","pipeline_select_tenant_pipeline_for_current_user|state_step_select_tenants", pipelines.select_service_pipeline_for_current_tenant, false);
 
-           dispatcher.listen("service_selected","state_step_select_endpoints", pipelines.show_operations, false);
+           dispatcher.listen("service_selected","state_step_select_endpoints", pipelines.operation_choosen, false);
 
           dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
 
