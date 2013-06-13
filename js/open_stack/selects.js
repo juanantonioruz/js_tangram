@@ -15,18 +15,19 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            var selected=$(select_dom_id+" option:selected").first();
                            
                            data_state.operation_option=selected;
+                           
                            data_state.operation_option.data('item').host=data_state.option_service_selected.data("item").endpoints[0].publicURL;
                            data_state.operation_option.data('item').title=selected.val();
                            data_state.data_operation=data_state.operation_option.data("item");
                            data_state.option_service_selected_name=data_state.option_service_selected.data("item").name;
-                           
                            // clean interface is a function declared in start_proposal
                            clean_interface();
                            //                                               show_tenant_endpoints_pipeline_fn();
                            show_message_to_the_user("you have selected operation: "+selected.val());
 
-                           dispatcher.dispatch("operation_selected", target_state_step,data_state,  function(res,pipeline){console.info("operation_selected");} );
-
+                           dispatcher.dispatch("operation_selected", target_state_step,data_state, 
+                                               function(res,pipeline){console.info("operation_selected");} );
+                           dispatcher.dispatch(data_state.operation_option.data('item').title, target_state_step, data_state);
                        };
                    };
                    //TODO: fn in start proposal, with global scope
@@ -34,8 +35,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
                }
                //TODO fn in start proposal, with global scope
-               show_fn_result_to_the_user_and_wait('Please select an option  available ', 
-                                                   show_service_select);
+               show_fn_result_to_the_user_and_wait('Please select an option  available ', show_service_select);
 
 
            },

@@ -4,8 +4,10 @@ define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/lo
            
            var pipeline_load_operation=function(){
                return new Pipeline("loading_operation")
-                   .addTransformation( 
-                                      loadings.operation);
+                   .addTransformation(loadings.prepare_operation)
+                   .addTransformation(dao.dao)
+                   .addTransformation(loadings.show_operation_result)               
+               ;
            };
 
            var pipeline_show_operations=function(){

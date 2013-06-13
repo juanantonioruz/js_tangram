@@ -80,7 +80,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.listen("action_selected","pipeline_load_tokens_and_select_actions", pipelines.mapper_action_choosen, false);
 
-           dispatcher.listen("tenant_selected","pipeline_select_service_pipeline_for_current_tenant|state_step_select_tenants", pipelines.show_services, false);
+           dispatcher.listen("tenant_selected","pipeline_select_tenant_pipeline_for_current_user|state_step_select_tenants", pipelines.show_services, false);
 
            dispatcher.listen("service_selected","state_step_select_endpoints", pipelines.show_operations, false);
 
@@ -88,14 +88,21 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.listen("tenant_selected","pipeline_create_server|state_step_select_tenants",  pipelines.create_server_for_selected_tenant, false);
 
-
+           dispatcher.listen("ON_END", "pipeline_loading_operation", function(){return new Pipeline("ey").addTransformation(
+               {name:"its_me",
+                fn:function(data_state, callback){
+                    
+                    $('#container').append("hi i am listening that you have selected nova-extensions!");
+                    callback(null, data_state);
+                }}
+           );});
 
 
 
            // d3js hooks, running in parallel! last parameter:true!
            dispatcher.listen("ON_INIT", "pipeline_create_server|state_step_select_tenants", d3_pipelines.d3_show_tenants,true);   
 
-          //  dispatcher.listen("tenant_selected", "pipeline_create_server|state_step_select_tenants", d3_pipelines.d3_show_tenant_data ,false);   
+          // dispatcher.listen("tenant_selected", "pipeline_create_server|state_step_select_tenants", d3_pipelines.d3_show_tenant_data ,false);   
 
 
 

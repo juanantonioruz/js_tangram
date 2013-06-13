@@ -48,25 +48,26 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                },
 
-               operation:function (data_state, callback){
-
+               prepare_operation:function (data_state, callback){
                    var data_operation=data_state.data_operation;
-                   $('#left').append("<h1 class='left_message'>Loading "+data_operation.title+",  please wait ...</h1>");
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/operations",
-                       data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "") /**tenant_name:data_state.tenant_name**/}
-                   }).done(function( msg ) {
-                       if(!msg.error){
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "") /**tenant_name:data_state.tenant_name**/}};
+                   data_state.dao=dao_object;
+                   $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");
+                   callback(null, data_state);
 
-                           $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
 
+
+
+                
+               },
+
+               show_operation_result:function(data_state, callback){
+                   var data_operation=data_state.data_operation;
+                   var msg=data_state.dao.result;
+                   $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
                            data_state[data_operation.title]=msg;
                            callback(null, data_state);
-                       }else{
-                           callback(msg.error, data_state);
-                       }
-                   });
+
                },
 
                endpoints:function (data_state, callback){
@@ -126,6 +127,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"});
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/extensions"}, visible:"LIST EXTENSIONS", hidden:"nova-extensions"});
 
 
                    
