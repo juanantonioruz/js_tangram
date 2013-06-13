@@ -1,8 +1,8 @@
-define(["js/common.js", "js/open_stack/loadings.js"], function (common, loadings) {
+define(["js/common.js", "js/open_stack/loadings.js", "js/open_stack/dao.js"], function (common, loadings, dao) {
     function doc(o, _alert){
         _alert=_alert || 0;
         if(_alert==0)
-        console.dir(o);
+            console.dir(o);
         else if(_alert==1)
             console.log(common.toJson(o));
         else
@@ -226,54 +226,91 @@ define(["js/common.js", "js/open_stack/loadings.js"], function (common, loadings
                             },
                             "visible": "LIST SERVERS",
                             "hidden": "nova-servers"
-                        }
+                        }/** ...more or less ... **/
                     ]);
+                });
 
+            });
+
+
+
+            it("prepare dao and dao operation: nova images", function(){
+
+                var data_operation=data_state.suboptions_select[0];
+                data_state.data_operation={
+                    title:data_operation.hidden
+                    ,url:data_operation.item.url
+                    ,host:data_state.option_service_selected.endpoints[0].publicURL
+                };
+
+                doc(data_state.data_operation);
+
+                call_fn(loadings.prepare_operation, function(){
+                    var result=data_state.dao;
+                    expect(data_state.dao.action).toContain("operations");
+
+                    doc({
+                        "method": "POST",
+                        "action": "http://localhost:3000/operations",
+                        "data": {
+                            "token": "MIIKYwYJKoZIhvcNAQcCoIIKVDCCClACAQExCTAHBgUrDgMCGjCCCTwGCSqGSIb3DQEHAaCCCS0EggkpeyJhY2Nlc3MiOiB7InRva2VuIjogeyJpc3N1ZWRfYXQiOiAiMjAxMy0wNi0xM1QxMTo0MDowNC41MDI1MTEiLCAiZXhwaXJlcyI6ICIyMDEzLTA2LTE0VDExOjQwOjA0WiIsICJpZCI6ICJwbGFjZWhvbGRlciIsICJ0ZW5hbnQiOiB7ImRlc2NyaXB0aW9uIjogbnVsbCwgImVuYWJsZWQiOiB0cnVlLCAiaWQiOiAiMzc4OTE4ZTg5ZTJiNGYxNmE3M2Q0MGVlYTJmOWNkOWUiLCAibmFtZSI6ICJpbnZpc2libGVfdG9fYWRtaW4ifX0sICJzZXJ2aWNlQ2F0YWxvZyI6IFt7ImVuZHBvaW50cyI6IFt7ImFkbWluVVJMIjogImh0dHA6Ly8xOTIuMTY4LjEuMjI6ODc3NC92Mi8zNzg5MThlODllMmI0ZjE2YTczZDQwZWVhMmY5Y2Q5ZSIsICJyZWdpb24iOiAiUmVnaW9uT25lIiwgImludGVybmFsVVJMIjogImh0dHA6Ly8xOTIuMTY4LjEuMjI6ODc3NC92Mi8zNzg5MThlODllMmI0ZjE2YTczZDQwZWVhMmY5Y2Q5ZSIsICJpZCI6ICJiN2ViMDhkMTYwOTg0OGFmYjdhNWE0N2UxNTFiNGQyMyIsICJwdWJsaWNVUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo4Nzc0L3YyLzM3ODkxOGU4OWUyYjRmMTZhNzNkNDBlZWEyZjljZDllIn1dLCAiZW5kcG9pbnRzX2xpbmtzIjogW10sICJ0eXBlIjogImNvbXB1dGUiLCAibmFtZSI6ICJub3ZhIn0sIHsiZW5kcG9pbnRzIjogW3siYWRtaW5VUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjozMzMzIiwgInJlZ2lvbiI6ICJSZWdpb25PbmUiLCAiaW50ZXJuYWxVUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjozMzMzIiwgImlkIjogIjc0OGI5OWFiZGM4YzQ0NDBiNGQ2NTE4OTk2YWJhNWQ2IiwgInB1YmxpY1VSTCI6ICJodHRwOi8vMTkyLjE2OC4xLjIyOjMzMzMifV0sICJlbmRwb2ludHNfbGlua3MiOiBbXSwgInR5cGUiOiAiczMiLCAibmFtZSI6ICJzMyJ9LCB7ImVuZHBvaW50cyI6IFt7ImFkbWluVVJMIjogImh0dHA6Ly8xOTIuMTY4LjEuMjI6OTI5MiIsICJyZWdpb24iOiAiUmVnaW9uT25lIiwgImludGVybmFsVVJMIjogImh0dHA6Ly8xOTIuMTY4LjEuMjI6OTI5MiIsICJpZCI6ICIwYWE5OTA5OGQwNDU0YTFhODczOWZlM2E4MTIzMjAwMiIsICJwdWJsaWNVUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo5MjkyIn1dLCAiZW5kcG9pbnRzX2xpbmtzIjogW10sICJ0eXBlIjogImltYWdlIiwgIm5hbWUiOiAiZ2xhbmNlIn0sIHsiZW5kcG9pbnRzIjogW3siYWRtaW5VUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo4Nzc2L3YxLzM3ODkxOGU4OWUyYjRmMTZhNzNkNDBlZWEyZjljZDllIiwgInJlZ2lvbiI6ICJSZWdpb25PbmUiLCAiaW50ZXJuYWxVUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo4Nzc2L3YxLzM3ODkxOGU4OWUyYjRmMTZhNzNkNDBlZWEyZjljZDllIiwgImlkIjogIjU5ODU4NmNkYzAwNjRmNDg4MGRmMzYwOTNhYzRjYzk4IiwgInB1YmxpY1VSTCI6ICJodHRwOi8vMTkyLjE2OC4xLjIyOjg3NzYvdjEvMzc4OTE4ZTg5ZTJiNGYxNmE3M2Q0MGVlYTJmOWNkOWUifV0sICJlbmRwb2ludHNfbGlua3MiOiBbXSwgInR5cGUiOiAidm9sdW1lIiwgIm5hbWUiOiAiY2luZGVyIn0sIHsiZW5kcG9pbnRzIjogW3siYWRtaW5VUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo4NzczL3NlcnZpY2VzL0FkbWluIiwgInJlZ2lvbiI6ICJSZWdpb25PbmUiLCAiaW50ZXJuYWxVUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo4NzczL3NlcnZpY2VzL0Nsb3VkIiwgImlkIjogIjUxMzBkYWQ2MmNiMzQ0NThhZGU5NTk4ZTIzOTQ3MjNjIiwgInB1YmxpY1VSTCI6ICJodHRwOi8vMTkyLjE2OC4xLjIyOjg3NzMvc2VydmljZXMvQ2xvdWQifV0sICJlbmRwb2ludHNfbGlua3MiOiBbXSwgInR5cGUiOiAiZWMyIiwgIm5hbWUiOiAiZWMyIn0sIHsiZW5kcG9pbnRzIjogW3siYWRtaW5VUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjozNTM1Ny92Mi4wIiwgInJlZ2lvbiI6ICJSZWdpb25PbmUiLCAiaW50ZXJuYWxVUkwiOiAiaHR0cDovLzE5Mi4xNjguMS4yMjo1MDAwL3YyLjAiLCAiaWQiOiAiM2RmMDUzNmRhYzVhNDRhZTk0OWE2MTcxN2NmODFjNzQiLCAicHVibGljVVJMIjogImh0dHA6Ly8xOTIuMTY4LjEuMjI6NTAwMC92Mi4wIn1dLCAiZW5kcG9pbnRzX2xpbmtzIjogW10sICJ0eXBlIjogImlkZW50aXR5IiwgIm5hbWUiOiAia2V5c3RvbmUifV0sICJ1c2VyIjogeyJ1c2VybmFtZSI6ICJkZW1vIiwgInJvbGVzX2xpbmtzIjogW10sICJpZCI6ICI5NWIzNjM4NDVkZTY0MThlOWZhOGNmN2M0YWFjMWZjZCIsICJyb2xlcyI6IFt7Im5hbWUiOiAiTWVtYmVyIn1dLCAibmFtZSI6ICJkZW1vIn0sICJtZXRhZGF0YSI6IHsiaXNfYWRtaW4iOiAwLCAicm9sZXMiOiBbIjRlZTFkNzMzYmQwMzQ2YzhiNTNiZTE2YTQxYThmZTc2Il19fX0xgf8wgfwCAQEwXDBXMQswCQYDVQQGEwJVUzEOMAwGA1UECBMFVW5zZXQxDjAMBgNVBAcTBVVuc2V0MQ4wDAYDVQQKEwVVbnNldDEYMBYGA1UEAxMPd3d3LmV4YW1wbGUuY29tAgEBMAcGBSsOAwIaMA0GCSqGSIb3DQEBAQUABIGAbOswjhLqicGZCzfZ6ryHaqR2A4KP4v6KyyLzrxfeZ2eL6DJ3n+z5W1H4Yne0wz77ejexNqxXhE5jo83eSYopxJtEk13KArVEwtbOP56z+SA0i6ZZ7sQp6t7-S0+dHH4elIZ+XBg0uVP14Ftl62Svbk1otCbMFN2d9aaccWqYEyo=",
+                            "s_url": "/images",
+                            "s_host": "192.168.1.22:8774/v2/378918e89e2b4f16a73d40eea2f9cd9e"
+                        }
+                    } );
+                });
                 
-                    
 
+                call_fn(dao.dao, function(){
+                    var result=data_state.dao.result;
+                    expect(data_state.dao.result).toBeDefined();
 
+                    doc(result );
                 });
+                  call_fn(loadings.show_operation_result, function(){
+                    var result=data_state[data_operation.hidden];
+                    expect(result.images).toBeDefined();
 
+                    doc(result );
+                });
             });
 
-            it("load operation: nova images", function(){
 
-                    var data_operation=data_state.suboptions_select[0];
-                    data_state.data_operation={
-                        title:data_operation.hidden
-                        ,url:data_operation.item.url
-                        ,host:data_state.option_service_selected.endpoints[0].publicURL
-                    };
 
-                    doc(data_state.data_operation);
+   it("prepare dao and dao operation: nova flavors", function(){
 
-                call_fn(loadings.operation, function(){
-                    var result=data_state[data_state.data_operation.title];
-                    expect(result).toBeDefined();
+                var data_operation=data_state.suboptions_select[1];
+                data_state.data_operation={
+                    title:data_operation.hidden
+                    ,url:data_operation.item.url
+                    ,host:data_state.option_service_selected.endpoints[0].publicURL
+                };
 
-                    doc(result ,1);
+                doc(data_state.data_operation);
+
+                call_fn(loadings.prepare_operation, function(){
+                    var result=data_state.dao;
+                    expect(data_state.dao.action).toContain("operations");
+
+                    doc(result );
                 });
+                
 
+                call_fn(dao.dao, function(){
+                    var result=data_state.dao.result;
+                    expect(data_state.dao.result).toBeDefined();
+
+                    doc(result );
+                });
+                  call_fn(loadings.show_operation_result, function(){
+                    var result=data_state[data_operation.hidden];
+                    expect(result.flavors).toBeDefined();
+
+                    doc(result );
+                });
             });
 
-            it("load operation: nova flavors", function(){
-                    var data_operation=data_state.suboptions_select[1];
-                    data_state.data_operation={
-                        title:data_operation.hidden
-                        ,url:data_operation.item.url
-                        ,host:data_state.option_service_selected.endpoints[0].publicURL
-                    };
-                    doc(data_state.data_operation);
 
-                call_fn(loadings.operation, function(){
-                    var result=data_state[data_state.data_operation.title];
-                    expect(result).toBeDefined();
-
-                    doc(result,1);
-                });
-
-            });
 
         });
 
