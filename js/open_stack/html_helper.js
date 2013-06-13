@@ -3,7 +3,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
               return common.naming_fns({register_form:function (data_state, callback){
                var target_pipeline=this.pipeline;
                $('#right').prepend("<h3 class='left_message'>show_register_form,  ...</h3>");
-               $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP: <input type='text' id='stack_ip' value='192.168.1.22'><br> Stack User: <input type='text' id='stack_user' value='demo'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
+               $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP: <input type='text' id='stack_ip' value='192.168.1.22'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
 
                
                $('#stack_logging').on('click', function(){

@@ -1,5 +1,33 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
+function show_dom_select(select_dom_id, the_dom_place_to_append_the_select, the_collection, the_on_change_select_fn, store_model_in_option){
+
+    return function(){
+        $(select_dom_id).remove();
+        $(the_dom_place_to_append_the_select).append("<select id='"+select_dom_id.replace('#', '')+"'></select>");
+        $.each(the_collection, function(i, value){
+            var option=$("<option value='"+value.hidden+"'>"+value.visible+"</option>");
+            if(store_model_in_option)
+                option.data("item", value.item);
+            $(select_dom_id).append(option);
+        });
+        $(select_dom_id).prop("selectedIndex", -1);
+        $(select_dom_id).change(the_on_change_select_fn(select_dom_id));
+    };
+}
+
+function show_fn_result_to_the_user_and_wait(the_message, the_function){
+
+    $('#loading').fadeOut(1000, function(){
+        $('#loading')
+            .html(the_message)
+            .css('background-color', 'yellow')
+            .fadeIn(1000, the_function());
+    }
+                         );
+}
+
+
            var result= {
              
                available_service_operations:function (data_state, callback){

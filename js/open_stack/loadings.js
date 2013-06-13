@@ -9,21 +9,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                },
 
-                loaded_tokens:function (data_state, callback){
-                    if(data_state.dao.result){
-                        data_state.token_id=data_state.dao.result.access.token.id;
+               loaded_tokens:function (data_state, callback){
+                   if(data_state.dao.result){
+                       data_state.token_id=data_state.dao.result.access.token.id;
 
-                        $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
-                        $('#register_form').fadeOut(500).empty().fadeIn();
-                        callback(null, data_state);
-                       } else
+                       $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
+                       $('#register_form').fadeOut(500).empty().fadeIn();
+                       callback(null, data_state);
+                   } else
                    callback(data_state.dao.error, data_state);
                    
                    
                },
 
                tokens:function (data_state, callback){
-                  
+                   
                    $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
                    $.ajax({
                        type: "POST",
@@ -33,18 +33,18 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                        .done(function( msg ) {
                            //&& msg.indexOf("Error")>=-1
-                       if(!msg.error ){
-                           data_state.token_id=msg.access.token.id;
-                           $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
-                           
-                           $('#register_form').fadeOut(500).empty().fadeIn();
+                           if(!msg.error ){
+                               data_state.token_id=msg.access.token.id;
+                               $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
+                               
+                               $('#register_form').fadeOut(500).empty().fadeIn();
 
-                           callback(null, data_state);   
-                       }else{
-                           $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
-                           callback(msg.error, data_state);
-                       }
-                   });
+                               callback(null, data_state);   
+                           }else{
+                               $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
+                               callback(msg.error, data_state);
+                           }
+                       });
                    
                },
 
@@ -58,15 +58,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
 
 
-                
+                   
                },
 
                show_operation_result:function(data_state, callback){
                    var data_operation=data_state.data_operation;
                    var msg=data_state.dao.result;
                    $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
-                           data_state[data_operation.title]=msg;
-                           callback(null, data_state);
+                   data_state[data_operation.title]=msg;
+                   callback(null, data_state);
 
                },
 
@@ -122,19 +122,32 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                },
 
+               cinder_operations:function(data_state, callback){
+                   data_state.suboptions_select=[];
+                   data_state.suboptions_select.push({item:{service_type:"volume", url:"/volumes"}, visible:"LIST VOLUMES", hidden:'cinder-volumes'});
+                   data_state.suboptions_select.push({item:{service_type:"volume", url:"/types"}, visible:"LIST VOLUME TYPES", hidden:'cinder-volumes-types'});
+                   data_state.suboptions_select.push({item:{service_type:"volume", url:"/snapshots"}, visible:"LIST SNAPSHOTS", hidden:'cinder-snapshots'});
+                   
+                   callback(null, data_state);
+
+               },
                nova_operations:function(data_state, callback){
                    data_state.suboptions_select=[];
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"});
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/extensions"}, visible:"LIST EXTENSIONS", hidden:"nova-extensions"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/limits"}, visible:"LIST LIMITS", hidden:"nova-limits"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-agents"}, visible:"OS AGENTS", hidden:"os-agents"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-aggregates"}, visible:"OS AGGREGATES", hidden:"os-aggregates"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-hosts"}, visible:"OS HOSTS", hidden:"os-hosts"});
+                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-services"}, visible:"OS SERVICES", hidden:"os-services"});
 
 
                    
                    callback(null, data_state);
 
                },
-
                create_server:function (data_state, callback){
                    
                    var data_operation=data_state.data_operation;

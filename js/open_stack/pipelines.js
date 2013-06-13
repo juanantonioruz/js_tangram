@@ -26,7 +26,14 @@ define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/lo
                                                                     return new Pipeline("nova_operations")
                                                                     .addTransformation( loadings.nova_operations)
                                                                     .addTransformation( selects.available_service_operations);
+                                                                    },
+                                                                "cinder":function(){
+                                                                    return new Pipeline("cinder_operations")
+                                                                    .addTransformation( loadings.cinder_operations)
+                                                                    .addTransformation( selects.available_service_operations);
                                                                     }
+
+
                                                             }, 
                                    "option_service_selected_name");
                };
