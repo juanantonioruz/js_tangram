@@ -80,26 +80,26 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.listen("action_selected","pipeline_load_tokens_and_select_actions", pipelines.mapper_action_choosen, false);
 
-           dispatcher.listen("tenant_selected","state_step_select_tenants", pipelines.show_services, false);
+           dispatcher.listen("tenant_selected","pipeline_select_service_pipeline_for_current_tenant|state_step_select_tenants", pipelines.show_services, false);
 
            dispatcher.listen("service_selected","state_step_select_endpoints", pipelines.show_operations, false);
 
           dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
 
-           dispatcher.listen("tenant_selected","state_step_create_server_show_select_tenants",  pipelines.create_server_for_selected_tenant, false);
+           dispatcher.listen("tenant_selected","pipeline_create_server|state_step_select_tenants",  pipelines.create_server_for_selected_tenant, false);
 
 
 
 
 
            // d3js hooks, running in parallel! last parameter:true!
-           dispatcher.listen("ON_INIT", "state_step_create_server_show_select_tenants", d3_pipelines.d3_show_tenants,true);   
+           dispatcher.listen("ON_INIT", "pipeline_create_server|state_step_select_tenants", d3_pipelines.d3_show_tenants,true);   
 
-           dispatcher.listen("tenant_selected", "state_step_create_server_show_select_tenants", d3_pipelines.d3_show_tenant_data ,false);   
+          //  dispatcher.listen("tenant_selected", "pipeline_create_server|state_step_select_tenants", d3_pipelines.d3_show_tenant_data ,false);   
 
 
 
-           dispatcher.listen("ON_INIT", "state_step_create_server_wait_for_the_name", d3_pipelines.d3_show_images_and_flavors,true);                   
+          dispatcher.listen("ON_INIT", "pipeline_create_server_for_selected_tenant|state_step_create_server_wait_for_the_name", d3_pipelines.d3_show_images_and_flavors,true);                   
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();

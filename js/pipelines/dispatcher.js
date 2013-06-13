@@ -43,11 +43,23 @@ define(["js/async.js"], function(async) {
 
                 
                 function continue_listeners(){
-
+                    var searched=target.ns.split("*")[0];
+                    var pipeline_listeners=domain_tree[searched+"/"+transformation_event_type];
                     if(target.class_name=="Pipeline"){
                     }else if (target.class_name=="StateStep"){
+                          var   searched_extended=target.pipeline.ns+"|"+searched;
+                        console.log("listen to:::::::::"+searched_extended);
+                        var listeners_extended=domain_tree[searched_extended+"/"+transformation_event_type];                        
+                        if(listeners_extended){
+                            console.log(toJson(listeners_extended));
+                            if(pipeline_listeners) pipeline_listeners=pipeline_listeners.concat(listeners_extended);
+                            else pipeline_listeners=listeners_extended;
+                        }
                     }
-                    var pipeline_listeners=domain_tree[target.ns.split("*")[0]+"/"+transformation_event_type];
+
+
+
+
 
                     if(pipeline_listeners){
 

@@ -75,11 +75,11 @@ define([  "js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/lo
                    .addTransformation({name:"create_server_load_nova_images", fn:function(data_state, callback){
                        data_state.data_operation={title:"nova_images", url:"/images", host:data_state.nova_endpoint_url};
                        
-                       loadings.operation(data_state, callback);
+                       loadings.operation.fn(data_state, callback);
                    }})
                    .addTransformation({name:"create_server_load_nova_flavors", fn:function(data_state, callback){
                        data_state.data_operation={title:"nova_flavors", url:"/flavors", host:data_state.nova_endpoint_url};
-                       loadings.operation(data_state, callback);
+                       loadings.operation.fn(data_state, callback);
                    }})
                    .addTransformation({name:"create_server_wait_for_the_name", fn:function(data_state, callback){
                        //                    $('#tenants').fadeOut();
