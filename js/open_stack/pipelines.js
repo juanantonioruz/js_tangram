@@ -122,7 +122,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                ,action_choosen:function(){
                    return new Mapper_Pipeline(this.name, 
                                               {"listing_resources":result.select_tenant_pipeline_for_current_user, 
-                                               "create_server":result.pipeline_server}, "action_selected");
+                                               "create_server":result.create_server}, "action_selected");
                }
            };
            
