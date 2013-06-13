@@ -9,7 +9,6 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },
-
                select_service_pipeline_for_current_tenant:function(){
                    return new Pipeline(this.name)
                        .addTransformation( 
@@ -45,7 +44,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                               }, 
                                               "option_service_selected_name");
                },
-               select_tenant_pipeline_for_current_user:function(){
+               select_tenant_for_current_user:function(){
                    return new Pipeline(this.name)
                        .addTransformation({name:"loading_tenants_please_wait", 
                                            fn:function(data_state, callback){ 
@@ -76,12 +75,17 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        .addTransformation({name:"create_server_load_nova_images", fn:function(data_state, callback){
                            data_state.data_operation={title:"nova_images", url:"/images", host:data_state.nova_endpoint_url};
                            
-                           loadings.operation.fn(data_state, callback);
+                           loadings.prepare_operation.fn(data_state, callback);
                        }})
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_operation_result)
                        .addTransformation({name:"create_server_load_nova_flavors", fn:function(data_state, callback){
                            data_state.data_operation={title:"nova_flavors", url:"/flavors", host:data_state.nova_endpoint_url};
-                           loadings.operation.fn(data_state, callback);
+                           loadings.prepare_operation.fn(data_state, callback);
                        }})
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_operation_result)
+
                        .addTransformation({name:"create_server_wait_for_the_name", fn:function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            
@@ -121,7 +125,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                }
                ,action_choosen:function(){
                    return new Mapper_Pipeline(this.name, 
-                                              {"listing_resources":result.select_tenant_pipeline_for_current_user, 
+                                              {"listing_resources":result.select_tenant_for_current_user, 
                                                "create_server":result.create_server}, "action_selected");
                }
            };

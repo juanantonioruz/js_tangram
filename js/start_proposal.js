@@ -50,25 +50,24 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            // EOP
            dispatcher.reset();
 
-           dispatcher.listen("try_to_log","pipeline_register", pipelines.load_tokens_and_select_actions, false);
+           dispatcher.listen_pipe("try_to_log", "register", pipelines.load_tokens_and_select_actions, false);
 
-           dispatcher.listen("action_selected","pipeline_load_tokens_and_select_actions", pipelines.action_choosen, false);
+           dispatcher.listen_pipe("action_selected","load_tokens_and_select_actions", pipelines.action_choosen, false);
 
-           dispatcher.listen("tenant_selected","pipeline_select_tenant_pipeline_for_current_user|state_step_select_tenants", pipelines.select_service_pipeline_for_current_tenant, false);
+           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_for_current_user", pipelines.select_service_pipeline_for_current_tenant, false);
 
-           dispatcher.listen("service_selected","state_step_select_endpoints", pipelines.operation_choosen, false);
+           dispatcher.listen_state_step("service_selected","select_endpoints", pipelines.operation_choosen, false);
 
-          dispatcher.listen("operation_selected","state_step_select_available_service_operations", pipelines.load_operation, false);
+          dispatcher.listen_state_step("operation_selected","select_available_service_operations", pipelines.load_operation, false);
 
-           dispatcher.listen("tenant_selected","pipeline_create_server|state_step_select_tenants",  pipelines.create_server_for_selected_tenant, false);
+           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","create_server",  pipelines.create_server_for_selected_tenant, false);
 
-        
 
            // d3js hooks, running in parallel! last parameter:true!
-           dispatcher.listen("ON_INIT", "pipeline_create_server|state_step_select_tenants", d3_pipelines.d3_show_tenants,true);   
+           dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "create_server", d3_pipelines.d3_show_tenants,true);   
 
 
-          dispatcher.listen("ON_INIT", "pipeline_create_server_for_selected_tenant|state_step_create_server_wait_for_the_name", d3_pipelines.d3_show_images_and_flavors,true);                   
+           dispatcher.listen_state_step_in_pipe("ON_INIT", "create_server_wait_for_the_name","create_server_for_selected_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();

@@ -7,8 +7,9 @@ define(["js/async.js"], function(async) {
         var filters=[];
 
 
-        return {
+        var api= {
 
+            
             dispatch:function(transformation_event_type, target, data_state,callback){
 
                 
@@ -114,6 +115,17 @@ define(["js/async.js"], function(async) {
 
 
             },
+            // dont need to write "pipeline_"
+            listen_pipe:function(transformation_event_type, ns_listened,pipeline, parallel_or_sync){
+                api.listen(transformation_event_type, "pipeline_"+ns_listened, pipeline, parallel_or_sync);
+            },
+            listen_state_step:function(transformation_event_type, ns_listened,pipeline, parallel_or_sync){
+                api.listen(transformation_event_type, "state_step_"+ns_listened, pipeline, parallel_or_sync);
+            },
+            listen_state_step_in_pipe:function(transformation_event_type,  ns_state_step,ns_pipe ,pipeline, parallel_or_sync){
+                var ns_listened="pipeline_"+ns_pipe+"|"+"state_step_"+ns_state_step;
+                api.listen(transformation_event_type, ns_listened, pipeline, parallel_or_sync);
+            },
             
             listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
                 var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
@@ -153,7 +165,7 @@ define(["js/async.js"], function(async) {
 
             
         };
-
+        return api;
     })();
     return dispatcher;
 
