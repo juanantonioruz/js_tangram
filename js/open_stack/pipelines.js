@@ -1,13 +1,38 @@
 define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
        function(common, dao, selects, loadings,html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
 
+           function get_select_tenant_for_current_user(pipe_ns){
+               return new Pipeline(pipe_ns)
+                   .addTransformation( 
+                       loadings.tenants)
+                   .addTransformation( 
+                       selects.tenants);
+           }
+
+
            var result={
-               load_operation:function(){ 
+               register:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(loadings.prepare_operation)
+                       .addTransformation( html_helper.register_form  );
+               },
+               load_tokens_and_select_actions:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(loadings.prepare_tokens)
                        .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_operation_result)               
-                   ;
+                       .addTransformation(loadings.loaded_tokens)
+                       .addTransformation( selects.actions );
+               },
+               action_choosen:function(){
+                   return new Mapper_Pipeline(this.name, 
+                                              {"listing_resources": function(){return html_helper.list_resources;},// result.select_tenant_to_list_resources, 
+                                               "create_server":result.select_tenant_to_create_server}, "action_selected");
+               },
+               
+               select_tenant_to_list_resources:function(){
+                   return get_select_tenant_for_current_user(this.name);
+               },
+               select_tenant_to_create_server:function(){
+                   return get_select_tenant_for_current_user(this.name);
                },
                select_service_pipeline_for_current_tenant:function(){
                    return new Pipeline(this.name)
@@ -44,34 +69,24 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                               }, 
                                               "option_service_selected_name");
                },
-               select_tenant_for_current_user:function(){
+               load_operation:function(){ 
                    return new Pipeline(this.name)
-                       .addTransformation(new StateStep("loading_tenants_please_wait", 
-                                           function(data_state, callback){ 
-                                               $('#chart').fadeOut().html('').fadeIn();
-                                               return loadings.tenants.transform_fn(data_state, callback);}))
-                       .addTransformation( 
-                           selects.tenants);
-               },
-               create_server:function(){
-
-                   return new Pipeline(this.name)
-                       .addTransformation( 
-                           loadings.tenants)
-                       .addTransformation( 
-                           selects.tenants);
+                       .addTransformation(loadings.prepare_operation)
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_operation_result)               
+                   ;
                },
                create_server_for_selected_tenant:function(){
 
 
-                   function get_load(name, data_operation){
+                   function get_load_pipe(name, data_operation){
                        return new Pipeline(name)
-                        .addTransformation(new StateStep("create_server_"+name, function(data_state, callback){
-                           data_state.data_operation={title:data_operation.title, url:data_operation.url, host:data_state[data_operation.host]};
-                           loadings.prepare_operation.transform_fn(data_state, callback);
-                       }))
-                       .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_operation_result);
+                           .addTransformation(new StateStep("create_server_"+name, function(data_state, callback){
+                               data_state.data_operation={title:data_operation.title, url:data_operation.url, host:data_state[data_operation.host]};
+                               loadings.prepare_operation.transform_fn(data_state, callback);
+                           }))
+                           .addTransformation(dao.dao)
+                           .addTransformation(loadings.show_operation_result);
                    }
 
 
@@ -85,8 +100,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            
                            callback(null, data_state);
                        }))
-                       .addPipe(get_load("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
-                       .addPipe(get_load("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
+                       .addPipe(get_load_pipe("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
+                       .addPipe(get_load_pipe("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
                        .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            
@@ -113,22 +128,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            
                        });
                }
-               ,load_tokens_and_select_actions:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(loadings.prepare_tokens)
-                       .addTransformation(dao.dao)
-                       .addTransformation(loadings.loaded_tokens)
-                       .addTransformation( selects.actions );
-               }
-               ,register:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation( html_helper.register_form  );
-               }
-               ,action_choosen:function(){
-                   return new Mapper_Pipeline(this.name, 
-                                              {"listing_resources":result.select_tenant_for_current_user, 
-                                               "create_server":result.create_server}, "action_selected");
-               }
+
            };
            
            

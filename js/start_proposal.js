@@ -54,17 +54,18 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            dispatcher.listen_pipe("action_selected","load_tokens_and_select_actions", pipelines.action_choosen, false);
 
-           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_for_current_user", pipelines.select_service_pipeline_for_current_tenant, false);
+           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_list_resources", 
+                                                pipelines.select_service_pipeline_for_current_tenant, false);
 
            dispatcher.listen_state_step("service_selected","select_endpoints", pipelines.operation_choosen, false);
 
-          dispatcher.listen_state_step("operation_selected","select_available_service_operations", pipelines.load_operation, false);
+           dispatcher.listen_state_step("operation_selected","select_available_service_operations", pipelines.load_operation, false);
 
-           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","create_server",  pipelines.create_server_for_selected_tenant, false);
+           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_create_server",  pipelines.create_server_for_selected_tenant, false);
 
 
            // d3js hooks, running in parallel! last parameter:true!
-           dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "create_server", d3_pipelines.d3_show_tenants,true);   
+           dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "select_tenant_to_create_server", d3_pipelines.d3_show_tenants,true);   
 
 
            dispatcher.listen_state_step_in_pipe("ON_INIT", "create_server_wait_for_the_name","create_server_for_selected_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
@@ -74,7 +75,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
 
            dispatcher.filter( filters.logging);
-       
+           
            dispatcher.filter( filters.clone_data);
 
            dispatcher.filter( filters.profiling);
@@ -82,9 +83,9 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            dispatcher.filter( filters.show_profiling);
 
            dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click",
-                                                             fn:function(){
-                                                                 console.log(this.ns);
-                                                             }}));
+                                                                                       fn:function(){
+                                                                                           console.log(this.ns);
+                                                                                       }}));
            return result;
 
        });
