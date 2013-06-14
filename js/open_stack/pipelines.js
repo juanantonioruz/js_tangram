@@ -62,6 +62,19 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            selects.tenants);
                },
                create_server_for_selected_tenant:function(){
+
+
+                   function get_load(name, data_operation){
+                       return new Pipeline(name)
+                        .addTransformation(new StateStep("create_server_"+name, function(data_state, callback){
+                           data_state.data_operation={title:data_operation.title, url:data_operation.url, host:data_state[data_operation.host]};
+                           loadings.prepare_operation.transform_fn(data_state, callback);
+                       }))
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_operation_result);
+                   }
+
+
                    return new Pipeline(this.name)
                        .addTransformation( loadings.endpoints)
                        .addTransformation(new StateStep("create_server_select_nova_endpoint", function(data_state, callback){
@@ -72,20 +85,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            
                            callback(null, data_state);
                        }))
-                       .addTransformation(new StateStep("create_server_load_nova_images", function(data_state, callback){
-                           data_state.data_operation={title:"nova_images", url:"/images", host:data_state.nova_endpoint_url};
-                           
-                           loadings.prepare_operation.transform_fn(data_state, callback);
-                       }))
-                       .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_operation_result)
-                       .addTransformation(new StateStep("create_server_load_nova_flavors", function(data_state, callback){
-                           data_state.data_operation={title:"nova_flavors", url:"/flavors", host:data_state.nova_endpoint_url};
-                           loadings.prepare_operation.transform_fn(data_state, callback);
-                       }))
-                       .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_operation_result)
-
+                       .addPipe(get_load("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
+                       .addPipe(get_load("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
                        .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            
