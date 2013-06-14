@@ -2,8 +2,8 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/ew_related/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
-       function(pipes, filters, State, dispatcher,Mapper_Pipeline, Pipeline, display, async, history_cluster) {
+define(["js/dev/fns.js", "js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/ew_related/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
+       function(fns, pipes, filters, State, dispatcher,Mapper_Pipeline, Pipeline, display, async, history_cluster) {
            var app_data=State();
            // console.log(toJson(json_data));
            dispatcher.Pipeline=Pipeline;
@@ -101,7 +101,7 @@ define(["js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.
 
                dispatcher.listen("ON_INIT","pipeline_sync_example",  pipes.listener_slower, false);
 
-               dispatcher.listen("start_night","state_step_dev_active_gn_button", pipes.good_night, false);
+               dispatcher.listen("start_night","state_step_dev_active_gn_button", function(){ return fns.good_night_fn;}, false);
 
                dispatcher.filter( filters.clone_data);
 

@@ -1,10 +1,10 @@
 define([  "js/open_stack/loadings.js", 
           "js/pipelines/dispatcher.js", 
-          "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
-       function(loadings, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
+          "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/state_step_type.js"],
+       function(loadings, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
            var d3_show_images_and_flavors_pipeline=function(){
                return new Pipeline("d3_show_images_and_flavors")
-                   .addTransformation({name:"d3_show_images", fn:function(data_state, callback){
+                   .addTransformation(new StateStep("d3_show_images", function(data_state, callback){
                        var images_node=create_node("images", create_data("folder", {name:"images"}));
                        
                        data_state.nova_images.images.map(function(item){
@@ -33,8 +33,8 @@ define([  "js/open_stack/loadings.js",
                        //TODO remove if we need selection
                        callback(null, data_state);
                        
-                   }})
-                   .addTransformation({name:"d3_show_flavors", fn:function(data_state, callback){
+                   }))
+                   .addTransformation(new StateStep("d3_show_flavors", function(data_state, callback){
                        var flavors_node=create_node("flavors", create_data("folder", {name:"flavors"}));
                        
                        data_state.nova_flavors.flavors.map(function(item){
@@ -63,12 +63,12 @@ define([  "js/open_stack/loadings.js",
                        //TODO remove if we need selection
                        callback(null, data_state);
                        
-                   }});
+                   }));
                };
 
            var d3_show_tenants=function(){
               return  new Pipeline("d3_show_tenants")
-                   .addTransformation({name:"d3_show_tenants",fn: function(data_state, callback){
+                   .addTransformation(new StateStep("d3_show_tenants",function(data_state, callback){
                        console.log("d3_show_tenants");
                        data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
                        var tenants=create_node("tenants", create_data("folder", {name:"tenants"}));
@@ -89,7 +89,7 @@ define([  "js/open_stack/loadings.js",
                        // this line uncommented means that the user is using the select dropmenu to select the tenant, otherwise we have to useon_success_callback and wait to be called from d3 interface
                        callback(null, data_state);
                        
-                   }});
+                   }));
                };
 
            var show_tenant_data_pipe=function(){

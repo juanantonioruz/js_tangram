@@ -1,5 +1,5 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],
-       function(common, dao, selects, loadings,html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
+       function(common, dao, selects, loadings,html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
 
            var result={
                load_operation:function(){ 
@@ -46,10 +46,10 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                select_tenant_for_current_user:function(){
                    return new Pipeline(this.name)
-                       .addTransformation({name:"loading_tenants_please_wait", 
-                                           fn:function(data_state, callback){ 
+                       .addTransformation(new StateStep("loading_tenants_please_wait", 
+                                           function(data_state, callback){ 
                                                $('#chart').fadeOut().html('').fadeIn();
-                                               return loadings.tenants.fn(data_state, callback);}})
+                                               return loadings.tenants.transform_fn(data_state, callback);}))
                        .addTransformation( 
                            selects.tenants);
                },
@@ -64,29 +64,29 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                create_server_for_selected_tenant:function(){
                    return new Pipeline(this.name)
                        .addTransformation( loadings.endpoints)
-                       .addTransformation({name:"create_server_select_nova_endpoint", fn: function(data_state, callback){
+                       .addTransformation(new StateStep("create_server_select_nova_endpoint", function(data_state, callback){
                            var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
                                return (element.type == "compute");
                            });
                            data_state.nova_endpoint_url=concordances[0].endpoints[0].publicURL;
                            
                            callback(null, data_state);
-                       }})
-                       .addTransformation({name:"create_server_load_nova_images", fn:function(data_state, callback){
+                       }))
+                       .addTransformation(new StateStep("create_server_load_nova_images", function(data_state, callback){
                            data_state.data_operation={title:"nova_images", url:"/images", host:data_state.nova_endpoint_url};
                            
-                           loadings.prepare_operation.fn(data_state, callback);
-                       }})
+                           loadings.prepare_operation.transform_fn(data_state, callback);
+                       }))
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_operation_result)
-                       .addTransformation({name:"create_server_load_nova_flavors", fn:function(data_state, callback){
+                       .addTransformation(new StateStep("create_server_load_nova_flavors", function(data_state, callback){
                            data_state.data_operation={title:"nova_flavors", url:"/flavors", host:data_state.nova_endpoint_url};
-                           loadings.prepare_operation.fn(data_state, callback);
-                       }})
+                           loadings.prepare_operation.transform_fn(data_state, callback);
+                       }))
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_operation_result)
 
-                       .addTransformation({name:"create_server_wait_for_the_name", fn:function(data_state, callback){
+                       .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            
                            $('#suboperations').append("<div id='server_name_form'><input type='text' id='server_name' value='test_server'></div>");
@@ -104,7 +104,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                    
                                }
                            });
-                       }})
+                       }))
                        .addTransformation( loadings.create_server)
                        .set_on_success(function(results, pipeline){
                            alert("server_name: "+results.server_name+"\n------>endpoint: "+results.nova_endpoint_url+"\n---> first_image: "+results.nova_images.images[0].links[0].href+"\n--->first_flavor: "+

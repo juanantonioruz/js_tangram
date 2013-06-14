@@ -1,11 +1,12 @@
-define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
-       function(Fiber, dispatcher) {
+define(["js/fiber.min.js","js/pipelines/dispatcher.js", "js/pipelines/pipeline_type.js"],
+       function(Fiber, dispatcher, Pipeline) {
            
 
            var StateStep=Fiber.extend(function(){
                return  {
                    init: function(name, _fn) {
                        // it will be setted in future applyTransformations function invocation
+                       
                        this.pipeline=null;
                        
                        this.ns="state_step_"+name;
@@ -19,8 +20,11 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js"],
                    },
 
                    on_init:function(data_state, callback){
-               //        console.log("this.name: "+this.ns+" pipeline: "+this.pipeline.ns+" step_count: "+this.pipeline.step_count  );
                        dispatcher.dispatch("ON_INIT",this,  data_state, callback);
+                   },
+                   apply_transformations:function(data_state){
+                       var pipe=new Pipeline(this.ns.replace("state_step", "pipeline")).addTransformation(this);
+                       pipe.apply_transformations(data_state);
                    },
                    
                    transform:function(data_state, callback_chain){

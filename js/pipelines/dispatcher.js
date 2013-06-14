@@ -95,7 +95,7 @@ define(["js/async.js"], function(async) {
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
-                                //                                console.dir(o);
+                                                         console.dir(o);
                                 //                                alert("invoking");
 
                                 compose.addPipe(o.pipeline());

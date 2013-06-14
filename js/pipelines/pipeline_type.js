@@ -1,5 +1,5 @@
-define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
-       function( Fiber, StateStep,async, dispatcher) {
+define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
+       function( Fiber, async, dispatcher) {
            
 
            var Pipeline=Fiber.extend(function(){
@@ -22,8 +22,8 @@ define(["js/fiber.min.js","js/pipelines/state_step_type.js","js/async.js","js/pi
                        return this;
                    },
                    // this method to add statesteps
-                   addTransformation:function(transformation_fn){
-                       this.future_state_steps.push(new StateStep(transformation_fn.name, transformation_fn.fn));
+                   addTransformation:function(state_step){
+                       this.future_state_steps.push(state_step);
                        return this;
                    },
                    // this method to add pipes 
