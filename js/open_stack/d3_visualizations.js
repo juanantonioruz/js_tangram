@@ -8,8 +8,14 @@ define([  "js/open_stack/loadings.js",
                        var images_node=create_node("images", create_data("folder", {name:"images"}));
                        
                        data_state.nova_images.images.map(function(item){
+                           var href=item.links[0].href;
+                                                          //TODO  related to openstack local conf
+                               if(data_state.host.indexOf('192.168.1.100')!=-1)
+                               href=href.replace('192.168.1.100',data_state.host );
+                               // end change
+
                            images_node.children.push(
-                               create_node(item.name, create_data("image", {"href":item.links[0].href}
+                               create_node(item.name, create_data("image", {"href":href}
                                                                  )));
                        });
                        function get_tenant(collection, key, searching){
@@ -38,9 +44,14 @@ define([  "js/open_stack/loadings.js",
                        var flavors_node=create_node("flavors", create_data("folder", {name:"flavors"}));
                        
                        data_state.nova_flavors.flavors.map(function(item){
+                           var href=item.links[0].href;
+                           //TODO  related to openstack local conf
+                               if(data_state.host.indexOf('192.168.1.100')!=-1)
+                               href=href.replace('192.168.1.100',data_state.host );
+                               // end change
                            flavors_node.children.push(
                                create_node(item.name, create_data("flavor", 
-                                                                  {href:item.links[0].href})));
+                                                                  {href:href})));
                        });
                        function get_tenant(collection, key, searching){
                            

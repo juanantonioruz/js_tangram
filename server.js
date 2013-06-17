@@ -62,6 +62,7 @@ app.post('/tokens', function(req, res){
 });
 
 app.post('/tenants', function(req, res){
+sys.puts('ip: ' + req.body.s_ip);
 
     rest.get('http://'+req.body.s_ip+':5000/v2.0/tenants',
              {headers:{ "X-Auth-Token": req.body.token }}).on('complete', function(result) {

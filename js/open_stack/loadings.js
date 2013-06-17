@@ -40,28 +40,34 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
-
-               endpoints:function (data_state, callback){
-                   $('#left').append("<h1 class='left_message'>Loading endpoints for: "+data_state.tenant_name+"  please wait ...</h1>");
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/endpoints",
-                       data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip, tenant_name:data_state.tenant_name}
-                   }).done(function( msg ) {
-                       if(!msg.error){
-
-                           data_state.serviceCatalog=msg.access.serviceCatalog;
+               prepare_endpoidnts:function (data_state, callback){
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/endpoints", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip, tenant_name:data_state.tenant_name}};
+                   data_state.dao=dao_object;
+                   $('#right').prepend("<h3 class='left_message'>Loading endpoints, please wait ...</h3>");
+                   callback(null, data_state);
+                   
+               },
+               prepare_select_endpoints:function (data_state, callback){
+                   //TODO : use error case if(dao.error)
+                   var x=data_state.dao.result;
+                   if(data_state.dao.error){
+                           callback("laod_endpoints.error->"+data_state.dao.error, data_state);
+                   }else{
+ data_state.serviceCatalog=x.access.serviceCatalog;
                            data_state.service_catalog_select=[];
-                           msg.access.serviceCatalog.map(function(item){
+                           x.access.serviceCatalog.map(function(item){
+                               //TODO  related to openstack local conf
+                               if(data_state.ip.indexOf('192.168.1.100')!=-1)
+                               item.endpoints.publicURL=item.endpoints.publicURL.replace('192.168.1.100',data_state.ip );
+                               // end change
                                data_state.service_catalog_select.push({item:item, hidden:item.name,visible:item.name+":"+item.type });
                            });
-                           data_state.token_id=msg.access.token.id;
-                           $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
+                           data_state.token_id=x.access.token.id;
+                           $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+common.toJson(x)+"</code></pre>" );                                                  
                            callback(null, data_state);
-                       }else{
-                           callback(msg.error, data_state);
-                       }
-                   });
+                   }
+
+           
                },
 
                tenants:function (data_state, callback){

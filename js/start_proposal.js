@@ -53,7 +53,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            dispatcher.listen_event("action_selected", pipelines.action_choosen, false);
 
            dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_list_resources", 
-                                                pipelines.select_service_pipeline_for_current_tenant, false);
+                                                pipelines.load_endpoints_and_select_for_current_tenant, false);
 
            dispatcher.listen_event("service_selected", pipelines.operation_choosen, false);
 

@@ -33,10 +33,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                select_tenant_to_create_server:function(){
                    return get_select_tenant_for_current_user(this.name);
                },
-               select_service_pipeline_for_current_tenant:function(){
+               load_endpoints_and_select_for_current_tenant:function(){
                    return new Pipeline(this.name)
+                        .addTransformation( 
+                           loadings.prepare_endpoints)
+                              .addTransformation( 
+                           dao.dao)
                        .addTransformation( 
-                           loadings.endpoints)
+                           loadings.prepare_select_endpoints)
                        .addTransformation( 
                            selects.endpoints      
                        );
