@@ -24,7 +24,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                prepare_operation:function (data_state, callback){
                    var data_operation=data_state.data_operation;
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "") /**tenant_name:data_state.tenant_name**/}};
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "").replace('192.168.1.100',data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
                    data_state.dao=dao_object;
                    $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");
                    console.dir(dao_object);
@@ -44,7 +44,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/endpoints", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip, tenant_name:data_state.tenant_name}};
                    data_state.dao=dao_object;
                    $('#right').prepend("<h3 class='left_message'>Loading endpoints, please wait ...</h3>");
- alert("Loading endpoints, please wait: ");
+
                    callback(null, data_state);
                    
                },
