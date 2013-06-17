@@ -45,19 +45,27 @@ define(["js/async.js"], function(async) {
                 
                 function continue_listeners(){
                     var searched=target.ns.split("*")[0];
-                    var pipeline_listeners=domain_tree[searched+"/"+transformation_event_type];
-                    if(target.class_name=="Pipeline"){
-                    }else if (target.class_name=="StateStep"){
+                    var pipeline_listeners;
+                    var base=domain_tree[transformation_event_type];
+                    if(base){
+                        pipeline_listeners=[];
+                    if(base.no_ns_listened)
+                        pipeline_listeners=pipeline_listeners.concat(base.no_ns_listened);
+                    if(base[searched])
+                        pipeline_listeners=pipeline_listeners.concat(base[searched]);
+                    
+
+
+
+
+                   if (target.class_name=="StateStep"){
                           var   searched_extended=target.pipeline.ns+"|"+searched;
-                     //   console.log("listen to:::::::::"+searched_extended);
-                        var listeners_extended=domain_tree[searched_extended+"/"+transformation_event_type];                        
+                        var listeners_extended=base[searched_extended];                        
                         if(listeners_extended){
-                      //      console.log(toJson(listeners_extended));
-                            if(pipeline_listeners) pipeline_listeners=pipeline_listeners.concat(listeners_extended);
-                            else pipeline_listeners=listeners_extended;
+                             pipeline_listeners=pipeline_listeners.concat(listeners_extended);
                         }
                     }
-
+                        }
 
 
 
@@ -115,6 +123,9 @@ define(["js/async.js"], function(async) {
 
 
             },
+            listen_event:function(transformation_event_type, pipeline, parallel_or_sync){
+                api.listen(transformation_event_type, null, pipeline, parallel_or_sync);
+            },
             // dont need to write "pipeline_"
             listen_pipe:function(transformation_event_type, ns_listened,pipeline, parallel_or_sync){
                 api.listen(transformation_event_type, "pipeline_"+ns_listened, pipeline, parallel_or_sync);
@@ -127,14 +138,32 @@ define(["js/async.js"], function(async) {
                 api.listen(transformation_event_type, ns_listened, pipeline, parallel_or_sync);
             },
             
-            listen:function(transformation_event_type, ns_listened,  pipeline, parallel_or_sync ){
-                var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
-                if (actual_listeners) {
-                    actual_listeners.push({pipeline:pipeline, parallel:parallel_or_sync}) ;
-                }else{ 
-                    domain_tree[ns_listened+"/"+transformation_event_type]=[{pipeline:pipeline, parallel:parallel_or_sync}];
-                }
+            listen:function(transformation_event_type, ns_listened,  pipeline_or_state_transformation, parallel_or_sync ){
+             //   var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
+                var actual_tree=domain_tree[transformation_event_type];
+                    var actual={pipeline:pipeline_or_state_transformation, parallel:parallel_or_sync};
+                if (actual_tree) {
+                    if(ns_listened){
+                    var a_t_l=actual_tree[ns_listened];
+                    if(a_t_l){
+                        a_t_l.push(actual);
+                    }else{
+                        actual_tree[ns_listened]=[actual];
+                    }
+                    }else{
+                       actual_tree.no_ns_listened.push(actual); 
+                    }
 
+                }else{ 
+                    domain_tree[transformation_event_type]={};
+                    domain_tree[transformation_event_type].no_ns_listened=[];
+                    if(ns_listened)
+                    domain_tree[transformation_event_type][ns_listened]=actual;
+                    else    
+                        domain_tree[transformation_event_type].no_ns_listened.push(actual);
+
+
+                }
             },
 
             filter:function(_fn){
@@ -142,7 +171,14 @@ define(["js/async.js"], function(async) {
             },
 
             remove:function(transformation_event_type, ns_listened, pipeline){
-                var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
+                
+                var actual_listeners=domain_tree[transformation_event_type];
+                if(!ns_listened){
+                    
+                }else{
+                    if(actual_listeners.no_ns_listened)
+                         actual_listeners=actual_listeners.splice(actual_listeners.indexOf(pipeline),1);
+                }
 
                 if (actual_listeners) {
                     for(var i=0; i<actual_listeners.length; i++){
