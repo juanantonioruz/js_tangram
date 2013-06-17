@@ -9,7 +9,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                },
 
-               loaded_tokens:function (data_state, callback){
+               store_token_id:function (data_state, callback){
                    if(data_state.dao.result){
                        data_state.token_id=data_state.dao.result.access.token.id;
 
@@ -48,7 +48,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
                    
                },
-               prepare_select_endpoints:function (data_state, callback){
+               store_endpoints:function (data_state, callback){
                    //TODO : use error case if(dao.error)
                    var x=data_state.dao.result;
                    if(data_state.dao.error){

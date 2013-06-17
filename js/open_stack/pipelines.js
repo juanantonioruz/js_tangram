@@ -9,7 +9,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        selects.tenants);
            }
 
-
+           function add_load(pipe, fn){
+           }
            var result={
                register:function(){
                    return new Pipeline(this.name)
@@ -19,10 +20,11 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    return new Pipeline(this.name)
                        .addTransformation(loadings.prepare_tokens)
                        .addTransformation(dao.dao)
-                       .addTransformation(loadings.loaded_tokens)
+                       .addTransformation(loadings.store_token_id)
                        .addTransformation( selects.actions );
                },
-               action_choosen:function(){
+
+               load_action_selected:function(){
                    return new Mapper_Pipeline(this.name, 
                                               {"listing_resources": result.select_tenant_to_list_resources,// result.select_tenant_to_list_resources, 
                                                "create_server":result.select_tenant_to_create_server}, "action_selected");
@@ -33,14 +35,15 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                select_tenant_to_create_server:function(){
                    return get_select_tenant_for_current_user(this.name);
                },
+               
                load_endpoints_and_select_for_current_tenant:function(){
                    return new Pipeline(this.name)
                         .addTransformation( loadings.prepare_endpoints)
                        .addTransformation( dao.dao)
-                       .addTransformation( loadings.prepare_select_endpoints)
+                       .addTransformation( loadings.store_endpoints)
                        .addTransformation(  selects.endpoints);
                },
-               operation_choosen:function(){
+               load_endpoint_selected:function(){
                    
                    return new Mapper_Pipeline(this.name, 
                                               {
@@ -67,13 +70,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                               }, 
                                               "option_service_selected_name");
                },
-               load_operation:function(){ 
+               load_operation_selected:function(){ 
                    return new Pipeline(this.name)
                        .addTransformation(loadings.prepare_operation)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },
+              
                create_server_for_selected_tenant:function(){
 
 

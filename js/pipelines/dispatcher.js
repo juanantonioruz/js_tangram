@@ -12,7 +12,10 @@ define(["js/async.js"], function(async) {
             
             dispatch:function(transformation_event_type, target, data_state,callback){
 
-                
+                //                 console.dir(transformation_event_type);
+                // console.dir(target);
+                // console.dir(domain_tree);
+
 
                 // this line works because is inyected in start_dev... so TODO: its necesary to change!
                 var Pipeline=this.Pipeline;
@@ -142,6 +145,7 @@ define(["js/async.js"], function(async) {
                 //   var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
                 var actual_tree=domain_tree[transformation_event_type];
                 var actual={pipeline:pipeline_or_state_transformation, parallel:parallel_or_sync};
+                
                 if (actual_tree) {
                     if(ns_listened){
                         var a_t_l=actual_tree[ns_listened];

@@ -53,7 +53,7 @@ function show_fn_result_to_the_user_and_wait(the_message, the_function){
                            //                                               show_tenant_endpoints_pipeline_fn();
                            show_message_to_the_user("you have selected operation: "+selected.val());
 
-                           dispatcher.dispatch("operation_selected", target_state_step,data_state, 
+                           dispatcher.dispatch("endpoint_selected", target_state_step,data_state, 
                                                function(res,pipeline){console.info("operation_selected");} );
                            dispatcher.dispatch(data_state.operation_option.data('item').title, target_state_step, data_state);
                        };
