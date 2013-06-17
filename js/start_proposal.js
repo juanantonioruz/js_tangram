@@ -29,8 +29,6 @@ function show_message_to_the_user(the_message){
 }
 
 
-
-
 define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
        function(filters,  dispatcher,  State, pipelines, d3_pipelines,  Pipeline, history_cluster) {
 
@@ -67,12 +65,10 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            // d3js hooks, running in parallel! last parameter:true!
            dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "select_tenant_to_create_server", d3_pipelines.d3_show_tenants,true);   
 
-
            dispatcher.listen_state_step_in_pipe("ON_INIT", "create_server_wait_for_the_name","create_server_for_selected_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();
-
 
            dispatcher.filter( filters.logging);
            

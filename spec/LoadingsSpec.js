@@ -13,13 +13,10 @@ define(["js/common.js", "js/open_stack/loadings.js", "js/open_stack/dao.js"], fu
     return describe("open_stack_tests", function() {
 
 
-
-
-
         function call_fn(fn, match_fn){
             var op=new Callback();
             runs(function() {
-                fn.fn(data_state, op.callback);
+                fn.transform_fn(data_state, op.callback);
             });
             
             waitsFor(function() {
@@ -51,13 +48,14 @@ define(["js/common.js", "js/open_stack/loadings.js", "js/open_stack/dao.js"], fu
 
         
 
-        var    data_state={host:'localhost:3000', user:"demo", password:"password", ip:"192.168.1.22"};
+        var    data_state={host:'localhost:3000', user:"demo", password:"password", ip:"192.168.1.12"};
         
 
         describe("open_stack_loadings", function() {
             
             it("the token_id with 'demo' user login must be defined", function() {
-                call_fn(loadings.tokens, 
+console.dir(loadings.loaded_tokens);
+                call_fn(loadings.loaded_tokens, 
                         function() {
                             expect(data_state.token_id).toBeDefined();
                             doc({response:[

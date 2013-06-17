@@ -27,7 +27,6 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                               {"listing_resources": function(){return html_helper.list_resources;},// result.select_tenant_to_list_resources, 
                                                "create_server":result.select_tenant_to_create_server}, "action_selected");
                },
-               
                select_tenant_to_list_resources:function(){
                    return get_select_tenant_for_current_user(this.name);
                },

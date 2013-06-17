@@ -22,32 +22,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                },
 
-               tokens:function (data_state, callback){
-                   
-                   $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/tokens",
-                       data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}
-                   })
-
-                       .done(function( msg ) {
-                           //&& msg.indexOf("Error")>=-1
-                           if(!msg.error ){
-                               data_state.token_id=msg.access.token.id;
-                               $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
-                               
-                               $('#register_form').fadeOut(500).empty().fadeIn();
-
-                               callback(null, data_state);   
-                           }else{
-                               $('#content').prepend( "<h2>There is a problem with your account, try again please</h2>" );                                                  
-                               callback(msg.error, data_state);
-                           }
-                       });
-                   
-               },
-
                prepare_operation:function (data_state, callback){
                    var data_operation=data_state.data_operation;
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "") /**tenant_name:data_state.tenant_name**/}};
