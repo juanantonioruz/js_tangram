@@ -35,15 +35,10 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                load_endpoints_and_select_for_current_tenant:function(){
                    return new Pipeline(this.name)
-                        .addTransformation( 
-                           loadings.prepare_endpoints)
-                              .addTransformation( 
-                           dao.dao)
-                       .addTransformation( 
-                           loadings.prepare_select_endpoints)
-                       .addTransformation( 
-                           selects.endpoints      
-                       );
+                        .addTransformation( loadings.prepare_endpoints)
+                       .addTransformation( dao.dao)
+                       .addTransformation( loadings.prepare_select_endpoints)
+                       .addTransformation(  selects.endpoints);
                },
                operation_choosen:function(){
                    
@@ -94,7 +89,9 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
 
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.endpoints)
+                        .addTransformation( loadings.prepare_endpoints)
+                       .addTransformation( dao.dao)
+                       .addTransformation( loadings.prepare_select_endpoints)
                        .addTransformation(new StateStep("create_server_select_nova_endpoint", function(data_state, callback){
                            var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
                                return (element.type == "compute");
