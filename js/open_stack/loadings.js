@@ -27,12 +27,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "") /**tenant_name:data_state.tenant_name**/}};
                    data_state.dao=dao_object;
                    $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");
+                   console.dir(dao_object);
                    callback(null, data_state);
 
-
-
-
-                   
                },
 
                show_operation_result:function(data_state, callback){

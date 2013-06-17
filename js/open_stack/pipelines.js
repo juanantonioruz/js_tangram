@@ -24,7 +24,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                action_choosen:function(){
                    return new Mapper_Pipeline(this.name, 
-                                              {"listing_resources": function(){return html_helper.list_resources;},// result.select_tenant_to_list_resources, 
+                                              {"listing_resources": result.select_tenant_to_list_resources,// result.select_tenant_to_list_resources, 
                                                "create_server":result.select_tenant_to_create_server}, "action_selected");
                },
                select_tenant_to_list_resources:function(){
