@@ -46,8 +46,36 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        data_state.json=example_data;
                        callback(null, data_state);
                    }, 250);
-               }
+               },
+               generate_uid:function(data_state, callback){
+                   function create_id(prefix, subject) {
+                       var id = prefix + "";
+                       for (var x=0; x<subject.length; x++)
+                           if(/^[a-zA-Z]$/.test(subject[x]))
+                               id += subject[x];
+                       id = id.toLowerCase();
+                       return id;
+                   }
 
+                   function guid(){
+                       var id = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(
+                               /[xy]/g,
+                           function(c){
+                               var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);
+                           }
+                       );
+                       return "id_" + id;
+                   }
+
+                    var object_id = (data_state.current_data.id != null)
+                            ? create_id('object', data_state.current_data.id)
+                            : guid();
+                   
+                   data_state.current_data.id=object_id;
+                 //  container.attr('id', object_id);
+                   callback(null, data_state);
+               }
+               
                
            };
 

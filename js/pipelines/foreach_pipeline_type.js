@@ -27,16 +27,16 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
 
                        var that=this;
                        var seq=[];
-                       var steps=this.future_state_steps;
-
+                       var steps= this.future_state_steps ;
+                       
                        this.future_state_steps=[];
 
                       
                        
                        for(var i=0; i<data_state[this.model_key].length; i++){
                            var pipe=new Pipeline("counter"+i);
-                           // TODO: maybe clone
-                           pipe.future_state_steps=steps;
+                           // TODO: now is cloning to fix the reverse effect in collection
+                           pipe.future_state_steps=$.extend(true, [], steps);
                            pipe.set_on_success((function (i){
                                return function(results, pipeline){
                                    if(i!=data_state[that.model_key].length){
@@ -44,7 +44,8 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                                  //    alert(toJson(data_state['the_model'][i+1]));
                                    results.current_data=results[that.model_key][i+1];
                                        }
-                                   $('#fn_transformation').html(" inside "+i+" ended!");};
+                               
+                               };
                                    
                                })(i)
                            );

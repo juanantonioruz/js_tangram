@@ -7,8 +7,9 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                return  {
                    init: function(name,on_success, on_error) {
                      
-                       this.step_count=0;
+
                        this.ns="pipeline_"+name;
+                       this.step_count=0;
                        this.future_state_steps=[];
                        this.steps_done=[];
                        if(on_success)

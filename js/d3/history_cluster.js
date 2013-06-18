@@ -2,7 +2,7 @@ define( function() {
 
     
     var
-    radio=10,
+    radio=4,
     radio_max=150,
     width = 1360,
     height = 600;
