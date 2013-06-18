@@ -2,11 +2,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result= {
                welcome:function (data_state, callback){
-                   $('#center').prepend("<h3 >WELCOME to proposal pipes!</h3>");
+                   $('#left').prepend("<p >WELCOME to proposal pipes!</p>");
                    callback(null, data_state);
                },
                load_data:function(data_state, callback){
-                   $('#center').prepend("<h3 >(simulating )Loading json data!</h3>");
+                   $('#left').prepend("<p >(simulating )Loading json data!</p>");
                    setTimeout(function () {
                        var example_data={
                            display_name: "Demo Profile Header Page",
