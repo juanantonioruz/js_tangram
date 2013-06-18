@@ -8,10 +8,17 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        this.ns="pipeline_"+name;
 
                        this.model_key=model_key;
+                       this.step_count=0;
                        this.future_state_steps=[];
-                       
+                       this.steps_done=[];
+                       if(on_success)
                        this.on_success=on_success;
+                       if(on_error)
                        this.on_error=on_error;
+
+                       this.children=[];
+                       // default synchronous behavior
+                       this.parallel=false;
                        return this;
                    },
                    
@@ -48,39 +55,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        data_state.current_data=data_state[that.model_key][0];
                        base.apply_transformations.call(this, data_state);
 
-                       // var that=this;
- 
-                       // var composition=async.compose.apply(null, this.getSteps().map(function(o){
-                       //     return o.transform.bind(o);
-                       // }));
-
-
-                      
-
-                       // function internal_call(){
-                       //     composition($.extend(true, {}, data_state),function(err, res){
-
-                       //     if(!err){
-                       //         function callback(){
-                       //         that.on_success(res, that);
-                       //         };
-
-                       //         that.on_end(res, callback);
-
-                       //     }else{
-                       
-                       //         console.log("big one pipeline error: "+that.ns+"\n"+toJson(data_state));
-
-                       //             that.on_error(err, that);
-                               
-
-                       //        // this method fails because is using a data  that.on_end(res);
-                       //     }
-
-                       // });
-                       // };
-                       //  this.on_init(data_state, internal_call);
-
+                   
                        
                    }
 

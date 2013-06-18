@@ -94,10 +94,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                glance_operations:function(data_state, callback){
                    data_state.suboptions_select=[];
                    data_state.suboptions_select.push({item:{service_type:"image", url:"/v2.0/images"}, visible:"LIST IMAGES", hidden:'images'});
-
-                   
                    callback(null, data_state);
-
                },
 
                cinder_operations:function(data_state, callback){
