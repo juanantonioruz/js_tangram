@@ -58,10 +58,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                            : guid();
                    
                    data_state.current_data.id=object_id;
-                   //  container.attr('id', object_id);
+
+
                    callback(null, data_state);
+               },
+               by_child:function(data_state, callback){
+                   
+                   callback(null, data_state);
+ 
                }
-               
            };
            var update={
                loading_object_editor:function (data_state, callback){
@@ -171,8 +176,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                object_viewer:function(data_state, callback){
-                   var r=data_state.get_value("resource.header.children[0].value");
-                   alert(common.toJson(r));
+                   //var r=data_state.get_value("resource.header.children[0].value");
+                   //alert(common.toJson(r));
                    callback(null, data_state);
                }
            };

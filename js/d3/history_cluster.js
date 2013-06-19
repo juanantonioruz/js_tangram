@@ -4,8 +4,8 @@ define( function() {
     var
     radio=4,
     radio_max=150,
-    width = 1800,
-    height = 900;
+    width = 1100,
+    height = 1600;
 
     var cluster = d3.layout.cluster()
             .size([height, width - 160]);
@@ -75,7 +75,7 @@ define( function() {
 
         node.append("text")
             .attr("dx", function(d) { return d.children ? -8 : 8; })
-            .attr("dy", function(d) { return d.children ? -8 : 8; })
+            .attr("dy",3)
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
             .text(function(d) { return d.ns.replace("pipeline_", "").replace("state_step_", ""); });
 

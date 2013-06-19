@@ -31,7 +31,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
 
 
                        
-                       var value=data_state.get_value(this.model_key);                      
+                       var value=data_state[this.model_key];                      
                        var pipe=this.function_switch_expression(value);
 
 

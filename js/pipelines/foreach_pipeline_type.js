@@ -31,18 +31,17 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        
                        this.future_state_steps=[];
 
-                      
-                       
-                       for(var i=0; i<data_state[this.model_key].length; i++){
+                       var collection=data_state[this.model_key];
+                     for(var i=0; i<collection.length; i++){
                            var pipe=new Pipeline("counter"+i);
                            // TODO: now is cloning to fix the reverse effect in collection
                            pipe.future_state_steps=$.extend(true, [], steps);
                            pipe.set_on_success((function (i){
                                return function(results, pipeline){
-                                   if(i!=data_state[that.model_key].length){
+                                   if(i!=collection.length){
 
                                  //    alert(toJson(data_state['the_model'][i+1]));
-                                   results.current_data=results[that.model_key][i+1];
+                                   results.current_data=collection[i+1];
                                        }
                                
                                };
@@ -53,9 +52,8 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                            this.future_state_steps.push(pipe);
                            
                        }
-                       data_state.current_data=data_state[that.model_key][0];
+                       data_state.current_data=collection[0];
                        base.apply_transformations.call(this, data_state);
-
                    
                        
                    }
