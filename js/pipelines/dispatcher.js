@@ -138,6 +138,7 @@ define(["js/async.js"], function(async) {
             listen_state_step:function(transformation_event_type, ns_listened,_pipeline, parallel_or_sync){
 
                 if((typeof _pipeline) != "function"){
+                    //alert("adapting "+ns_listened+":: ");
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
                 }

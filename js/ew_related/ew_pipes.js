@@ -1,16 +1,25 @@
-define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
-       function(common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
-           
+define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js","js/ew_related/ew_render_pipes.js"],
+       function(common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep, renders) {
+           console.dir(renders.render_modal());
            var result={
+        
+               render_mapper:function(){
+                   return new Mapper_Pipeline(this.name, 
+                                                    {"modal":renders.render_modal,
+                                                     "object_view":renders.render_page_body}, 
+                                                    "view_type");
+               },
                init:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.transformations.init_state_history)
                        .addTransformation(t.transformations.init_footer)
                        .addTransformation(t.transformations.init_header)
                        .addTransformation(t.transformations.init_modals)
-                       .addTransformation(t.transformations.load_data)
+                       .addTransformation(t.transformations.load_dashboard_data)
                        .addTransformation(t.transformations.body_change_state)
-                   //TODO add body current_state_is_still_active loop
+
+
+                   //TODO add body current_state_is_still_active loop... it could be a parallel pipeline
                    ;
                },
                start:function(){
@@ -38,14 +47,14 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                                     callback(null, data_state);
                                 }))
                                )
-                   .addTransformation(new StateStep("paint_results", function(data_state, callback){
-                       var container=$("<div></div>");
-                       data_state.accumulator.map(function(item){
-                           container.append(item);
-                       });
-                       $('#center').append(container);
-                       callback(null, data_state);
-                   }))
+                       .addTransformation(new StateStep("paint_results", function(data_state, callback){
+                           var container=$("<div></div>");
+                           data_state.accumulator.map(function(item){
+                               container.append(item);
+                           });
+                           $('#center').append(container);
+                           callback(null, data_state);
+                       }))
                    ;
                }
            };

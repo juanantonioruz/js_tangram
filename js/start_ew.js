@@ -14,8 +14,9 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            dispatcher.reset();
 
            dispatcher.listen_state_step("ON_INIT", "body_change_state",  t.transformations.close_modals, false);
+           dispatcher.listen_state_step("ON_INIT", "body_change_state",  t.transformations.prepare_state_history_to_cookie, false);
 
-
+         dispatcher.listen_state_step("ON_END", "body_change_state", pipelines.render_mapper,  false);
            dispatcher.listen_state_step("ON_END", "body_change_state", t.transformations.save_state_history_to_cookie,  false);
 
            dispatcher.listen_state_step("ON_END", "body_change_state", t.transformations.footer_update_breadcrumbs,  false);

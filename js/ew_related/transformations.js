@@ -1,5 +1,24 @@
-define(["js/common.js", "js/pipelines/dispatcher.js"],
-       function(common, dispatcher) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.js"],
+       function(common, dispatcher, json_data) {
+           function clone(object)
+           {
+               var newObj = (object instanceof Array) ? [] : {};
+               for (var i in object)
+               {
+                   if (i == 'clone')
+                       continue;
+                   if (object[i] && typeof object[i] == "object")
+                       newObj[i] = clone(object[i]);
+                   else
+                       newObj[i] = object[i];
+               }
+               return newObj;
+           }
+function is_a_number(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
            var result= {
                init_state_history:function (data_state, callback){
                    var body = $('body');
@@ -30,8 +49,64 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                    callback(null, data_state);
                },
-               save_state_history_to_cookie:function (data_state, callback){
-                   
+               save_state_history_to_cookie:function(data_state, callback){
+                   var state_history=data_state.state_history;
+                   $('body').data('state_history', state_history);
+                   $.cookie('state_history', JSON.stringify(state_history), { expires:365, path:'/', json:true });
+                   callback(null, data_state);
+               },
+               prepare_state_history_to_cookie:function (data_state, callback){
+                   var data=data_state.change_state_data;
+
+                   var state_history = $('body').data('state_history');
+
+                   if (state_history.length >= 11)
+                       state_history.splice(0, state_history.length - 10);
+
+                   var index_of_active_state = state_history.length - 1;
+
+                   //Loop through all the state items
+                   $.each(state_history, function(index, item){
+
+                       //Only interested in active items
+                       if (!item.active)
+                           return;
+
+                       //Set the index of active state for later
+                       index_of_active_state = index;
+
+                       //Mark each as inactive
+                       item.active = false;
+                   });
+
+
+                   //If the state change is up or down the state history
+                   if (is_a_number(data)) {
+
+                       //Ensure the data value is a int
+                       var index = parseInt(data);
+
+                       //Extract the intended state from the state history array
+                       data = clone(state_history[index]);
+                   }
+                   else {
+
+                       //This is a new state and wont have a display name so show the spinning icon
+                       data.display_name = "<img src='../pix/logo_ew_single_star_grey.png' class='icon-spin'/>";
+                   }
+
+                   //Add the data to the state history
+                   state_history[state_history.length] = data;
+
+                   //Mark the new state as active
+                   data.active = true;
+
+                   //set the start time
+                   data.time_in = new Date();
+
+                   //set the time out too - note: this is reset every minute in the init function of the body
+                   data.time_out = new Date();
+                   data_state.state_history=state_history;
                    callback(null, data_state);
                },               
                init_footer:function (data_state, callback){
@@ -47,10 +122,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
                },
                body_change_state:function (data_state, callback){
-                   alert("the data!"+common.toJson(data_state.json));
+                   console.log("the data!"+common.toJson(data_state.change_state_data));
+                  
+                   // data_state.view_type="modal";
                    
+                   data_state.view_type="object_view";
                    callback(null, data_state);
                },
+          
+               
                footer_update_breadcrumbs:function (data_state, callback){
                    
                    callback(null, data_state);
@@ -66,46 +146,25 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                load_data:function(data_state, callback){
                    $('#left').prepend("<p >(simulating )Loading json data!</p>");
                    setTimeout(function () {
-                       var example_data={
-                           display_name: "Demo Profile Header Page",
-                           type: "user",
-                           header:{
-                               children:[
-                                   {
-                                       type: "image",
-                                       display_name: "You",
-                                       value: "http://www.geekalerts.com/u/a-team-rc-van.jpg"
-                                   },
-                                   {
-                                       type: "text",
-                                       display_name: "Your Name",
-                                       value: "Matthew Griffiths"
-                                   },
-                                   {
-                                       type: "text",
-                                       display_name: "Department",
-                                       value: "Department of Fun"
-                                   },
-                                   {
-                                       type: "text",
-                                       display_name: "",
-                                       value: "Everything you see on these tabs is being dynamically created from a JSON " +
-                                           "schema that Bill and Matt have worked on. That means that anything on these " +
-                                           "tabs can be created for any object in the EnterpriseWeb system."
-                                   }
-                               ]
-                           },
-                           actions: {
-                               edit: {
-                                   uri: "/save_test"
-                               }
-                           }};
-
-                       data_state.json=example_data;
+                       data_state.json=json_data.example_data;
                        callback(null, data_state);
                    }, 250);
                },
+               load_dashboard_data:function(data_state, callback){
+                   var json=json_data.dashboard_data;
+                   var user_data = {
+                    uid: json.uid,
+                    uri: json.uuri
+                   };
+                   $('body').data("user_data", user_data);
+                   data_state.change_state_data = {
+                    page_type: 'object',
+                    state: 'object_view',
+                    object_uri: user_data.uri
+                };
 
+                   callback(null, data_state);
+               },
                generate_uid:function(data_state, callback){
                    function create_id(prefix, subject) {
                        var id = prefix + "";
@@ -137,7 +196,17 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                
                
            };
+           var renders={    
+               modal:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               page_body:function(data_state, callback){
+                   callback(null, data_state);
+               }
+               
+           };
+           
 
-           return {transformations:common.naming_fns(result)};
+           return {transformations:common.naming_fns(result),renders:common.naming_fns(renders)};
 
        });
