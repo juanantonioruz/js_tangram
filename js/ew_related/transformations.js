@@ -152,7 +152,18 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
                   
                    callback(null, data_state);
+               },
+               load_object_viewer_with_header:function(data_state, callback){
+
+                  
+                   callback(null, data_state);
+               },
+               load_object_viewer_without_header:function(data_state, callback){
+
+                  
+                   callback(null, data_state);
                }
+               
            };
            var cache_data={
                page_body:function(data_state, callback){

@@ -1,5 +1,5 @@
-define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
-       function(common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
+define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/switcher_pipeline_type.js", "js/pipelines/state_step_type.js"],
+       function(common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep) {
            
            var result={
                render_modal:function(){
@@ -7,10 +7,18 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.renders.modal);
                },
                render_object_viewer_header:function(){
-                    return new Mapper_Pipeline(this.name, 
-                                              {"tasks": t.renders.task,
-                                               "objects":result.render_pages_main}, 
-                                              "page_type");
+                   function switcher(value){
+                       switch(value){
+                           case null:
+                           return t.templates.load_object_viewer_without_header;
+                           default:
+                           return t.templates.load_object_viewer_with_header;
+                       };
+                   }
+
+                    return new Switcher_Pipeline(this.name, 
+                                              switcher, 
+                                              "resource.header");
                    
                },
                render_object_viewer:function(){
@@ -19,7 +27,7 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.templates.load_object_viewer)
                        .addTransformation(t.cache_data.object_viewer)
                    
-                   //    .addPipe(result.render_object_viewer_header)
+                       .addPipe(result.render_object_viewer_header)
                    ;
                },
 

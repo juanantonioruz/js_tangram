@@ -75,7 +75,7 @@ define( function() {
 
         node.append("text")
             .attr("dx", function(d) { return d.children ? -8 : 8; })
-            .attr("dy", 3)
+            .attr("dy", function(d) { return d.children ? -8 : 8; })
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
             .text(function(d) { return d.ns.replace("pipeline_", "").replace("state_step_", ""); });
 
