@@ -67,6 +67,8 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
 
                        // this function composition use the method transform of each statestep in the context of each step (bind) ...
                        var composition=async.compose.apply(null, this.getSteps().map(function(o){
+                           // this conditional is related to pipelines and statesteps initialization through maps and common.js
+                           if((typeof o) == "function") o=o();
                            o.pipeline=that;
                            return o.transform.bind(o);
                        }));

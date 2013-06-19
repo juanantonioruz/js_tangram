@@ -207,7 +207,14 @@ function is_a_number(n) {
                },
                task:function(data_state, callback){
                    callback(null, data_state);
+               },
+               activity_list:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               trays:function(data_state, callback){
+                   callback(null, data_state);
                }
+               
                
            };
            var cache_data={
