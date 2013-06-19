@@ -13,16 +13,19 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                // EOP
                dispatcher.reset();
 
-               dispatcher.listen_state_step("ON_INIT", "body_change_state",  t.transformations.close_modals, false);
-               dispatcher.listen_state_step("ON_INIT", "body_change_state",  t.transformations.prepare_state_history_to_cookie, false);
+               dispatcher.listen_state_step("ON_INIT", "body_change_state",  t.modals.close, false);
+               dispatcher.listen_state_step("ON_INIT", "body_change_state",  t.state_history.prepare, false);
 
                dispatcher.listen_state_step("ON_END", "body_change_state", pipelines.render_mapper,  false);
-               dispatcher.listen_state_step("ON_END", "body_change_state", t.transformations.save_state_history_to_cookie,  false);
+               dispatcher.listen_state_step("ON_END", "body_change_state", t.state_history.save_to_cookie,  false);
 
                dispatcher.listen_state_step("ON_END", "body_change_state", t.transformations.footer_update_breadcrumbs,  false);
 
 
                dispatcher.listen_state_step("ON_INIT", "render_page_body",  t.cache_data.page_body, false);
+               
+               dispatcher.listen_state_step("ON_INIT", "dao_load_pages_main_data",  t.update.loading_object_editor, false);
+               dispatcher.listen_state_step("ON_END", "dao_load_pages_main_data",  t.renders.trays, false);
 
 
 

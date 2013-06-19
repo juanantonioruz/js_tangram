@@ -100,7 +100,7 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
                             contador++;
-                            var compose= new Pipeline("sync_compose_"+transformation_event_type+"*"+contador)
+                            var compose= new Pipeline(transformation_event_type+"/"+target.ns)
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
                                             callback();

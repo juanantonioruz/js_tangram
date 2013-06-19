@@ -22,7 +22,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        this.parallel=false;
                        contador++;
 
-                       this.ns="pipeline_mapper_"+name+"_"+model_key+"*"+contador;
+                       this.ns="pipeline_mapper_"+name+"?"+model_key;
                        //TODO: THIS IS THE ERROR FOUND!!      base.init("mapper_"+model_key+"_"+name+"*"+contador, on_success,on_error);
                        this.map=map;
                        this.model_key=model_key;
