@@ -13,8 +13,10 @@ define(["js/async.js"], function(async) {
             dispatch:function(transformation_event_type, target, data_state,callback){
 
                 //                 console.dir(transformation_event_type);
-                // console.dir(target);
-                // console.dir(domain_tree);
+                // if(transformation_event_type=="ON_END" && target.ns=="state_step_body_change_state" ){
+                //     console.dir(target);
+                //     console.dir(domain_tree);
+                // }
 
 
                 // this line works because is inyected in start_dev... so TODO: its necesary to change!
@@ -106,7 +108,7 @@ define(["js/async.js"], function(async) {
                                     .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
-                                console.dir(o);
+                              //  console.dir(o);
                                 //                                alert("invoking");
 
                                 compose.addPipe(o.pipeline());
@@ -133,8 +135,13 @@ define(["js/async.js"], function(async) {
             listen_pipe:function(transformation_event_type, ns_listened,pipeline, parallel_or_sync){
                 api.listen(transformation_event_type, "pipeline_"+ns_listened, pipeline, parallel_or_sync);
             },
-            listen_state_step:function(transformation_event_type, ns_listened,pipeline, parallel_or_sync){
-                api.listen(transformation_event_type, "state_step_"+ns_listened, pipeline, parallel_or_sync);
+            listen_state_step:function(transformation_event_type, ns_listened,_pipeline, parallel_or_sync){
+
+                if((typeof _pipeline) != "function"){
+                    var _pi=_pipeline;
+                   _pipeline=function(){return _pi;};
+                }
+                api.listen(transformation_event_type, "state_step_"+ns_listened, _pipeline, parallel_or_sync);
             },
             listen_state_step_in_pipe:function(transformation_event_type,  ns_state_step,ns_pipe ,pipeline, parallel_or_sync){
                 var ns_listened="pipeline_"+ns_pipe+"|"+"state_step_"+ns_state_step;
@@ -142,10 +149,15 @@ define(["js/async.js"], function(async) {
             },
             
             listen:function(transformation_event_type, ns_listened,  pipeline_or_state_transformation, parallel_or_sync ){
+                // alert(instanceof pipeline_or_state_transformation)
+                // if(pipeline_or_state_transformation instanceof Function){
+                //     alert("it isn't a FUNCTION!");
+                   
+                //     pipeline_or_state_transformation=function(){return pipeline_or_state_transformation;};
+                // }
                 //   var actual_listeners=domain_tree[ns_listened+"/"+transformation_event_type];
                 var actual_tree=domain_tree[transformation_event_type];
                 var actual={pipeline:pipeline_or_state_transformation, parallel:parallel_or_sync};
-                
                 if (actual_tree) {
                     if(ns_listened){
                         var a_t_l=actual_tree[ns_listened];
@@ -162,7 +174,7 @@ define(["js/async.js"], function(async) {
                     domain_tree[transformation_event_type]={};
                     domain_tree[transformation_event_type].no_ns_listened=[];
                     if(ns_listened)
-                        domain_tree[transformation_event_type][ns_listened]=actual;
+                        domain_tree[transformation_event_type][ns_listened]=[actual];
                     else    
                         domain_tree[transformation_event_type].no_ns_listened.push(actual);
 

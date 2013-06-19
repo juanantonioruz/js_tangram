@@ -93,8 +93,9 @@ define( function() {
                 }
             }else{
                 if(is_on_init(event_type)){
-                    this.target.pipeline.children.push(this.target);
+
                 }else{
+                    this.target.pipeline.children.push(this.target);
                 }
             }
             callback(null, data_state);

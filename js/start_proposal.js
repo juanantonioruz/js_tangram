@@ -36,13 +36,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            data_state.host=document.location.host;
 
            var result=function(){
-
-               pipelines.register()
-                   .apply_transformations(data_state);
-
-           };
-
-           // EOP
+ // EOP
            dispatcher.reset();
 
            dispatcher.listen_event("try_to_log", pipelines.load_tokens_and_select_actions, false);
@@ -82,6 +76,12 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                                                                                        fn:function(){
                                                                                            console.log(this.ns);
                                                                                        }}));
+               pipelines.register()
+                   .apply_transformations(data_state);
+
+           };
+
+          
            return result;
 
        });
