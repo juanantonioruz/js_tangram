@@ -4,8 +4,8 @@ define( function() {
     var
     radio=4,
     radio_max=150,
-    width = 1360,
-    height = 600;
+    width = 1800,
+    height = 1000;
 
     var cluster = d3.layout.cluster()
             .size([height, width - 160]);

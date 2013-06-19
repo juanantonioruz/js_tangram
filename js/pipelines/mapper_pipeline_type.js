@@ -35,11 +35,11 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        var pipe=this.map[data_state[this.model_key]];
 
                        // this conditional add flexibility to mapper_pipeline definition, in this case we can use statesteps also besides pipelines
-                       // if(pipe.class_name=="StateStep")
-                       //     this.addTransformation(pipe);
-                       // else if(pipe.class_name=="Pipeline")    
-                       //     this.addPipe(pipe);
-                       // else     
+                       if(pipe.class_name=="StateStep")
+                           this.addTransformation(pipe);
+                       else if(pipe.class_name=="Pipeline")    
+                           this.addPipe(pipe);
+                        else     
                            this.addPipe(pipe());
                        
                        base.apply_transformations.call(this, data_state);

@@ -123,10 +123,8 @@ function is_a_number(n) {
                },
                body_change_state:function (data_state, callback){
                    console.log("the data!"+common.toJson(data_state.change_state_data));
-                  
-                   // data_state.view_type="modal";
-                   
-                   data_state.view_type="object_view";
+                   //data_state.view_type="object_view"||"modal" ....
+                   data_state.view_type=data_state.change_state_data.state;
                    callback(null, data_state);
                },
           
@@ -201,12 +199,25 @@ function is_a_number(n) {
                    callback(null, data_state);
                },
                page_body:function(data_state, callback){
+                   data_state.page_type=data_state.change_state_data.page_type;
+                   callback(null, data_state);
+               },
+               pages_main:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               task:function(data_state, callback){
                    callback(null, data_state);
                }
                
            };
+           var cache_data={
+               page_body:function(data_state, callback){
+                   console.log("TODO");
+                   callback(null, data_state);
+               }
+           };
            
 
-           return {transformations:common.naming_fns(result),renders:common.naming_fns(renders)};
+           return {transformations:common.naming_fns(result),renders:common.naming_fns(renders, "render_"),cache_data:common.naming_fns(cache_data, "cache_data_")};
 
        });
