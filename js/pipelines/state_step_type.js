@@ -12,7 +12,7 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js", "js/pipelines/pipeline_t
                        this.ns="state_step_"+name;
                        this.transform_fn=_fn;
                    },
-
+                 
                    on_end:function(data_state, callback){
                        this.pipeline.step_count++;
                        this.pipeline.steps_done.push({ns:this.ns, data_transformation:this.after_data_state});

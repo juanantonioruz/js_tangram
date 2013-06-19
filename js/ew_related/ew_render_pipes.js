@@ -6,13 +6,21 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                    return new Pipeline(this.name)
                        .addTransformation(t.renders.modal);
                },
+               render_object_viewer_header:function(){
+                    return new Mapper_Pipeline(this.name, 
+                                              {"tasks": t.renders.task,
+                                               "objects":result.render_pages_main}, 
+                                              "page_type");
+                   
+               },
                render_object_viewer:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.update.body_current_state_display_name)
                        .addTransformation(t.templates.load_object_viewer)
-                       .addTransformation(t.renders.object_viewer);
-
+                       .addTransformation(t.cache_data.object_viewer)
                    
+                   //    .addPipe(result.render_object_viewer_header)
+                   ;
                },
 
                render_pages_main:function(){
@@ -23,7 +31,6 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.dao.load_pages_main_data)
                        .addPipe(result.render_object_viewer)
                    ;
-
                },
                page_body:function(){
                    return new Mapper_Pipeline(this.name, 

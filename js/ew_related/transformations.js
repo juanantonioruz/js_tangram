@@ -108,6 +108,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    data_state.main_data=json;
                    data_state.resource=json.body.resources[0];
+
                    console.dir(data_state.resource);
                    callback(null, data_state);
                }
@@ -142,21 +143,25 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                trays:function(data_state, callback){
                    callback(null, data_state);
-               },
-               object_viewer:function(data_state, callback){
-                   callback(null, data_state);
                }
+            
            };
 
            var templates={
                load_object_viewer:function(data_state, callback){
                    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
+                  
                    callback(null, data_state);
                }
            };
            var cache_data={
                page_body:function(data_state, callback){
                    console.log("TODO");
+                   callback(null, data_state);
+               },
+               object_viewer:function(data_state, callback){
+                   var r=data_state.get_value("resource.header.children[0].value");
+                   alert(common.toJson(r));
                    callback(null, data_state);
                }
            };
