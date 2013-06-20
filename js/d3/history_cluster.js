@@ -2,12 +2,16 @@ define( function() {
 
     
     var
-    radio=4,
+    radio=5,
     radio_max=150,
     width = 1800,
     height = 150;
     var contador;
     var space_item=30;
+
+    function contains(c, s){
+       return  c.indexOf(s)!=-1;
+    }
 
     var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
@@ -32,7 +36,7 @@ define( function() {
     }
 
     function render(root, div_id, item_fn){
-        contador=1;
+        contador=2;
         var int_root=_create_node(root);
 
        recursive(root, int_root);
@@ -66,13 +70,28 @@ define( function() {
                 .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         // pipelines and root
-        node.append("circle")
+        node.append("rect")
+                     .attr("y",-2) 
+
             .attr("display",function(d){
                 if(!d.item.children){
 
                     return "visible";}else{ return "none";}})
-            .attr("r", radio)
-            .attr("fill","#333333")
+            .attr("width", 200)
+            .attr("height", 4)
+            .attr("fill",function(d,i){
+                if(contains(d.ns, "dao")) 
+                    return "red";
+                else if(contains(d.ns, "load_tmpl"))
+                    return "YellowGreen";
+                else if(contains(d.ns, "render"))
+                    return "pink";
+                else if(contains(d.ns, "change_state"))
+                    return "orange";
+                else
+                    return "#e5e5e5";
+
+            })
             .on(item_fn.mouse_event_name, function(d,i){
               item_fn.fn.call(d.item);
                 // not necesary but this works if(d3.select(this).attr("display"))
