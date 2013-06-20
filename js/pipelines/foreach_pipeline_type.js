@@ -53,6 +53,9 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                            
                        }
                        data_state.current_data=collection[0];
+                       
+                       // change this line with previous code
+//                       data_state.current_data=data_state.get_value(this.model_key)[0];
                        base.apply_transformations.call(this, data_state);
                    
                        

@@ -38,7 +38,7 @@ var folder;
     }
 
     function render(root, div_id, item_fn){
-        if(!root.paint_graph) return;
+
         contador=2;
         var int_root=_create_node(root);
 
@@ -91,6 +91,15 @@ var folder;
                     return "pink";
                 else if(contains(d.ns, "change_state"))
                     return "orange";
+                else if(contains(d.ns, "cache"))
+                    return "violet";
+                else if(contains(d.ns, "template"))
+                    return "yellow";
+                else if(contains(d.ns, "modals"))
+                    return "#999999";
+                else if(contains(d.ns, "relationships"))
+                    return "Moccasin";
+
                 else
                     return "#e5e5e5";
 

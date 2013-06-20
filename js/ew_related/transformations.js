@@ -20,10 +20,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
            var result= {
-                  paint_graph:function (data_state, callback){
-                   data_state.paint_graph=true;
-                   callback(null, data_state);
-               },
                body_change_state:function (data_state, callback){
                    console.log("the data!"+common.toJson(data_state.change_state_data));
                    //data_state.view_type="object_view"||"modal" ....
@@ -68,7 +64,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                by_child:function(data_state, callback){
                    
                    callback(null, data_state);
- 
+                   
                }
            };
            var update={
@@ -117,7 +113,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    data_state.main_data=json;
                    data_state.resource=json.body.resources[0];
 
-                   console.dir(data_state.resource);
+//                   console.dir(data_state.resource);
                    callback(null, data_state);
                }
            };
@@ -152,27 +148,52 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                trays:function(data_state, callback){
                    callback(null, data_state);
                }
-            
+               
            };
 
            var templates={
                load_object_viewer:function(data_state, callback){
                    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
-                  
+                   
                    callback(null, data_state);
                },
                load_object_viewer_with_header:function(data_state, callback){
 
-                  
+                   
                    callback(null, data_state);
                },
                load_object_viewer_without_header:function(data_state, callback){
 
-                  
+                   
+                   callback(null, data_state);
+               },
+               configure_object_viewer_header:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               object_viewer_header_error:function(data_state, callback){
+                   callback(null, data_state);
+               }
+               ,object_viewer_header_function:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               load_object_viewer_child:function(data_state, callback){
                    callback(null, data_state);
                }
                
            };
+           
+           var load_tmpl={
+               component:function(data_state, callback){
+                   var tmpl_name="component_"+data_state.current_data.type;
+                   var html=$.tmpl(tmpl_name, data_state.current_data);
+                   var my_template=$.tmpl('my_template', data_state.current_data);
+                   $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
+
+                   callback(null, data_state);
+
+               }
+           };
+
            var cache_data={
                page_body:function(data_state, callback){
                    console.log("TODO");
@@ -182,10 +203,44 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    //var r=data_state.get_value("resource.header.children[0].value");
                    //alert(common.toJson(r));
                    callback(null, data_state);
+               },
+               object_viewer_header:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               object_viewer_header_child:function(data_state, callback){
+                   callback(null, data_state);
                }
+
+
            };
            
-        
+           var validation={
+               key_up:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               click:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               is_phone_number:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               is_date:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               is_mail:function(data_state, callback){
+                   callback(null, data_state);
+               }
+           };
+           var actions={
+               component_a:function(data_state, callback){
+                   callback(null, data_state);
+               }
+           };
+           var metadata={
+               component_m:function(data_state, callback){
+                   callback(null, data_state);
+               }
+           };
 
            var state_history={
                init:function (data_state, callback){
@@ -271,20 +326,33 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    data_state.state_history=state_history;
                    callback(null, data_state);
                },
-                save_to_cookie:function(data_state, callback){
+               save_to_cookie:function(data_state, callback){
                    var state_history=data_state.state_history;
                    $('body').data('state_history', state_history);
                    $.cookie('state_history', JSON.stringify(state_history), { expires:365, path:'/', json:true });
+                   callback(null, data_state);
+               },
+               
+           };
+
+           var relationships={
+               object_viewer_header:function(data_state, callback){
+                   //var r=data_state.get_value("resource.header.children[0].value");
+                   //alert(common.toJson(r));
                    callback(null, data_state);
                }
            };
 
 
            return {
+               validation:common.naming_fns(validation, "validation_"),
+               actions:common.naming_fns(actions, "actions_"),
+               metadata:common.naming_fns(metadata, "metadata_"),
+               load_tmpl:common.naming_fns(load_tmpl, "load_tmpl_"),
                templates:common.naming_fns(templates, "template_"),
                update:common.naming_fns(update, "update_"),
                state_history:common.naming_fns(state_history, "state_history_"),
-
+               relationships:common.naming_fns(relationships, "relationships_"),
                dao:common.naming_fns(dao, "dao_"),
                modals:common.naming_fns(modals, "modals_"),
                transformations:common.naming_fns(result),

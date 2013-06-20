@@ -26,6 +26,46 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                    return new Pipeline(this.name)
                        .addTransformation(t.renders.modal);
                },
+               walk_object_viewer_header_children:function(){
+                   return new Foreach_Pipeline(this.name, "resource.header.children")
+                       .addTransformation(t.templates.load_object_viewer_child)
+                       .addTransformation(t.cache_data.object_viewer_header_child)
+                       .addPipe(result.render_component)
+                   ;
+               },
+               render_object_viewer_header_children_bis:function(){
+                   return new Switcher_Pipeline(this.name, 
+                                                function switcher(_value){
+                                                    if(typeof(_value)==='function')
+                                                        return t.templates.object_viewer_header_function;
+                                                    else
+                                                        return result.walk_object_viewer_header_children;
+
+                                                }, 
+                                                "resource.header.children");
+                   
+               },
+                render_object_viewer_header_children:function(){
+                   return new Switcher_Pipeline(this.name, 
+                                                function switcher(_value){
+                                                    if(_value!=null && _value.length>0)
+                                                        return result.render_object_viewer_header_children_bis;
+                                                    else
+                                                        return t.templates.object_viewer_header_error;
+                                                    
+                                                }, 
+                                                "resource.header.children");
+                   
+               },
+               render_object_viewer_with_header:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.templates.load_object_viewer_with_header)
+                       .addTransformation(t.cache_data.object_viewer_header)
+                       .addTransformation(t.templates.configure_object_viewer_header)
+                       .addTransformation(t.relationships.object_viewer_header)
+                       .addPipe(result.render_object_viewer_header_children)
+                   ;
+               },
                render_object_viewer_header:function(){
                    return new Switcher_Pipeline(this.name, 
                                                 function switcher(_value){
@@ -34,24 +74,46 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                                                         return t.templates.load_object_viewer_without_header;
                                                         break;
                                                     default:
-                                                        return t.templates.load_object_viewer_with_header;
+                                                        return result.render_object_viewer_with_header;
                                                         break;
                                                     };
                                                 }, 
                                                 "resource.header");
                    
                },
+
+               render_validation:function(){
+                      return new Pipeline(this.name)
+                      .addTransformation(t.validation.key_up)
+                      .addTransformation(t.validation.click)
+                       .addTransformation(t.validation.is_phone_number)
+                      .addTransformation(t.validation.is_date)
+                       .addTransformation(t.validation.is_mail)
+                   ;
+               
+               },
+
+               render_component:function(){
+                      return new Pipeline(this.name)
+                       .addTransformation(t.transformations.generate_uid)
+                       .addTransformation(t.load_tmpl.component)
+//                       .addPipe(result.render_validation)
+                //                        .addTransformation(t.validation.key_up)
+//                      .addTransformation(t.validation.click)
+  //                     .addTransformation(t.validation.is_phone_number)
+   //                   .addTransformation(t.validation.is_date)
+                       .addTransformation(t.validation.is_mail)
+
+                       .addTransformation(t.actions.component_a)
+                       .addTransformation(t.metadata.component_m)
+                   ;
+                   
+                   
+               },
                walk_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
-                       .addTransformation(t.transformations.generate_uid)
-                       .addTransformation(new StateStep("load_tmpl", function(data_state, callback){
-                           var tmpl_name="component_"+data_state.current_data.type;
-                           var html=$.tmpl(tmpl_name, data_state.current_data);
-                           var my_template=$.tmpl('my_template', data_state.current_data);
-                           $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
+                       .addPipe(result.render_component)
 
-                           callback(null, data_state);
-                       }))
                    ;
                },
                render_object_viewer:function(){
