@@ -31,7 +31,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        
                        this.future_state_steps=[];
 
-                       var collection=data_state[this.model_key];
+                       var collection=data_state.get_value(this.model_key);
                      for(var i=0; i<collection.length; i++){
                            var pipe=new Pipeline("counter"+i);
                            // TODO: now is cloning to fix the reverse effect in collection

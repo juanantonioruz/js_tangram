@@ -38,11 +38,11 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                                                         break;
                                                     };
                                                 }, 
-                                                "_header");
+                                                "resource.header");
                    
                },
                walk_children:function(){
-                   return new Foreach_Pipeline(this.name, "_children")
+                   return new Foreach_Pipeline(this.name, "resource.children")
                        .addTransformation(t.transformations.generate_uid)
                        .addTransformation(new StateStep("load_tmpl", function(data_state, callback){
                            var tmpl_name="component_"+data_state.current_data.type;
@@ -59,12 +59,6 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.update.body_current_state_display_name)
                        .addTransformation(t.templates.load_object_viewer)
                        .addTransformation(t.cache_data.object_viewer)
-                       .addTransformation(new StateStep("prepare_data",function (data_state, callback){
-                           data_state._header=data_state.resource.header;
-                           data_state._children=data_state.resource.children;
-
-                           callback(null, data_state);
-                       } ))
                        .addPipe(result.render_object_viewer_header)
                        .addPipe(result.walk_children)
                    ;
@@ -93,11 +87,6 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                }
                
            };
-
-           
-           
-
-
            
            return common.naming_pipes(result);
        });
