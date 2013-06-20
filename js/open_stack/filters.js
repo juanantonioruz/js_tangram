@@ -60,7 +60,8 @@ define( function() {
         var active_pipelines=[];
 
         return function (data_state, callback){
-            if(debug_filters)        console.log(">debug d3 pipelines");
+            if(debug_filters)
+                console.log(">--------------------------debug d3 pipelines");
             var ns=this.target.ns;
             var event_type=this.transformation_event_type;
 
@@ -98,6 +99,7 @@ define( function() {
                     this.target.pipeline.children.push(this.target);
                 }
             }
+                
             callback(null, data_state);
         };
     }

@@ -9,6 +9,8 @@ define( function() {
     var contador;
     var space_item=30;
 
+var folder;
+    
     function contains(c, s){
        return  c.indexOf(s)!=-1;
     }
@@ -36,6 +38,7 @@ define( function() {
     }
 
     function render(root, div_id, item_fn){
+        if(!root.paint_graph) return;
         contador=2;
         var int_root=_create_node(root);
 
@@ -101,9 +104,25 @@ define( function() {
 
         node.append("rect")
             .attr("display",function(d){ if(d.item.children) return "visible"; return "none";})
-            .attr("width", radio*3)
-            .attr("height", radio*3)
+            .attr("width", function(d,i){
+                if(d.item.folder) return radio*7;
+                return radio*3;
+            })
+              .attr("height", function(d,i){
+                if(d.item.folder) return radio*7;
+                return radio*3;
+            })
+         .attr("id", function(d,i){
+
+             if(d.item.folder){
+                 return "folder";
+                 }
+             return d.ns;
+
+         })
             .attr("fill",function(d,i){
+                if(d.item.folder) return "red";
+                else
                 if(d.item.closed) return "RoyalBlue";
                     return "PaleTurquoise";
 
@@ -123,6 +142,11 @@ define( function() {
             .on("click", function(d,i){
                 
                 d.item.closed=!d.item.closed;
+
+                if(!d.item.closed)
+                    d.item.folder=true;
+                else
+                    d.item.folder=false;
                 // not necesary but this works if(d3.select(this).attr("display"))
                 render(root, div_id, item_fn);
             })
@@ -136,7 +160,7 @@ define( function() {
 
             .attr("dx", function(d) { var length=d.ns.replace("pipeline_", "").replace("state_step_", "").length*2; 
                                       return d.item.children ? length : 80; })
-            .attr("dy",function(d) { return d.item.children ? -15 : -5; }) 
+            .attr("dy",function(d) { return d.item.children ? -5 : -5; }) 
             .style("fill", function(d){
                 if(is_visible(d)){
                     if(d.item.children) {
@@ -160,7 +184,16 @@ define( function() {
 
         d3.select(self.frameElement).style("height", contador*space_item + "px");        
         $(div_id).fadeIn(1000, function(){
+            var selection=d3.select("#folder");
+           if(!selection.empty()){
 
+               selection.transition().delay(1500).style("fill", function(d,i){
+                   d.item.folder=false;
+                   return "PaleTurquoise";
+               }).attr("width", radio*3).attr("height", radio*3);
+
+           }
+            
                
         });
       

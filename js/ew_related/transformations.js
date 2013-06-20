@@ -20,7 +20,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
            var result= {
-              
+                  paint_graph:function (data_state, callback){
+                   data_state.paint_graph=true;
+                   callback(null, data_state);
+               },
                body_change_state:function (data_state, callback){
                    console.log("the data!"+common.toJson(data_state.change_state_data));
                    //data_state.view_type="object_view"||"modal" ....

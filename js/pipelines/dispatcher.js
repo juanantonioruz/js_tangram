@@ -132,8 +132,14 @@ define(["js/async.js"], function(async) {
                 api.listen(transformation_event_type, null, pipeline, parallel_or_sync);
             },
             // dont need to write "pipeline_"
-            listen_pipe:function(transformation_event_type, ns_listened,pipeline, parallel_or_sync){
-                api.listen(transformation_event_type, "pipeline_"+ns_listened, pipeline, parallel_or_sync);
+            listen_pipe:function(transformation_event_type, ns_listened,_pipeline, parallel_or_sync){
+                if((typeof _pipeline) != "function"){
+                    //alert("adapting "+ns_listened+":: ");
+                    var _pi=_pipeline;
+                   _pipeline=function(){return _pi;};
+                }
+
+                api.listen(transformation_event_type, "pipeline_"+ns_listened, _pipeline, parallel_or_sync);
             },
             listen_state_step:function(transformation_event_type, ns_listened,_pipeline, parallel_or_sync){
 
