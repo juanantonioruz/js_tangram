@@ -6,7 +6,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                return  {
                    init: function(name,model_key) {
                        this.model_key=model_key;
-                       this.construct(name);
+                       this.construct("pipeline_fe_"+name);
                        return this;
                    },
                    

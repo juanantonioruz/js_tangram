@@ -19,6 +19,7 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
 
 
                        .addTransformation(t.transformations.body_change_state)
+                   .addPipe(result.render_mapper);
 
 
 
@@ -138,7 +139,7 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.cache_data.object_viewer)
 
                      .addPipe(result.render_object_viewer_header)
-                     //  .addPipe(result.walk_children)
+                      .addPipe(result.walk_children)
                    ;
                },
 
@@ -161,6 +162,7 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                    return new Pipeline(this.name)
                        .addTransformation(t.renders.page_body)
                        .addPipe(result.page_body)
+                   
                    ;
                }
                

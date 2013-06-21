@@ -64,8 +64,6 @@ define( function() {
                 console.log(">--------------------------debug d3 pipelines");
             var ns=this.target.ns;
             var event_type=this.transformation_event_type;
-            if(event_type=="ON_INIT")
-            console.log("-> "+ event_type+"/"+ns);
             if(is_pipeline(ns)){
                 if(is_on_init(event_type)){
 

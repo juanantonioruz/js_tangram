@@ -36,8 +36,9 @@ define(["js/async.js"], function(async) {
                                                                      transformation_event_type:transformation_event_type});}));
                     composition(data_state, function(err, result){
                         //TODO error catching?? !
-                        continue_listeners();              
+                        
                     });
+                    continue_listeners();              
                 }else{
                     continue_listeners();              
                 }
