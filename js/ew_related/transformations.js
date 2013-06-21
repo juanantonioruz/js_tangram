@@ -21,7 +21,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
            var result= {
                body_change_state:function (data_state, callback){
-                   console.log("the data!"+common.toJson(data_state.change_state_data));
+  //                 console.log("the data!"+common.toJson(data_state.change_state_data));
                    //data_state.view_type="object_view"||"modal" ....
                    data_state.view_type=data_state.change_state_data.state;
                    callback(null, data_state);
@@ -153,7 +153,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
            var templates={
                load_object_viewer:function(data_state, callback){
-                   console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
+               //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
                    
                    callback(null, data_state);
                },
@@ -184,6 +184,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            
            var load_tmpl={
                component:function(data_state, callback){
+
                    var tmpl_name="component_"+data_state.current_data.type;
                    var html=$.tmpl(tmpl_name, data_state.current_data);
                    var my_template=$.tmpl('my_template', data_state.current_data);
@@ -196,7 +197,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
            var cache_data={
                page_body:function(data_state, callback){
-                   console.log("TODO");
+                  // console.log("TODO");
                    callback(null, data_state);
                },
                object_viewer:function(data_state, callback){

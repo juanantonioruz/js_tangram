@@ -8,19 +8,23 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                    init: function(name,on_success, on_error) {
                      
 
-                       this.ns="pipeline_"+name;
-                       this.step_count=0;
-                       this.future_state_steps=[];
-                       this.steps_done=[];
+                       
                        if(on_success)
                        this.on_success=on_success;
                        if(on_error)
                        this.on_error=on_error;
-
+                       this.construct("pipeline_"+name);
+                       return this;
+                   },
+                   construct:function(name){
+                       this.ns=name;
+                       this.step_count=0;
+                       this.future_state_steps=[];
+                       this.steps_done=[];
                        this.children=[];
                        // default synchronous behavior
                        this.parallel=false;
-                       return this;
+           //            console.log("INIT: "+this.ns);
                    },
                    // this method to add statesteps
                    addTransformation:function(state_step){
@@ -46,9 +50,11 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                        return this.future_state_steps.reverse();
                    },
                    on_init:function(data_state, callback){
-                      dispatcher.dispatch("ON_INIT",this,  data_state, callback);
+                     //  console.log("ON_INIT_PIPELINE:/"+this.ns);
+                       dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
                    on_end:function(data_state, callback){
+                      // console.log("ON_END_PIPELINE:/"+this.ns);
                        dispatcher.dispatch("ON_END", this, data_state, callback);
                    },
                   
@@ -62,6 +68,7 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                    },
 
                    apply_transformations:function(data_state){
+
                        var that=this;
 
 

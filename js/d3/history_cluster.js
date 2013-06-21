@@ -9,10 +9,10 @@ define( function() {
     var contador;
     var space_item=30;
 
-var folder;
+    var folder;
     
     function contains(c, s){
-       return  c.indexOf(s)!=-1;
+        return  c.indexOf(s)!=-1;
     }
 
     var diagonal = d3.svg.diagonal()
@@ -23,28 +23,31 @@ var folder;
     };
 
     function recursive(colector, container){
-       if(colector.children){
-         for(var i=0; i<colector.children.length; i++){
+        if(colector.children){
+            for(var i=0; i<colector.children.length; i++){
 
-            var child=colector.children[i];
-//             console.log(child);
-            var element=_create_node(child);
-             container.children.push(element);
-             if(!child.closed)
-             recursive(child, element);
-        }}else{
-                                contador++;
-        }
+                var child=colector.children[i];
+                //             console.log(child);
+                var element=_create_node(child);
+                container.children.push(element);
+                if(!child.closed){
+                    recursive(child, element);
+                }
+            }
+        }else{
+                contador++;
+            }
     }
 
     function render(root, div_id, item_fn){
+        console.log("RENDERING VISUALIZATION!!");
 
         contador=2;
         var int_root=_create_node(root);
 
-       recursive(root, int_root);
+        recursive(root, int_root);
         
-   //     console.dir(int_root);
+        //     console.dir(int_root);
 
         $(div_id).empty();
         $(div_id).hide();
@@ -53,8 +56,8 @@ var folder;
                 .attr("height", contador*space_item)
                 .append("g")
                 .attr("transform", "translate(40,0)");
-    var cluster = d3.layout.cluster()
-            .size([contador*space_item, width - 160]);
+        var cluster = d3.layout.cluster()
+                .size([contador*space_item, width - 160]);
 
         var nodes = cluster.nodes(int_root),
             links = cluster.links(nodes);
@@ -69,12 +72,12 @@ var folder;
                 .data(nodes)
                 .enter().append("g")
                 .attr("class", "node")
-                
+        
                 .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         // pipelines and root
         node.append("rect")
-                     .attr("y",-2) 
+            .attr("y",-2) 
 
             .attr("display",function(d){
                 if(!d.item.children){
@@ -105,7 +108,7 @@ var folder;
 
             })
             .on(item_fn.mouse_event_name, function(d,i){
-              item_fn.fn.call(d.item);
+                item_fn.fn.call(d.item);
                 // not necesary but this works if(d3.select(this).attr("display"))
 
             })
@@ -117,32 +120,32 @@ var folder;
                 if(d.item.folder) return radio*7;
                 return radio*3;
             })
-              .attr("height", function(d,i){
+            .attr("height", function(d,i){
                 if(d.item.folder) return radio*7;
                 return radio*3;
             })
-         .attr("id", function(d,i){
+            .attr("id", function(d,i){
 
-             if(d.item.folder){
-                 return "folder";
-                 }
-             return d.ns;
+                if(d.item.folder){
+                    return "folder";
+                }
+                return d.ns;
 
-         })
+            })
             .attr("fill",function(d,i){
                 if(d.item.folder) return "red";
                 else
-                if(d.item.closed) return "RoyalBlue";
-                    return "PaleTurquoise";
+                    if(d.item.closed) return "RoyalBlue";
+                return "PaleTurquoise";
 
             })
             .on("mouseover", function(d,i){
                 var actual=d3.select(this);
                 actual.transition().style("fill", "RoyalBlue").each("end", function(){actual.transition().delay(500).style("fill", "PaleTurquoise");});
                 if(!d.item.closed){
-                var ele=d3.select(this.parentNode).select(":last-child");
+                    var ele=d3.select(this.parentNode).select(":last-child");
 
-                var p=ele.transition().style("fill", "RoyalBlue").each("end", function(){ele.transition().delay(500).style("fill", "PaleTurquoise");});
+                    var p=ele.transition().style("fill", "RoyalBlue").each("end", function(){ele.transition().delay(500).style("fill", "PaleTurquoise");});
                 }
                 //console.dir(ele);
                 // not necesary but this works if(d3.select(this).attr("display"))
@@ -174,9 +177,9 @@ var folder;
                 if(is_visible(d)){
                     if(d.item.children) {
                         return "RoyalBlue";
-                        }else{
-                            return "gray";
-                        }
+                    }else{
+                        return "gray";
+                    }
                 }else{ 
                     return "PaleTurquoise";}} )
             .style("font-size", "12px")
@@ -194,18 +197,18 @@ var folder;
         d3.select(self.frameElement).style("height", contador*space_item + "px");        
         $(div_id).fadeIn(1000, function(){
             var selection=d3.select("#folder");
-           if(!selection.empty()){
+            if(!selection.empty()){
 
-               selection.transition().delay(1500).style("fill", function(d,i){
-                   d.item.folder=false;
-                   return "PaleTurquoise";
-               }).attr("width", radio*3).attr("height", radio*3);
+                selection.transition().delay(1500).style("fill", function(d,i){
+                    d.item.folder=false;
+                    return "PaleTurquoise";
+                }).attr("width", radio*3).attr("height", radio*3);
 
-           }
+            }
             
-               
+            
         });
-      
+        
 
 
     };

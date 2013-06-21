@@ -16,7 +16,11 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.renders.header)
                        .addTransformation(t.modals.init)
                        .addTransformation(t.dao.load_dashboard_data)
+
+
                        .addTransformation(t.transformations.body_change_state)
+
+
 
 
                    //TODO add body current_state_is_still_active loop... it could be a parallel pipeline
@@ -26,11 +30,37 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                    return new Pipeline(this.name)
                        .addTransformation(t.renders.modal);
                },
+               render_component:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.transformations.generate_uid)
+                  //     .addTransformation(t.load_tmpl.component)
+                   //                       .addPipe(result.render_validation)
+                   //                        .addTransformation(t.validation.key_up)
+                   //                      .addTransformation(t.validation.click)
+                   //                     .addTransformation(t.validation.is_phone_number)
+                   //                   .addTransformation(t.validation.is_date)
+                   //    .addTransformation(t.validation.is_mail)
+
+                    //   .addTransformation(t.actions.component_a)
+                     //  .addTransformation(t.metadata.component_m)
+                   ;
+                   
+                   
+               },
                walk_object_viewer_header_children:function(){
-                   return new Foreach_Pipeline(this.name, "resource.header.children")
-                       .addTransformation(t.templates.load_object_viewer_child)
-                       .addTransformation(t.cache_data.object_viewer_header_child)
-                       .addPipe(result.render_component)
+                                      return new Foreach_Pipeline(this.name, "resource.header.children")
+
+
+                    .addTransformation(t.templates.load_object_viewer_child)
+                    .addTransformation(t.cache_data.object_viewer_header_child)
+
+                   
+                       // .addTransformation(t.transformations.generate_uid)
+                       // .addTransformation(t.load_tmpl.component)
+                       // .addTransformation(t.validation.is_mail)
+
+
+                                       .addPipe(result.render_component)
                    ;
                },
                render_object_viewer_header_children_bis:function(){
@@ -45,11 +75,12 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                                                 "resource.header.children");
                    
                },
-                render_object_viewer_header_children:function(){
+               render_object_viewer_header_children:function(){
                    return new Switcher_Pipeline(this.name, 
                                                 function switcher(_value){
                                                     if(_value!=null && _value.length>0)
-                                                        return result.render_object_viewer_header_children_bis;
+ //                                                      return result.walk_object_viewer_header_children;
+                                                   return result.render_object_viewer_header_children_bis;
                                                     else
                                                         return t.templates.object_viewer_header_error;
                                                     
@@ -83,33 +114,17 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                },
 
                render_validation:function(){
-                      return new Pipeline(this.name)
-                      .addTransformation(t.validation.key_up)
-                      .addTransformation(t.validation.click)
+                   return new Pipeline(this.name)
+                       .addTransformation(t.validation.key_up)
+                       .addTransformation(t.validation.click)
                        .addTransformation(t.validation.is_phone_number)
-                      .addTransformation(t.validation.is_date)
+                       .addTransformation(t.validation.is_date)
                        .addTransformation(t.validation.is_mail)
                    ;
+                   
+               },
+
                
-               },
-
-               render_component:function(){
-                      return new Pipeline(this.name)
-                       .addTransformation(t.transformations.generate_uid)
-                       .addTransformation(t.load_tmpl.component)
-//                       .addPipe(result.render_validation)
-                //                        .addTransformation(t.validation.key_up)
-//                      .addTransformation(t.validation.click)
-  //                     .addTransformation(t.validation.is_phone_number)
-   //                   .addTransformation(t.validation.is_date)
-                       .addTransformation(t.validation.is_mail)
-
-                       .addTransformation(t.actions.component_a)
-                       .addTransformation(t.metadata.component_m)
-                   ;
-                   
-                   
-               },
                walk_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
                        .addPipe(result.render_component)
@@ -121,8 +136,9 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                        .addTransformation(t.update.body_current_state_display_name)
                        .addTransformation(t.templates.load_object_viewer)
                        .addTransformation(t.cache_data.object_viewer)
-                       .addPipe(result.render_object_viewer_header)
-                       .addPipe(result.walk_children)
+
+                     .addPipe(result.render_object_viewer_header)
+                     //  .addPipe(result.walk_children)
                    ;
                },
 
@@ -130,9 +146,9 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
                    return new Pipeline(this.name)
                        .addTransformation(t.renders.pages_main)
                        .addTransformation(t.renders.activity_list)
-                       .addTransformation(t.renders.clean_trays)
-                       .addTransformation(t.dao.load_pages_main_data)
-                       .addPipe(result.render_object_viewer)
+                      .addTransformation(t.renders.clean_trays)
+                      .addTransformation(t.dao.load_pages_main_data)
+                      .addPipe(result.render_object_viewer)
                    ;
                },
                page_body:function(){
@@ -152,46 +168,6 @@ define([   "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/
            
            return common.naming_pipes(result);
        });
-
-
-
-
-// start:function(){
-//     return new Pipeline(this.name)
-//         .addTransformation(t.transformations.welcome)
-//         .addTransformation(t.transformations.load_data)
-//         .addTransformation(new StateStep("prepare_data",function (data_state, callback){
-//             $('#left').prepend("<p >preparing data for foreach!</p>");
-//             data_state.children_objects=data_state.json.header.children;
-//             data_state.accumulator=[];
-//             callback(null, data_state);
-//         } ))
-//         .addPipe(new Foreach_Pipeline("walk_through_children", "children_objects")
-//                  .addTransformation(t.transformations.generate_uid)
-//                  .addTransformation(new StateStep("each_child",function (data_state, callback){
-//                      $('#left').prepend("<p >child type!"+data_state.current_data.type+"</p>");
-//                      callback(null, data_state);
-//                  } ))
-//                  .addTransformation(new StateStep("load_tmpl", function(data_state, callback){
-//                      var tmpl_name="component_"+data_state.current_data.type;
-//                      var html=$.tmpl(tmpl_name, data_state.current_data);
-//                      var my_template=$.tmpl('my_template', data_state.current_data);
-//                      $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
-//                      data_state.accumulator.push(my_template);
-//                      callback(null, data_state);
-//                  }))
-//                 )
-//         .addTransformation(new StateStep("paint_results", function(data_state, callback){
-//             var container=$("<div></div>");
-//             data_state.accumulator.map(function(item){
-//                 container.append(item);
-//             });
-//             $('#center').append(container);
-//             callback(null, data_state);
-//         }))
-//     ;
-// }
-
 
 
 

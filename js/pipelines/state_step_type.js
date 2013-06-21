@@ -11,15 +11,18 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js", "js/pipelines/pipeline_t
                        
                        this.ns="state_step_"+name;
                        this.transform_fn=_fn;
+    //                   console.log("INIT: "+this.ns);
                    },
                  
                    on_end:function(data_state, callback){
+//                       console.log("ON_END:/"+this.ns);
                        this.pipeline.step_count++;
                        this.pipeline.steps_done.push({ns:this.ns, data_transformation:this.after_data_state});
                        dispatcher.dispatch("ON_END",this,  data_state, callback);
                    },
 
                    on_init:function(data_state, callback){
+//                       console.log("ON_INIT:/"+this.ns);
                        dispatcher.dispatch("ON_INIT",this,  data_state, callback);
                    },
                    apply_transformations:function(data_state){

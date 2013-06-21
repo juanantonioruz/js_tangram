@@ -4,21 +4,9 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
 
            var Foreach_Pipeline=Pipeline.extend(function(base){
                return  {
-                   init: function(name,model_key, on_success, on_error) {
-                       this.ns="pipeline_"+name;
-
+                   init: function(name,model_key) {
                        this.model_key=model_key;
-                       this.step_count=0;
-                       this.future_state_steps=[];
-                       this.steps_done=[];
-                       if(on_success)
-                       this.on_success=on_success;
-                       if(on_error)
-                       this.on_error=on_error;
-
-                       this.children=[];
-                       // default synchronous behavior
-                       this.parallel=false;
+                       this.construct(name);
                        return this;
                    },
                    
@@ -32,8 +20,9 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        this.future_state_steps=[];
 
                        var collection=data_state.get_value(this.model_key);
+                    //   console.log(this.model_key+"SIZE:::::::::::::::::::::::::::::::::"+collection.length);
                      for(var i=0; i<collection.length; i++){
-                           var pipe=new Pipeline("counter"+i);
+                           var pipe=new Pipeline(that.ns+"_"+i);
                            // TODO: now is cloning to fix the reverse effect in collection
                            pipe.future_state_steps=$.extend(true, [], steps);
                            pipe.set_on_success((function (i){
