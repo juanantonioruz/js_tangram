@@ -195,7 +195,7 @@ define( function() {
                  );
 
         d3.select(self.frameElement).style("height", contador*space_item + "px");        
-        $(div_id).fadeIn(1000, function(){
+        $(div_id).fadeIn(100, function(){
             var selection=d3.select("#folder");
             if(!selection.empty()){
 

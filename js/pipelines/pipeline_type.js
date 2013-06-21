@@ -58,7 +58,22 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                        dispatcher.dispatch("ON_END", this, data_state, callback);
                    },
                   
+                   throw_event_on_success:function(event_name){
+                       this.set_on_success(function(results, pipe){ 
+                           dispatcher.dispatch(event_name, pipe, results);
+                       });
+                       return this;
+                   },
+
                    set_on_success:function(fn){
+                       // this code is for adding more than one on_success cases
+                       if(this.on_success){
+                           var temp_os=this.on_success;
+                           this.on_success=function(results, pipeline){
+                               temp_os(results, pipeline);
+                               fn(results, pipeline);
+                           };
+                       }else    
                        this.on_success=fn;
                        return this;
                    },

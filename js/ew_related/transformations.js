@@ -18,20 +18,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                return !isNaN(parseFloat(n)) && isFinite(n);
            }
 
+           
 
            var result= {
-               body_change_state:function (data_state, callback){
-  //                 console.log("the data!"+common.toJson(data_state.change_state_data));
-                   //data_state.view_type="object_view"||"modal" ....
-                   data_state.view_type=data_state.change_state_data.state;
+               alerta:function (data_state, callback){
+                   alert("hola alerta!"+this.ns);
                    callback(null, data_state);
                },
+
                
                footer_update_breadcrumbs:function (data_state, callback){
                    
                    callback(null, data_state);
                },
-               
+           
+               // this two must be moved to ui_prefix
                generate_uid:function(data_state, callback){
                    function create_id(prefix, subject) {
                        var id = prefix + "";
@@ -67,6 +68,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                }
            };
+           
+           
+           
            var update={
                loading_object_editor:function (data_state, callback){
                    callback(null, data_state);
@@ -76,6 +80,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                }
                
            };
+
            var modals={
                init:function (data_state, callback){
                    callback(null, data_state);
@@ -84,6 +89,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                }
            };
+
            var dao={
                load_data:function(data_state, callback){
                    $('#left').prepend("<p >(simulating )Loading json data!</p>");
@@ -117,6 +123,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                }
            };
+
            var renders={    
                modal:function(data_state, callback){
                    callback(null, data_state);
@@ -232,11 +239,13 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                }
            };
+
            var actions={
                component_a:function(data_state, callback){
                    callback(null, data_state);
                }
            };
+
            var metadata={
                component_m:function(data_state, callback){
                    callback(null, data_state);

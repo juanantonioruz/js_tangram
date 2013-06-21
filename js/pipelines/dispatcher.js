@@ -11,7 +11,6 @@ define(["js/async.js"], function(async) {
 
             
             dispatch:function(transformation_event_type, target, data_state,callback){
-
                 //                 console.dir(transformation_event_type);
                 // if(transformation_event_type=="ON_END" && target.ns=="state_step_body_change_state" ){
                 //     console.dir(target);
@@ -35,9 +34,10 @@ define(["js/async.js"], function(async) {
                                                                     {data_state:data_state, target:target, 
                                                                      transformation_event_type:transformation_event_type});}));
                     composition(data_state, function(err, result){
-                        //TODO error catching?? !
-                        
+                        // TODO THIS LINE HAS BEEN MOVED TO MAKE THE FILTERS ASYNC OF THE LISTENERS
+                        // this is sync          continue_listeners();       
                     });
+                    // this is async
                     continue_listeners();              
                 }else{
                     continue_listeners();              
@@ -91,7 +91,9 @@ define(["js/async.js"], function(async) {
                             //TODO fix that with the new changes
                             //                             console.dir(o);
                             var pipi=o.pipeline();
-                            pipi.parallel=true;
+                            pipi.ns=transformation_event_type+"/"+pipi.ns;
+                            // this is not necesary the parallel is related to method apply_transformations call, if it is nested or not
+                            //pipi.parallel=true;
 
                             pipi.apply_transformations(data_state);
                         });
@@ -129,8 +131,14 @@ define(["js/async.js"], function(async) {
 
 
             },
-            listen_event:function(transformation_event_type, pipeline, parallel_or_sync){
-                api.listen(transformation_event_type, null, pipeline, parallel_or_sync);
+            listen_event:function(transformation_event_type, _pipeline, parallel_or_sync){
+                if((typeof _pipeline) != "function"){
+                    //alert("adapting "+ns_listened+":: ");
+                    var _pi=_pipeline;
+                   _pipeline=function(){return _pi;};
+                }
+
+                api.listen(transformation_event_type, null, _pipeline, parallel_or_sync);
             },
             // dont need to write "pipeline_"
             listen_pipe:function(transformation_event_type, ns_listened,_pipeline, parallel_or_sync){

@@ -45,14 +45,16 @@ define( function() {
         callback(null, data_state);
     }
 
-    function logging_filter(data_state, callback){
+    function logging_filter(pipeline, state_step){
+        return function(data_state, callback){
         if(debug_filters)  console.log(">logging");
         var event_type=this.transformation_event_type;
         var ns=this.target.ns;
-
+            if((pipeline && is_pipeline(this.target.ns))|| (state_step && is_state_step(this.target.ns)) )
        console.log("-> "+ event_type+"/"+ns);
 
         callback(null, data_state);
+        };
     }
 
     function d3_debug_pipelines_filter(render, div_id, item_fn){
@@ -103,9 +105,10 @@ define( function() {
         };
     }
 
-    function timming_filter(data_state, callback){
+    function timming_filter(pipeline, state_step){
+        return function(data_state, callback){
         if(debug_filters)      console.log(">show profiling");
-
+                        if((pipeline && is_pipeline(this.target.ns))|| (state_step && is_state_step(this.target.ns)) ){
         var history_message=this.transformation_event_type+"/"+
                 this.target.ns+((this.transformation_event_type=="ON_END")? " finished in "+this.target.diff+" ms":" ... timing ..." );
         if(contains(history_message, "state_step_")){
@@ -123,9 +126,9 @@ define( function() {
         }
         
         $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
-
+                            }
         callback(null, data_state);
-
+        };
     }
 
     return {logging:logging_filter, d3_debug_pipelines:d3_debug_pipelines_filter, show_profiling:timming_filter, profiling:profiling, clone_data:clone_data};
