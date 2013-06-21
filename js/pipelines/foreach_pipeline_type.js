@@ -6,7 +6,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                return  {
                    init: function(name,model_key) {
                        this.model_key=model_key;
-                       this.construct("pipeline_fe_"+name);
+                       this.construct("pipeline_"+name);
                        return this;
                    },
                    
@@ -22,7 +22,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        var collection=data_state.get_value(this.model_key);
                     //   console.log(this.model_key+"SIZE:::::::::::::::::::::::::::::::::"+collection.length);
                      for(var i=0; i<collection.length; i++){
-                           var pipe=new Pipeline(that.ns+"_"+i);
+                           var pipe=new Pipeline("$.."+i);
                            // TODO: now is cloning to fix the reverse effect in collection
                            pipe.future_state_steps=$.extend(true, [], steps);
                            pipe.set_on_success((function (i){

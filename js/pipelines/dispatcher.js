@@ -84,18 +84,19 @@ define(["js/async.js"], function(async) {
 
                         var paralels=pipeline_listeners.filter(function(element, index, array){return (element.parallel)?true:false;});
                         var syncq=pipeline_listeners.filter(function(element, index, array){return (!element.parallel)?true:false;});
-                        
+
                         paralels.map(function(o){
                             //running in parallel
                             // here we can have problems with mutable data_state in async
                             //TODO fix that with the new changes
-                            //                             console.dir(o);
+                            //                             console.dir(bo);
+                            var ext=new Pipeline("EVENT.."+transformation_event_type+"");
                             var pipi=o.pipeline();
-                            pipi.ns=transformation_event_type+"/"+pipi.ns;
+                            pipi.ns=pipi.ns;
                             // this is not necesary the parallel is related to method apply_transformations call, if it is nested or not
                             //pipi.parallel=true;
-
-                            pipi.apply_transformations(data_state);
+                           ext.addTransformation(pipi);
+                            ext.apply_transformations(data_state);
                         });
 
 

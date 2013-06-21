@@ -6,7 +6,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    // ATTENTION: THIS METHOD CANT BE OVERWRITE
                    // namely call to base.init(...) it's related to identity in object instance
                    init: function(name,function_switch_expression,  model_key, expression ) {
-                       name="pipeline_sw_"+name+"?"+model_key;
+                       name="pipeline_"+name;//+"?"+model_key;
                        this.construct(name);
                        //TODO: THIS IS THE ERROR FOUND!!      base.init("mapper_"+model_key+"_"+name+"*"+contador, on_success,on_error);
                        this.function_switch_expression=function_switch_expression;
@@ -22,7 +22,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        
                        var value=data_state.get_value(this.model_key);                      
                        var pipe=this.function_switch_expression(value);
-
+                       this.ns+="..?"+value;
 
                       
 

@@ -136,13 +136,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    callback(null, data_state);
                },
-               page_body:function(data_state, callback){
-                   data_state.page_type=data_state.change_state_data.page_type;
-                   callback(null, data_state);
-               },
-               pages_main:function(data_state, callback){
-                   callback(null, data_state);
-               },
+       
+
                task:function(data_state, callback){
                    callback(null, data_state);
                },

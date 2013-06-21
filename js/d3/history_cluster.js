@@ -12,8 +12,29 @@ define( function() {
     var folder;
     
     function contains(c, s){
-        return  c.indexOf(s)!=-1;
+        return  (c.indexOf(s)!=-1);
     }
+
+function is_event(d){
+  return contains(d.item.ns, "EVENT");
+};
+function is_mapper(d){
+  return contains(d.item.ns, "?");
+};
+function is_model(d){
+  return contains(d.item.ns, "$");
+};
+function colorize(d){
+    if(is_event(d))
+        return "red";
+    else if(is_mapper(d))
+        return "green";
+    else if(is_model(d))
+        return "violet";
+
+    else
+       return "#999";
+}
 
     var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
@@ -133,19 +154,19 @@ define( function() {
 
             })
             .attr("fill",function(d,i){
-                if(d.item.folder) return "red";
+                if(d.item.folder)  return "#000";
                 else
                     if(d.item.closed) return "RoyalBlue";
-                return "PaleTurquoise";
+                return colorize(d);
 
             })
             .on("mouseover", function(d,i){
                 var actual=d3.select(this);
-                actual.transition().style("fill", "RoyalBlue").each("end", function(){actual.transition().delay(500).style("fill", "PaleTurquoise");});
+                actual.transition().style("fill", "RoyalBlue").each("end", function(){actual.transition().delay(500).style("fill", colorize(d));});
                 if(!d.item.closed){
                     var ele=d3.select(this.parentNode).select(":last-child");
 
-                    var p=ele.transition().style("fill", "RoyalBlue").each("end", function(){ele.transition().delay(500).style("fill", "PaleTurquoise");});
+                    var p=ele.transition().style("fill", "RoyalBlue").each("end", function(){ele.transition().delay(500).style("fill", colorize(d));});
                 }
                 //console.dir(ele);
                 // not necesary but this works if(d3.select(this).attr("display"))
@@ -178,10 +199,10 @@ define( function() {
                     if(d.item.children) {
                         return "RoyalBlue";
                     }else{
-                        return "gray";
+                        return colorize(d);
                     }
                 }else{ 
-                    return "PaleTurquoise";}} )
+                    return colorize(d);}} )
             .style("font-size", "12px")
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
             .text(function(d) { 
@@ -201,7 +222,7 @@ define( function() {
 
                 selection.transition().delay(1500).style("fill", function(d,i){
                     d.item.folder=false;
-                    return "PaleTurquoise";
+                    return "#333";
                 }).attr("width", radio*3).attr("height", radio*3);
 
             }

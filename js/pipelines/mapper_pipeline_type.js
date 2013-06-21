@@ -10,7 +10,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    init: function(name,map, model_key) {
                        //TODO improve this init method maybe delegating to other construct...
 
-                       name="pipeline_mp_"+name+"?"+model_key;
+                       name="pipeline_"+name;//+"?"+model_key;
                        //TODO: THIS IS THE ERROR FOUND!!      base.init("mapper_"+model_key+"_"+name+"*"+contador, on_success,on_error);
                        this.map=map;
                        this.model_key=model_key;
@@ -25,7 +25,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        var value=data_state.get_value(this.model_key);
                       
                        var pipe=this.map[value];
-
+                       this.ns+="..?"+value;
                        // this conditional add flexibility to mapper_pipeline definition, in this case we can use statesteps also besides pipelines
                      //  alert(pipe().class_name);
                        if(pipe.class_name=="StateStep")
