@@ -1,0 +1,12 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <span class="brand">${display_name}</span>
+        <ul class="nav">
+            {{each children}}
+                <li>
+                    <a href="#" data-target_id="${create_id('object_viewer_content_', $value.display_name)}">${$value.display_name}</a>
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+</div>

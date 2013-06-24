@@ -1,0 +1,29 @@
+<div class="object_relationships">
+    <div class="relationships_container">
+        {{each relationships}}
+            <div class="object ui-corner-all ui-state-default ${$value.type}" data-uri="${$value.uri}" id="${guid()}" data-object="${JSON.stringify($value)}">
+                <h5 class="ui-corner-top">${$value.display_name}</h5>
+                <div class="header_table_container">
+                    <table>
+                        {{each $value.header}}
+                        <tr>
+                            <th>${$value.display_name}</th>
+                            <td>${$value.value}</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                </div>
+                <div class="children_table_container">
+                    <table>
+                        {{each $value.children}}
+                        <tr>
+                            <th>${$value.display_name}</th>
+                            <td>${$value.value}</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>

@@ -23,10 +23,12 @@ function toJson(o){
 app.use(exp.bodyParser());
 
 app.use('/js', exp.static(__dirname + '/js'));
+app.use('/home/js', exp.static(__dirname + '/js'));
 app.use('/spec', exp.static(__dirname + '/spec'));
 app.use('/styles', exp.static(__dirname + '/styles'));
 app.use('/css', exp.static(__dirname + '/css'));
 app.use('/images', exp.directory(__dirname + '/public/images'));
+app.use('/pix', exp.static(__dirname + '/pix'));
 app.use('/jasmine', exp.static(__dirname + '/jasmine-standalone-1.3.1'));
 
 

@@ -1,0 +1,37 @@
+<div id="task_header">
+    <div id="header" class="ui-corner-all">
+        <table>
+            {{each header.children}}
+                <tr>
+                    <td class="header_label">${$value.display_name}</td>
+                    <td class="header_value">${$value.value}</td>
+                </tr>
+            {{/each}}
+        </table>
+    </div>
+    <div id="task_controls" class="ui-widget">
+        <div class="ui-state-highlight ui-corner-all">
+            <h4>${display_name}</h4>
+            {{if taskControls && taskControls.comments && taskControls.comments.show}}
+                <div class="comments">
+                    <i class="icon-quote-left icon-2x pull-left icon-muted"></i>
+                    <textarea>${taskControls.comments.value}</textarea>
+                </div>
+            {{/if}}
+            {{if taskControls && taskControls.decision && taskControls.decision.show}}
+                <div class="decision">
+                    <select class="select">
+                        {{each taskControls.decision.values}}
+                            <option value="${$value.name}" {{if $value.name == $data.taskControls.decision.value}}selected="selected"{{/if}}>${$value.label}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            {{/if}}
+            {{if taskControls.button}}
+                <div class="button">
+                    <a class="btn btn-info">${taskControls.button.label}</a>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

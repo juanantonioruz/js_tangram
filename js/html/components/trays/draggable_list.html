@@ -1,0 +1,13 @@
+<div class="tray_draggable_list">
+    {{if help_message}}
+        <p><small>${help_message}</small></p>
+    {{/if}}
+    <div class="draggable_tray_items_container">
+        {{each tray_items}}
+            <div class="draggable_tray_item ui-state-default ui-corner-all" data-object="${JSON.stringify($value)}">
+                <i class="${$value.icon}"></i>
+                <p class="display_name">${$value.display_name}</p>
+            </div>
+        {{/each}}
+    </div>
+</div>

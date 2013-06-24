@@ -1,0 +1,244 @@
+body {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 11px;
+    background-color: #fff;
+    margin: 0px;
+    overflow: hidden;
+}
+
+table {
+    font-size: 1em;
+}
+
+#mast {
+    background-image: url(../pix/brd/mastBg.gif);
+    background-repeat: repeat-x;
+    height: 50px;
+    position:relative;
+    -khtml-user-select: none;
+}
+
+.mastUsr {
+    vertical-align: top;
+    text-align: right;
+    padding:2px 4px 2px 0px;
+    font-size:10px;
+}
+
+.mastUsr a {
+    color: #06c;
+}
+
+.actItem div.treeSel {
+	background-color: #fff;
+	background-image: url(../pix/trSel.gif);
+	background-repeat: repeat-y;
+}
+
+.freeStep div.treeSel {
+	 background-color: #fd8;
+	 background-image: none;
+}
+
+.ideateTnav {
+	color: #999;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+.ideateTnav a.tnav {
+	color: #999;
+}
+
+.ideateTnav a.tnav:hover {
+	color:#fff;
+}
+
+.ideateTnav a.onTnav {
+	color:#fff;
+}
+
+/* ----- */
+
+
+
+.helpOver:hover{
+    color:green;
+    cursor:help;
+    background-color:inherit;
+    position:relative;
+}
+
+.helpOver div {display: none;}
+
+.helpOver:hover div {
+    display:block;
+    position:absolute;
+    z-index: 1000;
+    left:20px;
+    top:10px;
+    border:1px solid green;
+    background-color: #fff;
+    padding:8px;
+    font: 9px Verdana, sans-serif; text-align: left;
+    -moz-box-sizing:border-box;
+}
+
+.helpClick:hover{
+    color:green;
+    cursor:help;
+    background-color:inherit;
+}
+
+.wikiView fieldset.headerreview{
+ width:780px;
+ background-color:#F3F3F3;
+ margin-bottom:20px;
+}
+
+body div.modes{
+ display:none;
+}
+
+body.ideateADMIN div.modes{
+ display:block;
+}
+
+div.flowHead div.minorBtn{
+ display:none;
+}
+
+.workzone .panContent{
+ background-image:none;
+}
+
+div.panelSet div.panCol div.workzone div.panContent div.wikiViewBox div.wiki2nd{
+display:none;
+}
+
+
+.dialogOver:hover{
+    color:blue;
+    cursor:normal;
+    background-color:inherit;
+    position:relative;
+}
+
+.dialogOver div {display: none;}
+
+.dialogOver:hover div {
+    display:block;
+    position:absolute;
+    z-index: 1000;
+    left:20px;
+    top:10px;
+    border:1px solid green;
+    background-color: #fff;
+    padding:8px;
+    font: 9px Verdana, sans-serif; text-align: left;
+    -moz-box-sizing:border-box;
+}
+
+.dialogOverInteractive:hover{
+    color:blue;
+    cursor:normal;
+    background-color:inherit;
+    position:relative;
+}
+
+.dialogOverInteractive div {display: none;}
+
+.dialogOverInteractive:hover div {
+    display:block;
+    position:absolute;
+    z-index: 1000;
+    left:5px;
+    top:2px;
+    border:1px solid green;
+    background-color: #fff;
+    padding:8px;
+    font: 9px Verdana, sans-serif; text-align: left;
+    -moz-box-sizing:border-box;
+}
+
+.dialogOverInteractiveRight:hover{
+    color:blue;
+    cursor:normal;
+    background-color:inherit;
+    position:relative;
+}
+
+.dialogOverInteractiveRight div {display: none;}
+
+.dialogOverInteractiveRight:hover div {
+    display:block;
+    position:absolute;
+    z-index: 1000;
+    left:-600px;
+    top:2px;
+    border:1px solid green;
+    background-color: #fff;
+    padding:8px;
+    font: 9px Verdana, sans-serif; text-align: left;
+    -moz-box-sizing:border-box;
+}
+
+h1.ID8USER {
+	padding-left: 10px; 
+	margin-top:10px;
+	color:#EBA45B;
+	*font-size:medium;
+}
+
+.wikiView div.form td div.xfctrl {
+margin:0;
+padding:0px 0;
+}
+
+.helpdialogOver:hover{
+    color:blue;
+    cursor:normal;
+    background-color:inherit;
+    position:relative;
+    /*padding-bottom:2px;
+    margin-bottom:2px;*/
+}
+
+.helpdialogOver div {display: none;}
+/**/
+.helpdialogOver:hover div{
+    display:block;
+    position:relative;
+    z-index: 100;
+    /*left:55px;*/
+    left:0px;
+    top:10px;
+    bottom:2px;
+    border:1px solid pink;
+    background-color: #fff;
+    padding:5px;
+    font: 9px Verdana, sans-serif; text-align: left;
+}
+
+
+.helpdialogOverTable:hover{
+    color:blue;
+    cursor:normal;
+    background-color:inherit;
+    position:relative;
+}
+
+.helpdialogOverTable div {display: none;}
+
+.helpdialogOverTable:hover div {
+    display:block;
+    position:absolute;
+    z-index: 1000;
+    left:5px;
+    top:2px;
+    border:1px solid pink;
+    background-color: #fff;
+    padding:8px;
+    font: 9px Verdana, sans-serif; text-align: left;
+    -moz-box-sizing:border-box;
+}

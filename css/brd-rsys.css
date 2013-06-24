@@ -1,0 +1,269 @@
+body {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 11px;
+    background-color: #A9C5D9;
+    margin: 0px;
+    overflow: hidden;
+}
+
+table {
+    font-size: 1em;
+}
+
+#mast {
+    background-repeat: repeat-x;
+    height: 50px;
+    position:relative;
+    z-index: 2;
+    -khtml-user-select: none;
+}
+
+.mastUsr {
+    vertical-align: top;
+    text-align: right;
+    padding:2px 4px 2px 0px;
+    font-size:10px;
+}
+
+.mastUsr a {
+    color: #06c;
+}
+
+/* Panels */
+
+div.panBar {
+    background-color: #D8D8D8;
+}
+
+div.panMin {
+    background-image: url(../pix/brd/rsys-btnsSet.gif);
+}
+
+div.panMax {
+    background-image: url(../pix/brd/rsys-btnsSet.gif);
+}
+
+div.panTitle {
+    color: #333;
+}
+
+div.panelSet {
+    position: absolute;
+    font-size: 11px;
+    background-color: #D8D8D8;
+    border: 1px solid #999;
+    z-index: 1;
+}
+
+div.panContent {
+    background-color: #FFF;
+    border: 1px solid #999;
+}
+
+div.modes .md {
+    font-size:11px;
+    background-color: #888;
+    color: #fff;
+    font-weight:bold;
+    border: 1px solid #999;
+}
+
+div.modes .act {
+    background-color: #D8D8D8;
+    font-size:11px;
+    color: #666;
+    top: 0px;
+    height: 17px;
+    border: 1px solid #999;
+    border-bottom: 1px solid #D8D8D8;
+}
+
+div.modes {
+    position:absolute;
+    top: 35px;
+    left: 6px;
+}
+
+/* Dialogs */
+div.dialog,
+div.diagBar,
+div.diagNotch,
+div.diagBarBtn {
+    background-color: #005EA3;
+}
+
+/* Wiki */
+.wikiHead h1 {
+    color: #005EA3;
+}
+
+/* Flow */
+.pmAct,
+.pmAct_grp,
+.pmAct_drp,
+.pmActM,
+.pmActM_grp,
+.pmActM_drp,
+.pmActL,
+.pmActL_grp,
+.pmActL_drp,
+.pmGroup,
+.pmGroup_grp,
+.pmGroup_drp {
+    background-image: url(../pix/flow/rsys-steps.gif);
+}
+
+.pmAct .txtLabel,
+.pmAct_grp .txtLabel,
+.pmAct_drp .txtLabel {
+    position: absolute;
+    line-height: 11px;
+    top: 8px;
+    left: 6px;
+}
+
+.pmAct .txtRole,
+.pmAct_grp .txtRole,
+.pmAct_drp .txtRole {
+    position: absolute;
+    top: 33px;
+    left: 6px;
+}
+
+.pmSwitch,
+.pmSwitch_grp,
+.pmSwitch_drp {
+    background-image: url(../pix/flow/rsys-steps.gif);
+}
+
+.pmSwitch .text,
+.pmSwitch_grp .text,
+.pmSwitch_drp .text {
+    color: #666;
+    top: 23px;
+    left: 23px;
+	width: 76px;
+	height: 36px;
+    line-height: 11px;
+}
+
+.pmStart,
+.pmStart_grp,
+.pmStart_drp,
+.pmEnd,
+.pmEnd_grp,
+.pmEnd_drp,
+.pmTimer,
+.pmTimer_grp,
+.pmTimer_drp,
+.pmExit,
+.pmExit_grp,
+.pmExit_drp,
+.pmEnter,
+.pmEnter_grp,
+.pmEnter_drp   {
+    background-image: url(../pix/flow/rsys-events.gif);
+}
+
+.pmTimer .text,
+.pmTimer_grp .text,
+.pmTimer_drp .text,
+.pmEnd .text,
+.pmEnd_grp .text,
+.pmEnd_drp .text,
+.pmStart .text,
+.pmStart_grp .text,
+.pmStart_drp .text {
+    color: #369;
+}
+
+.pmGroup .text,
+.pmGroup_grp .text,
+.pmGroup_drp .text {
+	color: #333;
+}
+
+.pmPthV {
+    background-image: url(../pix/flow/rsys-pathVset.gif);
+}
+
+.pmPthH {
+    background-image: url(../pix/flow/rsys-pathHset.gif);
+}
+
+.pmHookN, .pmHookE, .pmHookS, .pmHookW,
+.pmHookN_grp, .pmHookE_grp, .pmHookS_grp, .pmHookW_grp,
+.pmHookNnot, .pmHookEnot, .pmHookSnot, .pmHookWnot,
+.pmHookNnot_grp, .pmHookEnot_grp, .pmHookSnot_grp, .pmHookWnot_grp,
+.pmArr {
+    background-image: url(../pix/flow/rsys-arr_set.gif);
+}
+
+.pmNote_grp .corner,
+.pmNote .corner {
+    background-image: url(../pix/flow/rsys-noteCrnr_set.gif);
+}
+
+.pmNote {
+	border-color: #166BAD;
+	background-color: #D1E0EB;
+	color: #166BAD;
+}
+
+.pmNote_grp {
+	border-color: #0099FF;
+	background-color: #D1E0EB;
+	color: #0099FF;
+}
+
+
+.tree div.treeSel, .tree .dndGroup div.label {
+    background-color: #A9C5D9;
+}
+
+div.token {
+    border: 1px solid #39f;
+}
+
+.wikiView a.inject {
+    background-image: url(../pix/kb/rsys-workBtns.gif);
+}
+.wikiView a.inject div.cap {
+    background-image: url(../pix/kb/rsys-workBtnsCap.gif);
+}
+
+.settings {
+    border: 1px solid #999;
+    margin: 15px;
+    padding: 5px;
+    background-color: #fff;
+}
+
+div.snav,
+a.snav { 
+	color: #fff;
+}
+
+body.project {
+	background-color: #fff;
+}
+
+body.project div.snav,
+body.project a.snav {
+	color: #666;
+}
+
+div.hmDash {
+	background-image: url(../pix/brd/grayHomeBg.gif);
+}
+
+div.hmDash div.hmLabel {
+	color: #666;
+}
+
+button.diagBtn,
+div.diagXf button.diagBtn {
+	background-image: url(../pix/brd/rsys/diagBtns.gif);
+}
+
+

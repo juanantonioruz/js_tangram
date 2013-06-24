@@ -1,0 +1,21 @@
+<div class="control-group">
+    <span class="action_buttons_container"></span>
+    <label class="control-label">${display_name}</label>
+    <div class="controls boolean">
+        <div class="btn-group validation_target" data-toggle="buttons-radio">
+            {{if value == true}}
+                <button type="button" class="btn active yes">Yes</button>
+                <button type="button" class="btn no">No</button>
+            {{else}}
+                <button type="button" class="btn yes">Yes</button>
+                <button type="button" class="btn active no">No</button>
+            {{/if}}
+        </div>
+        <i class="icon-save saving hide"></i>
+        <i class="icon-ok saved hide"></i>
+        {{if help_message}}
+            <p class="help_message hide">${help_message}</p>
+        {{/if}}
+        <span class="metadata_container"></span>
+    </div>
+</div>

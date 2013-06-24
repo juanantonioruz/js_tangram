@@ -1,0 +1,23 @@
+<div class="lifecycle_history">
+    <div class="history_container">
+        {{each history}}
+            <div class="ui-state-default history_item {{if $value.active}}active{{/if}}" style="height:${$value.height}px; margin-bottom:${$value.bottom}px; left:${$value.left}px; z-index:${$value.zindex}" data-object="${JSON.stringify($value)}">
+                <p class="comment" style="font-size:${$value.fontsize}px">${$value.comment}</p>
+            </div>
+        {{/each}}
+    </div>
+    <table class="lifecycle_history_metadata">
+        <tr>
+            <th>Author</th>
+            <td class="author">&nbsp;</td>
+            <th>Comment</th>
+            <td class="comment">&nbsp;</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td class="date">&nbsp;</td>
+            <th>Result</th>
+            <td class="result">&nbsp;</td>
+        </tr>
+    </table>
+</div>

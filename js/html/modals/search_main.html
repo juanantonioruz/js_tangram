@@ -1,0 +1,34 @@
+<div class="search_main">
+    <div class="search_views">
+        <a class="grid_view active" href="#" title="View results as cards" data-view_type="cards">
+            <i class="icon-th"></i>
+        </a>
+        <a class="table_view" href="#" title="View results in a table" data-view_type="table">
+            <i class="icon-table"></i>
+        </a>
+    </div>
+    <div class="tabs">
+        <ul>
+            <li>
+                <a href="#all" class="all_results">All Results</a>
+            </li>
+            {{each tabs.facets}}
+                <li>
+                    <a href="#${create_id('tab_', $value.name)}"
+                       data-facet_name="${tabs.name}"
+                       data-facet_value="${$value.name}">
+                        ${$value.display_name}
+                    </a>
+                </li>
+            {{/each}}
+        </ul>
+        <div id="all">
+            {{tmpl 'search_results'}}
+        </div>
+        {{each tabs.facets}}
+            <div id="${create_id('tab_', $value.name)}">
+                ${$value.display_name}
+            </div>
+        {{/each}}
+    </div>
+</div>

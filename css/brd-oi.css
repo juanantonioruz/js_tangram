@@ -1,0 +1,112 @@
+body {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 11px;
+    background-color: #fff;
+    margin: 0px;
+    overflow: hidden;
+}
+
+table {
+    font-size: 1em;
+}
+
+#mast {
+    background-image: url(../pix/brd/mastBg-oi.gif);
+    background-repeat: repeat-x;
+    height: 50px;
+    position:relative;
+    -khtml-user-select: none;
+}
+
+.mastUsr {
+    vertical-align: top;
+    text-align: right;
+    padding:2px 4px 2px 0px;
+    font-size:10px;
+}
+
+.mastUsr a {
+    color: #06c;
+}
+
+
+/* Panels */
+
+div.panBar {
+    background-color: #D8D8D8;
+}
+
+div.panMin {
+    background-image: url(../pix/brd/rsys-btnsSet.gif);
+}
+
+div.panMax {
+    background-image: url(../pix/brd/rsys-btnsSet.gif);
+}
+
+div.panTitle {
+    color: #333;
+}
+
+div.panelSet {
+    position: absolute;
+    font-size: 11px;
+    background-color: #D8D8D8;
+    border: 1px solid #999;
+    z-index: 1;
+}
+
+div.panContent {
+    background-color: #FFF;
+    border: 1px solid #999;
+}
+
+div.modes .md {
+    font-size:11px;
+    background-color: #888;
+    color: #fff;
+    font-weight:bold;
+    border: 1px solid #999;
+}
+
+div.modes .act {
+    background-color: #D8D8D8;
+    font-size:11px;
+    color: #666;
+    top: 0px;
+    height: 17px;
+    border: 1px solid #999;
+    border-bottom: 1px solid #D8D8D8;
+}
+
+div.modes {
+    position:absolute;
+    top: 37px;
+    left: 6px;
+}
+
+/* Dialogs */
+div.dialog,
+div.diagBar,
+div.diagNotch,
+div.diagBarBtn {
+    background-color: #005EA3;
+}
+
+/* Wiki */
+.wikiHead h1 {
+    color: #005EA3;
+}
+
+div.hmDash {
+	background-image: url(../pix/brd/grayHomeBg.gif);
+}
+
+div.hmDash div.hmLabel {
+	color: #666;
+}
+
+button.diagBtn,
+div.diagXf button.diagBtn {
+	background-image: url(../pix/brd/rsys/diagBtns.gif);
+}

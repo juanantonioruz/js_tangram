@@ -1,0 +1,26 @@
+{{if display_type}}
+    {{if display_type == 'table_cell'}}
+        <span class="uneditable_label validation_target">
+            <span class="action_buttons_container"></span>
+            ${value}
+            <span class="metadata_container"></span>
+        </span>
+    {{/if}}
+    {{if display_type == 'inline'}}
+        <div class="inline-control-group">
+            <span class="action_buttons_container"></span>
+            <label>${display_name}</label>
+            <span class="uneditable_label">${value}</span>
+            <span class="metadata_container"></span>
+        </div>
+    {{/if}}
+{{else}}
+    <div class="control-group">
+        <span class="action_buttons_container"></span>
+        <label class="control-label">${display_name}</label>
+        <div class="controls">
+            <span class="uneditable_label">${value}</span>
+            <span class="metadata_container"></span>
+        </div>
+    </div>
+{{/if}}

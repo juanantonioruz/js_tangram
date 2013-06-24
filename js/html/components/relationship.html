@@ -1,0 +1,23 @@
+<li class="object ui-corner-all ui-state-default ${type}" data-uri="${uri}" id="${guid()}" data-object="${JSON.stringify($data)}">
+    <h5 class="ui-corner-top">${display_name}</h5>
+    <div class="header_table_container">
+        <table>
+            {{each header}}
+            <tr>
+                <th>${$value.display_name}</th>
+                <td>${$value.value}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+    <div class="children_table_container">
+        <table>
+            {{each children}}
+            <tr>
+                <th>${$value.display_name}</th>
+                <td>${$value.value}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</li>

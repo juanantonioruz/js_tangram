@@ -1,0 +1,21 @@
+{{if display_type}}
+{{if display_type == 'table_cell'}}
+<span class="action_buttons_container"></span>
+<input type="text" value="${value}" placeholder="${placeholder}" class="text validation_target {{if validation}}${extract_object_property_names(validation)}{{/if}}" />
+<span class="metadata_container"></span>
+{{/if}}
+{{else}}
+<div class="control-group textboxHuge">
+    <span class="action_buttons_container"></span>
+    <label class="control-label">${display_name}</label>
+    <div class="controls">
+        <textarea placeholder="${placeholder}" class="textboxHuge validation_target {{if validation}}${extract_object_property_names(validation)}{{/if}}">${value}</textarea>
+        <i class="icon-save saving hide"></i>
+        <i class="icon-ok saved hide"></i>
+        {{if help_message}}
+        <p class="help_message hide">${help_message}</p>
+        {{/if}}
+        <span class="metadata_container"></span>
+    </div>
+</div>
+{{/if}}

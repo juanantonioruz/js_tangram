@@ -1,0 +1,67 @@
+/*
+5baeef
+84c0ef
+*/
+
+.navbar-inner {
+    background-image: -moz-linear-gradient(top, #0087f0, #84c0ef);
+    background-image: -ms-linear-gradient(top, #0087f0, #84c0ef);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0087f0), to(#84c0ef));
+    background-image: -webkit-linear-gradient(top, #0087f0, #84c0ef);
+    background-image: -o-linear-gradient(top, #0087f0, #84c0ef);
+    background-image: linear-gradient(top, #0087f0, #84c0ef);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#'0087f0, endColorstr='#'84c0ef, GradientType=0);
+}
+
+.navbar .brand {
+    padding: 8px 20px 12px;
+    font-size: 20px;
+    color: #ffffff;
+    text-shadow: 0 1px 0 #000
+}
+
+.navbar .divider-vertical {
+    height: 41px;
+    background-color: #0087f0;
+    border-right: 1px solid #0087f0;
+}
+
+.navbar .nav > li > a{
+    padding: 10px 10px 11px;
+    font-size: 14px;
+    color: #ededed;
+    text-shadow: 0 1px 0 #000;
+}
+
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus,
+.navbar .nav > li > a:hover  {
+    color: #000000;
+    text-shadow: 0 1px 0 #DDD !important;
+}
+
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+    background-color: #5baeef;
+}
+
+.navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
+    background-color: #111111;
+    color: #FFFFFF;
+}
+
+.navbar-inverse .nav .active > a,
+.navbar-inverse .nav .active > a:hover,
+.navbar-inverse .nav > li > a:hover,
+.navbar-inverse .nav > li > a:focus,
+.navbar-inverse .nav .active > a:focus {
+    background-color: #111111;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+}
+
+.navbar .nav > li > a {
+    text-shadow: none !important;
+}
