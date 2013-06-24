@@ -55,9 +55,85 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                }
            };
+           
+           var footer={
+               update_breadcrumbs:function (data_state, callback){
+                   var that=this;
+                   var state_history=$('body').data('state_history');
+                   var container = $('body').find('footer');
+
+                   
 
 
+                   var history_container = container.find('#breadcrumbs');
+
+                   history_container.html('');
+                   console.log("before");
+                   console.dir(state_history);
+                   $.each(state_history, function(index, item){
+                       console.log("inside");
+                       console.dir(item);
+                       //Dont show modals in the breadcrumbs
+                       if (item.page_type == 'modal')
+                           return;
+
+                       //Dont show duplicates in the breadcrumbs
+                       if (index > 0 && item.display_name == state_history[index - 1].display_name)
+                           return;
+
+                       //if not the last item but has loading then don't show
+                       if (index < state_history.length && item.display_name != null && item.display_name.indexOf("icon-spin") > 0)
+                           return;
+
+                       //Add the divider
+                       if (index > 0 && index < state_history.length)
+                           history_container.prepend("<i class='icon-stop'></i>");
+                       //history_container.prepend("<i class='icon-caret-right'></i>");
+
+                       //Build the template depending on the active state of the state item
+                       var template = $('<span class="state">' + item.display_name + '</span>');
+
+                       //Add the data to drive the click function
+                       template.data('state_index', index);
+
+                       //Append the template to the container
+                       history_container.prepend(template);
+
+                       //Attach the click handler
+                       template.click(function(){
+
+                           //Get a handle on the clicked element
+                           var element = $(this);
+
+                           //If this is the active one, do nothing
+                           if (element.is('.active'))
+                               return;
+
+                           //Get the state change index
+                           var state_index = element.data('state_index');
+
+                           //Call the state change function on the body
+                           // $('body').enterpriseweb_site_structure_body('change_state', state_index);
+                           dispatcher.dispatch("body_change_state", that, data_state);
+                       });
+                   });
+
+                   history_container.find('.state:first').addClass('active');
+
+
+
+
+                   callback(null, data_state);
+               }
+
+           };
+           
            var result= {
+               window_location_reload:function (data_state, callback){
+                   window.location.reload();
+                   
+                   callback(null, data_state);
+               },
                alerta:function (data_state, callback){
                    alert("hola alerta!"+this.ns);
                    callback(null, data_state);
@@ -72,10 +148,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                
-               footer_update_breadcrumbs:function (data_state, callback){
-                   
-                   callback(null, data_state);
-               },
+               
 
 
 
@@ -159,61 +232,62 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                        $(this).parents('.modal_container').dialog('close');
                    });
                    modal.find(".modal_content").html("<p><b>TODO:</b>So far, only working close button</p>");
-                 /*
-                  TODO  connect this events--- and more from modal/search.js
-                  modal.find('.search-query').keydown(function(event){
+                   /*
+                    TODO  connect this events--- and more from modal/search.js
+                    modal.find('.search-query').keydown(function(event){
 
-                       if (event.keyCode != 13)
-                           return;
+                    if (event.keyCode != 13)
+                    return;
 
-                       var search_box = $(this);
+                    var search_box = $(this);
 
-                       var search_term = search_box.val();
+                    var search_term = search_box.val();
 
-                       var search_data = modal.data('search_data');
-                       if (search_data == null)
-                           search_data = {};
+                    var search_data = modal.data('search_data');
+                    if (search_data == null)
+                    search_data = {};
 
-                       search_data.search_term = search_term;
+                    search_data.search_term = search_term;
 
-                   //    search_box.parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
-                   });
+                    //    search_box.parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
+                    });
 
-                   modal.find('.navbar-search a#search_modal_search_button').click(function(event){
-                       event.preventDefault();
+                    modal.find('.navbar-search a#search_modal_search_button').click(function(event){
+                    event.preventDefault();
 
-                       var search_box = $(this).parent().find('input');
+                    var search_box = $(this).parent().find('input');
 
-                       var search_term = search_box.val();
+                    var search_term = search_box.val();
 
-                       var search_data = modal.data('search_data');
-                       if (search_data == null)
-                           search_data = {};
+                    var search_data = modal.data('search_data');
+                    if (search_data == null)
+                    search_data = {};
 
-                       search_data.search_term = search_term;
+                    search_data.search_term = search_term;
 
-                   //    search_box.parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
-                   });
+                    //    search_box.parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
+                    });
 
-                   modal.find('.navbar-search a#search_modal_reset_button').click(function(event){
-                       event.preventDefault();
+                    modal.find('.navbar-search a#search_modal_reset_button').click(function(event){
+                    event.preventDefault();
 
-                       $(this).parent().find('input').val('');
+                    $(this).parent().find('input').val('');
 
-                       setTimeout(function(){
-                           $(this).parent().find('input').focus();
-                       }, 2000);
+                    setTimeout(function(){
+                    $(this).parent().find('input').focus();
+                    }, 2000);
 
-                       var search_data = {};
+                    var search_data = {};
 
                     //   $(this).parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
-                   });
-*/
+                    });
+                    */
 
 
                    callback(null, data_state);
                },
                render_your_history:function (data_state, callback){
+                   var that=this;
                    var modal=$('#your_history');
                    modal.dialog({
                        modal: true,
@@ -230,12 +304,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    modal.find('.modal_close_button').click(function(){
                        $(this).parents('.modal_container').dialog('close');
                    });
-
                    modal.find('#clear_state_history').click(function(){
+                dispatcher.dispatch("clear_history", that, data_state);
 
-                       alert("TODO $('body').enterpriseweb_site_structure_body('save_state_history_to_cookie', []);");
-                       window.location.reload();
-                   });
+            });
+
+
+                       
+
+
                    callback(null, data_state);
                }
 
@@ -515,9 +592,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            };
 
            var state_history={
+
                init:function (data_state, callback){
                    var body = $('body');
-
+                   
                    //Get any state history from the cookie
                    var state_history_from_cookie = $.cookie('state_history');
 
@@ -546,7 +624,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                prepare:function (data_state, callback){
                    var data=data_state.change_state_data;
-
+                   
                    var state_history = $('body').data('state_history');
 
                    if (state_history.length >= 11)
@@ -602,8 +680,69 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    var state_history=data_state.state_history;
                    $('body').data('state_history', state_history);
                    $.cookie('state_history', JSON.stringify(state_history), { expires:365, path:'/', json:true });
+                   console.dir(state_history);
                    callback(null, data_state);
+               },
+               update_current_name:function(data_state, callback){
+                   // GET A HANDEL ON THE BODY
+                   var body = $('body');
+
+                   //Get a handel on the state history
+                   var state_history = body.data('state_history');
+
+                   //Loop through the state history setting the display name for the active state
+                   $.each(state_history, function(index, item){
+
+                       //If this is the active state then set the display name
+                       if (item.active)
+                           item.display_name = data_state.resource.display_name;
+
+                   });
+
+
+                   
+
+
+                   // the merge_duplicates body.js method has been moved inside this
+
+
+            var new_state_history = [];
+
+            //Loop through the list looking for duplicates
+            $.each(state_history, function(index, item){
+
+                if (new_state_history.length > 0) {
+
+                    var previous_state_history_entry = new_state_history[new_state_history.length - 1];
+
+                    if (previous_state_history_entry.display_name == item.display_name){
+
+                        previous_state_history_entry.time_out = item.time_out;
+
+                        return;
+                    }
+                }
+
+                new_state_history[new_state_history.length] = item;
+            });
+
+
+
+                   data_state.state_history=new_state_history;
+
+                  body.data('state_history', new_state_history);
+
+  
+                   callback(null, data_state);
+               },
+               clear_history:function(data_state, callback){
+                   data_state.state_history=[];
+
+                   callback(null, data_state);
+
+
                }
+               
                
            };
 
@@ -617,6 +756,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
            return {
+               footer:common.naming_fns(footer, "footer_"),
                component:common.naming_fns(component, "component_"),
                validation:common.naming_fns(validation, "validation_"),
                actions:common.naming_fns(actions, "actions_"),

@@ -10,6 +10,9 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                        .addTransformation(t.renders.clean_trays)
                        .addTransformation(t.update.loading_object_editor)
                        .addTransformation(t.dao.load_pages_main_data)
+                       .addTransformation(t.state_history.update_current_name)
+                       .addTransformation(t.footer.update_breadcrumbs)                   
+                       .addTransformation(t.state_history.save_to_cookie)
                        .addTransformation(t.renders.trays)
                        .addPipe(object_viewer_pipes.render_object_viewer)
                    ;
@@ -51,6 +54,7 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
 
                        .addTransformation(t.modals.close)
                        .addTransformation(t.state_history.prepare)
+                       .addTransformation(t.state_history.save_to_cookie)
                        .addTransformation(t.transformations.debug)
                        .addPipe(new Mapper_Pipeline("state", 
                                                     {
@@ -58,7 +62,7 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                                                         "modal":result.render_modal,
                                                      "object_view":result.render_page_body}, 
                                                     "change_state_data.state"))
-                       .addTransformation(t.transformations.footer_update_breadcrumbs)                   
+                       .addTransformation(t.footer.update_breadcrumbs)                   
                    //                       .throw_event_on_success("body_change_state")
                    ;
                },
@@ -86,6 +90,15 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                        .addTransformation(t.dao.load_dashboard_data)
                        .throw_event_on_success("body_change_state")
                    ;
+               },
+               clear_history:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.state_history.clear_history)
+                       .addTransformation(t.state_history.save_to_cookie)
+                       .throw_event_on_success("window_reload")
+
+                   ;
+
                }
 
 
