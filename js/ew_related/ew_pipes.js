@@ -29,9 +29,7 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
 
                },
 
-               render_body:function(){
-                   return ;
-               },
+
                
                body_change_state:function(){
                    return new Pipeline(this.name)
@@ -47,7 +45,12 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    ;
                },
                
-
+                 current_state_is_still_active:function(){
+                     var p=new Pipeline(this.name);
+                     p.addTransformation(t.transformations.check_current_state_is_active);
+                     p.parallel=true;
+                   return new Pipeline(this.name);
+                     },
                init:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.state_history.init)
@@ -58,7 +61,6 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    //                       .addTransformation(t.transformations.body_change_state)
                    // i am proposing this tecnique of throwing an event-domain-name on "end" pipe to improve EOP... not always using on_end event, that doesn mean anyting more, and in this case we are inside of an "init" pipeline that doesn't mean nothing niether
                        .throw_event_on_success("body_change_state")
-                   //TODO add body current_state_is_still_active loop... it could be a parallel pipeline
                    ;
                },
                render_modal:function(){

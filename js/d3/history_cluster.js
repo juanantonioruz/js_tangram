@@ -7,7 +7,7 @@ define( function() {
     width = 1800,
     height = 150;
     var contador;
-    var space_item=30;
+    var space_item=40;
 
     var folder;
     
@@ -53,6 +53,8 @@ function colorize(d){
                 container.children.push(element);
                 if(!child.closed){
                     recursive(child, element);
+                }else{
+                    contador++;
                 }
             }
         }else{

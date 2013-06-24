@@ -21,11 +21,11 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                           };
                                                       }, 
                                                       "resource.header",function(value){
-                                                    if(value==null) return "null";
-                                                    else return "collection";
-                                                    
-                                                }))
-                       .addPipe(o_w.render_children)
+                                                          if(value==null) return "null";
+                                                          else return "collection";
+                                                          
+                                                      }))
+                       .addPipe(o_w.render_body_children)
                    ;
                },
 
@@ -43,8 +43,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                 function switcher(_value){
                                                     if(_value!=null && _value.length>0)
                                                         //                                                      return result.walk_object_viewer_header_children;
-                                                         if(typeof(_value)==='function')
-                                                        return t.templates.object_viewer_header_function;
+                                                        if(typeof(_value)==='function')
+                                                            return t.templates.object_viewer_header_function;
                                                     else
                                                         return o_w.render_header_children;
                                                     else
@@ -70,8 +70,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                        .addPipe(component_pipes.render_component)
                    ;
                },
-              
-               render_children:function(){
+               
+               render_body_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
                        .addPipe(component_pipes.render_component)
 

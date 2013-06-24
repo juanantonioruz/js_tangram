@@ -2,11 +2,30 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
        function(dispatcher, common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep) {
 
            var c={
+               
+               switch_component:function(){
+                                    return new Switcher_Pipeline(this.name, 
+                                                function switcher(_value){
+                                                    if(_value=="image")
+                                                    return t.component.image;
+                                                      else if(_value=="text")
+                                                    return t.component.text;
+                                                      else if(_value=="object")
+                                                    return t.component.object;
 
+                                                    else
+                                                        return t.transformations.component;
+                                                    
+                                                }, 
+                                                "current_data.type");
+  
+               },
+               
                render_component:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.transformations.generate_uid)
                        .addTransformation(t.load_tmpl.component)
+                       .addTransformation(c.switch_component)
                        .addPipe(c.render_validation)
 
                        .addTransformation(t.actions.component_a)

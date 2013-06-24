@@ -18,20 +18,54 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                return !isNaN(parseFloat(n)) && isFinite(n);
            }
 
-           
+           var load_tmpl={
+               component:function(data_state, callback){
+
+                   var tmpl_name="component_"+data_state.current_data.type;
+                   var html=$.tmpl(tmpl_name, data_state.current_data);
+                   var my_template=$.tmpl('my_template', data_state.current_data);
+                   $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
+                   data_state.current_data.template=my_template;
+                   callback(null, data_state);
+
+               }
+           };
+           var component={
+               
+               text:function(data_state, callback){
+                   $('#center').append(data_state.current_data.template);
+                   callback(null, data_state);
+                   
+               },
+               image:function(data_state, callback){
+                   $('#center').append(data_state.current_data.template);
+                   callback(null, data_state);
+                   
+               },
+               object:function(data_state, callback){
+                   
+                   callback(null, data_state);
+                   
+               }
+           };
+
 
            var result= {
                alerta:function (data_state, callback){
                    alert("hola alerta!"+this.ns);
                    callback(null, data_state);
                },
-
+               
+               check_current_state_is_active:function (data_state, callback){
+                   console.log("current_state_is_still_active:: TODO: this logic could be get better if we try to do throught events, indeed there is already an event on finish 'body_change_state' ");
+                   callback(null, data_state);
+               },
                
                footer_update_breadcrumbs:function (data_state, callback){
                    
                    callback(null, data_state);
                },
-           
+               
                // this two must be moved to ui_prefix
                generate_uid:function(data_state, callback){
                    function create_id(prefix, subject) {
@@ -64,6 +98,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                by_child:function(data_state, callback){
                    
+                   callback(null, data_state);
+                   
+               },
+               component:function(data_state, callback){
+
                    callback(null, data_state);
                    
                }
@@ -119,7 +158,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    data_state.main_data=json;
                    data_state.resource=json.body.resources[0];
 
-//                   console.dir(data_state.resource);
+                   //                   console.dir(data_state.resource);
                    callback(null, data_state);
                }
            };
@@ -136,7 +175,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    callback(null, data_state);
                },
-       
+               
 
                task:function(data_state, callback){
                    callback(null, data_state);
@@ -155,7 +194,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
            var templates={
                load_object_viewer:function(data_state, callback){
-               //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
+                   //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
                    
                    callback(null, data_state);
                },
@@ -184,22 +223,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                
            };
            
-           var load_tmpl={
-               component:function(data_state, callback){
 
-                   var tmpl_name="component_"+data_state.current_data.type;
-                   var html=$.tmpl(tmpl_name, data_state.current_data);
-                   var my_template=$.tmpl('my_template', data_state.current_data);
-                   $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
-
-                   callback(null, data_state);
-
-               }
-           };
 
            var cache_data={
                page_body:function(data_state, callback){
-                  // console.log("TODO");
+                   // console.log("TODO");
                    callback(null, data_state);
                },
                object_viewer:function(data_state, callback){
@@ -350,6 +378,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
            return {
+               component:common.naming_fns(component, "component_"),
                validation:common.naming_fns(validation, "validation_"),
                actions:common.naming_fns(actions, "actions_"),
                metadata:common.naming_fns(metadata, "metadata_"),
