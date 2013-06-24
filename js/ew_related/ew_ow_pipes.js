@@ -20,21 +20,25 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                               break;
                                                           };
                                                       }, 
-                                                      "resource.header"))
+                                                      "resource.header",function(value){
+                                                    if(value==null) return "null";
+                                                    else return "collection";
+                                                    
+                                                }))
                        .addPipe(o_w.render_children)
                    ;
-               }
-               ,
+               },
+
                render_header:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.templates.load_object_viewer_with_header)
                        .addTransformation(t.cache_data.object_viewer_header)
                        .addTransformation(t.templates.configure_object_viewer_header)
                        .addTransformation(t.relationships.object_viewer_header)
-                       .addPipe(o_w.render_header_children)
+                       .addPipe(o_w.switch_header)
                    ;
                },
-               render_header_children:function(){
+               switch_header:function(){
                    return new Switcher_Pipeline(this.name, 
                                                 function switcher(_value){
                                                     if(_value!=null && _value.length>0)
@@ -42,16 +46,22 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                          if(typeof(_value)==='function')
                                                         return t.templates.object_viewer_header_function;
                                                     else
-                                                        return o_w.walk_object_viewer_header_children;
+                                                        return o_w.render_header_children;
                                                     else
                                                         return t.templates.object_viewer_header_error;
                                                     
                                                 }, 
-                                                "resource.header.children");
+                                                "resource.header.children", function(value){
+                                                    if(value==null) return "null";
+                                                    else if(value.length==null) return "empty";
+                                                    else if(typeof(value)==='function') return "empty";
+                                                    else return "collection";
+                                                    
+                                                });
                    
                },
 
-               walk_object_viewer_header_children:function(){
+               render_header_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.header.children")
 
                        .addTransformation(t.templates.load_object_viewer_child)

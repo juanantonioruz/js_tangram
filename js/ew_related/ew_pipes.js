@@ -1,6 +1,6 @@
 define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transformations.js",   "js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/switcher_pipeline_type.js", "js/pipelines/state_step_type.js"],
        function(object_viewer_pipes, dispatcher, common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep) {
-           console.dir(object_viewer_pipes.render_children());
+
            var result={
               
                render_pages_main:function(){
@@ -45,8 +45,8 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                        .addTransformation(t.transformations.footer_update_breadcrumbs)                   
                    //                       .throw_event_on_success("body_change_state")
                    ;
-               }
-               ,
+               },
+               
 
                init:function(){
                    return new Pipeline(this.name)
