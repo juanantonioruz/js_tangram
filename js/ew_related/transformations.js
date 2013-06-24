@@ -62,6 +62,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    alert("hola alerta!"+this.ns);
                    callback(null, data_state);
                },
+               debug:function (data_state, callback){
+                   console.dir(data_state);
+                   callback(null, data_state);
+               },
                
                check_current_state_is_active:function (data_state, callback){
                    console.log("current_state_is_still_active:: TODO: this logic could be get better if we try to do throught events, indeed there is already an event on finish 'body_change_state' ");
@@ -139,6 +143,74 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                close:function (data_state, callback){
+                   callback(null, data_state);
+               },
+               render_search_results:function(data_state, callback){
+                   var modal= $('body').find('#search_results_viewer');
+                   modal.dialog({
+                       modal: true,
+                       width: $(window).width() - 200,
+                       height: $(window).height() - 100,
+                       draggable: false,
+                       resizable: false
+                   });
+
+                   modal.find('.modal_close_button').click(function(){
+                       $(this).parents('.modal_container').dialog('close');
+                   });
+                   modal.find(".modal_content").html("<p><b>TODO:</b>So far, only working close button</p>");
+                 /*
+                  TODO  connect this events--- and more from modal/search.js
+                  modal.find('.search-query').keydown(function(event){
+
+                       if (event.keyCode != 13)
+                           return;
+
+                       var search_box = $(this);
+
+                       var search_term = search_box.val();
+
+                       var search_data = modal.data('search_data');
+                       if (search_data == null)
+                           search_data = {};
+
+                       search_data.search_term = search_term;
+
+                   //    search_box.parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
+                   });
+
+                   modal.find('.navbar-search a#search_modal_search_button').click(function(event){
+                       event.preventDefault();
+
+                       var search_box = $(this).parent().find('input');
+
+                       var search_term = search_box.val();
+
+                       var search_data = modal.data('search_data');
+                       if (search_data == null)
+                           search_data = {};
+
+                       search_data.search_term = search_term;
+
+                   //    search_box.parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
+                   });
+
+                   modal.find('.navbar-search a#search_modal_reset_button').click(function(event){
+                       event.preventDefault();
+
+                       $(this).parent().find('input').val('');
+
+                       setTimeout(function(){
+                           $(this).parent().find('input').focus();
+                       }, 2000);
+
+                       var search_data = {};
+
+                    //   $(this).parents('.modal_container').enterpriseweb_site_modals_search('change_state',{ search_data: search_data });
+                   });
+*/
+
+
                    callback(null, data_state);
                },
                render_your_history:function (data_state, callback){
@@ -230,7 +302,58 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                header:function (data_state, callback){
-                   
+                   var that =this;
+                   var container=$('body').find('header');
+                   container.find('#home_link').click(function(){
+                       //reload cuurent request TODO: reimplement when the data will be available
+
+
+                       dispatcher.dispatch("show_profile", that, data_state);
+
+                   });
+
+
+                   container.find('#main_search_box').keydown(function(event){
+                       if (event.keyCode == 13){
+
+                           event.preventDefault();
+
+                           var search_term = $('#main_search_box').val();
+
+                           data_state.change_state_data = {
+                               page_type: 'modal',
+                               state: 'main_search_results',
+                               search_data: {
+                                   search_term: search_term
+                               }
+                           };
+                           dispatcher.dispatch("body_change_state", that, data_state);
+                           // $('body').enterpriseweb_site_structure_body('change_state', change_state_data);
+                       }
+                   });
+
+                   container.find('.navbar-search a').click(function(event){
+                       event.preventDefault();
+
+                       var search_term = $('#main_search_box').val();
+
+                       data_state.change_state_data = {
+                           page_type: 'modal',
+                           state: 'main_search_results',
+                           search_data: {
+                               search_term: search_term
+                           }
+                       };
+                       dispatcher.dispatch("body_change_state", that, data_state);
+                       // $('body').enterpriseweb_site_structure_body('change_state', change_state_data);
+                   });
+
+                   container.find('.nav a').click(function(){
+                       container.find('.nav li').removeClass('active');
+                       $(container).addClass('active');
+                   });
+
+
                    callback(null, data_state);
                },
                

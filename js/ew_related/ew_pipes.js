@@ -41,14 +41,21 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                        .addTransformation(t.modals.render_your_history);
                },
 
+                 render_main_search_results:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.modals.render_search_results);
+               },
 
                body_change_state:function(){
                    return new Pipeline(this.name)
 
                        .addTransformation(t.modals.close)
                        .addTransformation(t.state_history.prepare)
+                       .addTransformation(t.transformations.debug)
                        .addPipe(new Mapper_Pipeline("state", 
-                                                    {"modal":result.render_modal,
+                                                    {
+                                                        "main_search_results":result.render_main_search_results,
+                                                        "modal":result.render_modal,
                                                      "object_view":result.render_page_body}, 
                                                     "change_state_data.state"))
                        .addTransformation(t.transformations.footer_update_breadcrumbs)                   
@@ -66,14 +73,21 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    return new Pipeline(this.name)
                        .addTransformation(t.state_history.init)
                        .addTransformation(t.renders.footer)
-                       .addTransformation(t.renders.header)
-                       .addTransformation(t.modals.init)
+                       .addTransformation(t.renders.header) 
+                       .addTransformation(t.modals.init)//TODO 
                        .addTransformation(t.dao.load_dashboard_data)
                    //                       .addTransformation(t.transformations.body_change_state)
                    // i am proposing this tecnique of throwing an event-domain-name on "end" pipe to improve EOP... not always using on_end event, that doesn mean anyting more, and in this case we are inside of an "init" pipeline that doesn't mean nothing niether
                        .throw_event_on_success("body_change_state")
                    ;
+               },
+                   show_profile:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.dao.load_dashboard_data)
+                       .throw_event_on_success("body_change_state")
+                   ;
                }
+
 
 
 
