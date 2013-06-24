@@ -1,4 +1,9 @@
 define( function() {
+ function contains(context, search){
+            return (context.indexOf(search) !== -1);
+        }
+
+
     function getStart(){return (new Date).getTime();};
     function getDiff(start){return (new Date).getTime() - start;};
     function recordStart(o) {o['start']= getStart();};

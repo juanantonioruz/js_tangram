@@ -14,6 +14,8 @@ require(["js/start_ew.js", "js/start_proposal.js", "js/start_dev.js"],
                 proposal();
             else if (getURLParameter("ew"))
                 ew();
+            else
+                ew();
 
 
 });

@@ -2,10 +2,10 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
        function(object_viewer_pipes, dispatcher, common,  t,   Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep) {
 
            var result={
-              
+               
                render_pages_main:function(){
                    return new Pipeline(this.name)
-
+                       .addTransformation(t.renders.page)
                        .addTransformation(t.renders.activity_list)
                        .addTransformation(t.renders.clean_trays)
                        .addTransformation(t.update.loading_object_editor)
@@ -31,6 +31,17 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
 
 
                
+               render_modal:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.renders.modal);
+               },
+               
+               render_modal_your_history:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.modals.render_your_history);
+               },
+
+
                body_change_state:function(){
                    return new Pipeline(this.name)
 
@@ -45,12 +56,12 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    ;
                },
                
-                 current_state_is_still_active:function(){
-                     var p=new Pipeline(this.name);
-                     p.addTransformation(t.transformations.check_current_state_is_active);
-                     p.parallel=true;
+               current_state_is_still_active:function(){
+                   var p=new Pipeline(this.name);
+                   p.addTransformation(t.transformations.check_current_state_is_active);
+                   p.parallel=true;
                    return new Pipeline(this.name);
-                     },
+               },
                init:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.state_history.init)
@@ -62,18 +73,12 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    // i am proposing this tecnique of throwing an event-domain-name on "end" pipe to improve EOP... not always using on_end event, that doesn mean anyting more, and in this case we are inside of an "init" pipeline that doesn't mean nothing niether
                        .throw_event_on_success("body_change_state")
                    ;
-               },
-               render_modal:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(t.renders.modal);
                }
+
+
+
+
                
-
-
-
-
-
-             
 
                
                

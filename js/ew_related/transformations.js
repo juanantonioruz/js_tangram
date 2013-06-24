@@ -26,6 +26,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    var my_template=$.tmpl('my_template', data_state.current_data);
                    $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
                    data_state.current_data.template=my_template;
+
                    callback(null, data_state);
 
                }
@@ -33,12 +34,18 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            var component={
                
                text:function(data_state, callback){
-                   $('#center').append(data_state.current_data.template);
+                   var html;
+                   if(data_state.current_data.editable)
+                       html=$.tmpl('object_text', data_state.current_data);
+                   else
+                       html=$.tmpl('object_label', data_state.current_data);
+                   data_state.current_data.template.html(html);
                    callback(null, data_state);
                    
                },
                image:function(data_state, callback){
-                   $('#center').append(data_state.current_data.template);
+                   var html = $.tmpl('object_image', data_state.current_data);
+                   data_state.current_data.template.html(html);
                    callback(null, data_state);
                    
                },
@@ -65,6 +72,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    callback(null, data_state);
                },
+
+
+
+
                
                // this two must be moved to ui_prefix
                generate_uid:function(data_state, callback){
@@ -112,6 +123,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            
            var update={
                loading_object_editor:function (data_state, callback){
+                   var oe= $('#page').find('#object_editor');
+
+                   oe.html($.tmpl('component_loading', { loading_message: 'Loading_object_editor' }));
                    callback(null, data_state);
                },
                body_current_state_display_name:function (data_state, callback){
@@ -126,7 +140,33 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                close:function (data_state, callback){
                    callback(null, data_state);
+               },
+               render_your_history:function (data_state, callback){
+                   var modal=$('#your_history');
+                   modal.dialog({
+                       modal: true,
+                       width: $(window).width() - 500,
+                       height: $(window).height() - 200,
+                       draggable: false,
+                       resizable: false
+                   });
+
+                   modal.find('#history_container').css('height', $(window).height() - 350);
+
+                   modal.find('#aggregate_history_container').css('height', $(window).height() - 350);
+
+                   modal.find('.modal_close_button').click(function(){
+                       $(this).parents('.modal_container').dialog('close');
+                   });
+
+                   modal.find('#clear_state_history').click(function(){
+
+                       alert("TODO $('body').enterpriseweb_site_structure_body('save_state_history_to_cookie', []);");
+                       window.location.reload();
+                   });
+                   callback(null, data_state);
                }
+
            };
 
            var dao={
@@ -163,12 +203,30 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                }
            };
 
-           var renders={    
+           var renders={   
+               object_viewer_header:function(data_state, callback){
+                   $('#page').find('#object_editor')
+                       .prepend(data_state.nav_template);
+                   callback(null, data_state);},
+               page:function(data_state, callback){
+
+                   var template = $.tmpl('page_object');
+                   $('#pagebody').empty().append(template);
+                   callback(null, data_state);
+               },
                modal:function(data_state, callback){
                    callback(null, data_state);
                },
                footer:function (data_state, callback){
-                   
+                   var container = $('body').find('footer');
+                   var that =this;
+                   container.find('.where_are_we').css('max-width', $(window).width() -300);
+
+                   //Attach the click handler to show full history
+                   container.find('#show_history_link').click(function(){
+                       dispatcher.dispatch("show_history", that, data_state);
+
+                   });
                    callback(null, data_state);
                },
                header:function (data_state, callback){
@@ -195,17 +253,46 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            var templates={
                load_object_viewer:function(data_state, callback){
                    //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
-                   
+                   var content_templates_container = $("<ul></ul>");
+                   data_state.object_viewer_template=content_templates_container;
+                   $('#page').find('#object_editor').html(content_templates_container);
                    callback(null, data_state);
                },
                load_object_viewer_with_header:function(data_state, callback){
+                   var object=data_state.resource;
+                   var object_view=$('#page').find('#object_editor');
+                   var nav_template = $.tmpl('object_viewer_nav_with_header', object);
+                   nav_template.find('.nav li:first').addClass('active');
 
-                   
+
+
+                   data_state.nav_template=nav_template;
+                   var header_template = ($.template['object_viewer_content_' + object.type] != null)
+                           ? $($.tmpl('object_viewer_content_' + object.type, object))
+                           : $($.tmpl('object_viewer_content', object));
+
+                   header_template.data('object', object.header);
+
+                   header_template.css('height', object_view.height());
+
+                   header_template.removeClass('hide');
+
+                   header_template.addClass('header_' + object.type);
+
+                   var children_template = $('<div class="children"></div>');
+
+                   header_template.append(children_template);
+
+                   object_view.find('ul').append(header_template);
+
                    callback(null, data_state);
                },
                load_object_viewer_without_header:function(data_state, callback){
+                   var object=data_state.resource;
 
-                   
+                   var nav_template = $.tmpl('object_viewer_nav', object);
+                   data_state.nav_template=nav_template;
+
                    callback(null, data_state);
                },
                configure_object_viewer_header:function(data_state, callback){
@@ -216,8 +303,37 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                }
                ,object_viewer_header_function:function(data_state, callback){
                    callback(null, data_state);
+               }
+               ,
+
+               render_object_viewer_header:function(data_state, callback){
+
+
+                   // var object=data_state.resource;
+                   //                   console.dir(data_state.resource);
+                   
+
+                   var oe=$('#object_editor');
+
+                   //TODO improve this ... still i dont know in wich place find this functionality
+                   oe.find('.object_viewer_content').css('height', "300px");
+
+                   
+                   callback(null, data_state);
                },
                load_object_viewer_child:function(data_state, callback){
+
+                   //  console.dir(data_state.current_data);
+                   // var object=data_state.resource;
+                   //                   console.dir(data_state.resource);
+                   
+                   var children_template=$('#object_editor').find('.object_viewer_content').find('.children');
+
+
+                   var child_template = $('<div></div>');
+                   children_template.append(child_template);
+                   data_state.current_data.template=child_template;
+                   
                    callback(null, data_state);
                }
                
@@ -364,7 +480,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    $('body').data('state_history', state_history);
                    $.cookie('state_history', JSON.stringify(state_history), { expires:365, path:'/', json:true });
                    callback(null, data_state);
-               },
+               }
                
            };
 

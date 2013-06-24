@@ -14,6 +14,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset();
 
                dispatcher.listen_event("body_change_state", pipelines.body_change_state, true);
+               dispatcher.listen_event("show_history", pipelines.render_modal_your_history, true);
 
 
                /*/ THIS LINES have been moved to pipelines to increment meaning domain
@@ -46,15 +47,15 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                // dispatcher.filter( filters.clone_data);
 
                
-               dispatcher.filter( filters.profiling);
+//               dispatcher.filter( filters.profiling);
 
                
-               dispatcher.filter( filters.show_profiling(true));
+ //              dispatcher.filter( filters.show_profiling(true));
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click",
                                                                                            fn:function(){
                                                                                                console.log(this.ns);
-                                                                                           }}));
+                                                                                          }}));
                console.log("INIT******************************** TTTT");
                pipelines.init().set_on_success(function(result, pipeline){
                    setInterval(function(){

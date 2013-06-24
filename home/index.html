@@ -25,7 +25,24 @@
 
 <!-- custom styles -->
 <link rel="stylesheet" href="../css/main.css">
+<style>
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
 
+.node {
+  font: 11px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+</style>
 <!-- JS Libraries -->
 <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="../js/bootstrap.min.js"></script>
@@ -280,6 +297,8 @@ $(document).ready(function(){
         </div>
         <div id="chart" class="modal_content form-horizontal" style="height:450px;width:650px;"></div> <!-- Canvas -->
     </div>
+</div>
+<div class='pipelines' id='pipelines'>
 </div>
 </body>
 </html>

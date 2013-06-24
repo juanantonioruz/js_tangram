@@ -25,6 +25,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                           else return "collection";
                                                           
                                                       }))
+
+                       .addPipe(t.renders.object_viewer_header)
                        .addPipe(o_w.render_body_children)
                    ;
                },
@@ -36,6 +38,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                        .addTransformation(t.templates.configure_object_viewer_header)
                        .addTransformation(t.relationships.object_viewer_header)
                        .addPipe(o_w.switch_header)
+                       .addTransformation(t.templates.render_object_viewer_header)
+                   
                    ;
                },
                switch_header:function(){
