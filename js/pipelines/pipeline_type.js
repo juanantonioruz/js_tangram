@@ -34,6 +34,7 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                    // this method to add pipes 
                    addPipe:function(pipe){
                        this.future_state_steps.push(pipe);
+
                        return this;
                    },
 
@@ -58,6 +59,9 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                        dispatcher.dispatch("ON_END", this, data_state, callback);
                    },
                   
+                   //                       .throw_event_on_success(event_name)
+                   // i am proposing this tecnique of throwing an event-domain-name on "end" pipe to improve EOP... not always using on_end event, that doesn mean anyting more, and in this case we are inside of an "init" pipeline that doesn't mean nothing niether
+
                    throw_event_on_success:function(event_name){
                        this.set_on_success(function(results, pipe){ 
                            dispatcher.dispatch(event_name, pipe, results);

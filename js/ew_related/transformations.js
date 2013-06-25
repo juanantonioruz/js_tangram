@@ -17,22 +17,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            function is_a_number(n) {
                return !isNaN(parseFloat(n)) && isFinite(n);
            }
-
-           var load_tmpl={
-               component:function(data_state, callback){
-
-                   var tmpl_name="component_"+data_state.current_data.type;
-                   var html=$.tmpl(tmpl_name, data_state.current_data);
-                   var my_template=$.tmpl('my_template', data_state.current_data);
-                   $(my_template).attr('id', data_state.current_data.id).append(html).append("<div>");
-                   data_state.current_data.template=my_template;
+  function guid(){
+                       var id = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(
+                               /[xy]/g,
+                           function(c){
+                               var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);
+                           }
+                       );
+                       return "id_" + id;
+                   }
+           var component={
+               generic:function(data_state, callback){
 
                    callback(null, data_state);
-
-               }
-           };
-           var component={
-               
+                   
+               },
                text:function(data_state, callback){
                    var html;
                    if(data_state.current_data.editable)
@@ -53,26 +52,70 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    callback(null, data_state);
                    
+               },
+               // this two must be moved to ui_prefix
+               generate_uid:function(data_state, callback){
+                   function create_id(prefix, subject) {
+                       var id = prefix + "";
+                       for (var x=0; x<subject.length; x++)
+                           if(/^[a-zA-Z]$/.test(subject[x]))
+                               id += subject[x];
+                       id = id.toLowerCase();
+                       return id;
+                   }
+
+                 
+
+                   var object_id = (data_state.current_data.id != null)
+                           ? create_id('object', data_state.current_data.id)
+                           : guid();
+                   
+                   data_state.current_data.id=object_id;
+
+
+                   callback(null, data_state);
                }
            };
            
-           var footer={
-               update_breadcrumbs:function (data_state, callback){
+           /*rest of functions, theoritecally they must be moved from here*/
+           var transformations= {
+               window_location_reload:function (data_state, callback){
+                   window.location.reload();
+                   
+                   callback(null, data_state);
+               },
+               alerta:function (data_state, callback){
+                   alert("hola alerta!"+this.ns);
+                   callback(null, data_state);
+               },
+               debug:function (data_state, callback){
+                   console.dir(data_state);
+                   callback(null, data_state);
+               },
+               
+               check_current_state_is_active:function (data_state, callback){
+                   console.log("current_state_is_still_active:: TODO: this logic could be get better if we try to do throught events, indeed there is already an event on finish 'body_change_state' ");
+                   callback(null, data_state);
+               }
+
+               
+           };
+           
+           /*update existing templates or html components */
+           var update={
+               footer_breadcrumbs:function (data_state, callback){
                    var that=this;
                    var state_history=$('body').data('state_history');
                    var container = $('body').find('footer');
 
-                   
-
-
                    var history_container = container.find('#breadcrumbs');
 
                    history_container.html('');
-                   console.log("before");
-                   console.dir(state_history);
+                   // console.log("before");
+                   // console.dir(state_history);
                    $.each(state_history, function(index, item){
-                       console.log("inside");
-                       console.dir(item);
+                       // console.log("inside");
+                       // console.dir(item);
                        //Dont show modals in the breadcrumbs
                        if (item.page_type == 'modal')
                            return;
@@ -124,81 +167,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
                    callback(null, data_state);
-               }
-
-           };
-           
-           var result= {
-               window_location_reload:function (data_state, callback){
-                   window.location.reload();
-                   
-                   callback(null, data_state);
                },
-               alerta:function (data_state, callback){
-                   alert("hola alerta!"+this.ns);
-                   callback(null, data_state);
-               },
-               debug:function (data_state, callback){
-                   console.dir(data_state);
-                   callback(null, data_state);
-               },
-               
-               check_current_state_is_active:function (data_state, callback){
-                   console.log("current_state_is_still_active:: TODO: this logic could be get better if we try to do throught events, indeed there is already an event on finish 'body_change_state' ");
-                   callback(null, data_state);
-               },
-               
-               
-
-
-
-
-               
-               // this two must be moved to ui_prefix
-               generate_uid:function(data_state, callback){
-                   function create_id(prefix, subject) {
-                       var id = prefix + "";
-                       for (var x=0; x<subject.length; x++)
-                           if(/^[a-zA-Z]$/.test(subject[x]))
-                               id += subject[x];
-                       id = id.toLowerCase();
-                       return id;
-                   }
-
-                   function guid(){
-                       var id = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(
-                               /[xy]/g,
-                           function(c){
-                               var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);
-                           }
-                       );
-                       return "id_" + id;
-                   }
-
-                   var object_id = (data_state.current_data.id != null)
-                           ? create_id('object', data_state.current_data.id)
-                           : guid();
-                   
-                   data_state.current_data.id=object_id;
-
-
-                   callback(null, data_state);
-               },
-               by_child:function(data_state, callback){
-                   
-                   callback(null, data_state);
-                   
-               },
-               component:function(data_state, callback){
-
-                   callback(null, data_state);
-                   
-               }
-           };
-           
-           
-           
-           var update={
                loading_object_editor:function (data_state, callback){
                    var oe= $('#page').find('#object_editor');
 
@@ -217,8 +186,127 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                close:function (data_state, callback){
                    callback(null, data_state);
+               }
+
+           };
+
+           /*dao*/
+           var dao={
+               load_data:function(data_state, callback){
+                   $('#left').prepend("<p >(simulating )Loading json data!</p>");
+                   setTimeout(function () {
+                       data_state.json=json_data.example_data;
+                       callback(null, data_state);
+                   }, 250);
                },
-               render_search_results:function(data_state, callback){
+               load_dashboard_data:function(data_state, callback){
+                   var json=json_data.dashboard_data;
+                   var user_data = {
+                       uid: json.uid,
+                       uri: json.uuri
+                   };
+                   $('body').data("user_data", user_data);
+                   data_state.change_state_data = {
+                       page_type: 'object',
+                       state: 'object_view',
+                       object_uri: user_data.uri
+                   };
+
+                   callback(null, data_state);
+               },
+               load_pages_main_data:function(data_state, callback){
+                   var json=json_data[data_state.change_state_data.object_uri];
+                   
+                   data_state.main_data=json;
+
+                   data_state.resource=json.body.resources[0];
+                   data_state.resource_trays=json.body.trays;
+                   //                   console.dir(data_state.resource);
+                   callback(null, data_state);
+               }
+           };
+
+           /* onclick event dispatcher and display logic jquery   */
+           var renders={   
+               footer:function (data_state, callback){
+                   var container = $('body').find('footer');
+                   var that =this;
+                   container.find('.where_are_we').css('max-width', $(window).width() -300);
+
+                   container.find('#show_history_link').click(function(){
+                       dispatcher.dispatch("show_history", that, data_state);
+
+                   });
+                   callback(null, data_state);
+               },
+               header:function (data_state, callback){
+                   var that =this;
+                   var container=$('body').find('header');
+                   container.find('#home_link').click(function(){
+                       //reload cuurent request TODO: reimplement when the data will be available
+                       dispatcher.dispatch("show_profile", that, data_state);
+
+                   });
+
+
+                   container.find('#main_search_box').keydown(function(event){
+                       if (event.keyCode == 13){
+
+                           event.preventDefault();
+
+                           var search_term = $('#main_search_box').val();
+
+                           data_state.change_state_data = {
+                               page_type: 'modal',
+                               state: 'main_search_results',
+                               search_data: {
+                                   search_term: search_term
+                               }
+                           };
+                           dispatcher.dispatch("body_change_state", that, data_state);
+                           // $('body').enterpriseweb_site_structure_body('change_state', change_state_data);
+                       }
+                   });
+
+                   container.find('.navbar-search a').click(function(event){
+                       event.preventDefault();
+
+                       var search_term = $('#main_search_box').val();
+
+                       data_state.change_state_data = {
+                           page_type: 'modal',
+                           state: 'main_search_results',
+                           search_data: {
+                               search_term: search_term
+                           }
+                       };
+                       dispatcher.dispatch("body_change_state", that, data_state);
+                       // $('body').enterpriseweb_site_structure_body('change_state', change_state_data);
+                   });
+
+                   container.find('.nav a').click(function(){
+                       container.find('.nav li').removeClass('active');
+                       $(container).addClass('active');
+                   });
+
+
+                   callback(null, data_state);
+               },
+               object_viewer_header:function(data_state, callback){
+                   $('#page').find('#object_editor')
+                       .prepend(data_state.nav_template);
+                   callback(null, data_state);},
+               page:function(data_state, callback){
+
+                   var template = $.tmpl('page_object');
+                   $('#pagebody').empty().append(template);
+                   callback(null, data_state);
+               },
+               modal:function(data_state, callback){
+                   callback(null, data_state);
+               },
+               
+               modal_search_results:function(data_state, callback){
                    var modal= $('body').find('#search_results_viewer');
                    modal.dialog({
                        modal: true,
@@ -286,7 +374,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    callback(null, data_state);
                },
-               render_your_history:function (data_state, callback){
+               modal_your_history:function (data_state, callback){
                    var that=this;
                    var modal=$('#your_history');
                    modal.dialog({
@@ -305,151 +393,26 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                        $(this).parents('.modal_container').dialog('close');
                    });
                    modal.find('#clear_state_history').click(function(){
-                dispatcher.dispatch("clear_history", that, data_state);
+                       dispatcher.dispatch("clear_history", that, data_state);
 
-            });
-
-
-                       
-
-
-                   callback(null, data_state);
-               }
-
-           };
-
-           var dao={
-               load_data:function(data_state, callback){
-                   $('#left').prepend("<p >(simulating )Loading json data!</p>");
-                   setTimeout(function () {
-                       data_state.json=json_data.example_data;
-                       callback(null, data_state);
-                   }, 250);
-               },
-               load_dashboard_data:function(data_state, callback){
-                   var json=json_data.dashboard_data;
-                   var user_data = {
-                       uid: json.uid,
-                       uri: json.uuri
-                   };
-                   $('body').data("user_data", user_data);
-                   data_state.change_state_data = {
-                       page_type: 'object',
-                       state: 'object_view',
-                       object_uri: user_data.uri
-                   };
-
-                   callback(null, data_state);
-               },
-               load_pages_main_data:function(data_state, callback){
-                   var json=json_data[data_state.change_state_data.object_uri];
+                   });
                    
-                   data_state.main_data=json;
-                   data_state.resource=json.body.resources[0];
-
-                   //                   console.dir(data_state.resource);
-                   callback(null, data_state);
-               }
-           };
-
-           var renders={   
-               object_viewer_header:function(data_state, callback){
-                   $('#page').find('#object_editor')
-                       .prepend(data_state.nav_template);
-                   callback(null, data_state);},
-               page:function(data_state, callback){
-
-                   var template = $.tmpl('page_object');
-                   $('#pagebody').empty().append(template);
                    callback(null, data_state);
                },
-               modal:function(data_state, callback){
-                   callback(null, data_state);
-               },
-               footer:function (data_state, callback){
-                   var container = $('body').find('footer');
-                   var that =this;
-                   container.find('.where_are_we').css('max-width', $(window).width() -300);
-
-                   //Attach the click handler to show full history
-                   container.find('#show_history_link').click(function(){
-                       dispatcher.dispatch("show_history", that, data_state);
-
-                   });
-                   callback(null, data_state);
-               },
-               header:function (data_state, callback){
-                   var that =this;
-                   var container=$('body').find('header');
-                   container.find('#home_link').click(function(){
-                       //reload cuurent request TODO: reimplement when the data will be available
-
-
-                       dispatcher.dispatch("show_profile", that, data_state);
-
-                   });
-
-
-                   container.find('#main_search_box').keydown(function(event){
-                       if (event.keyCode == 13){
-
-                           event.preventDefault();
-
-                           var search_term = $('#main_search_box').val();
-
-                           data_state.change_state_data = {
-                               page_type: 'modal',
-                               state: 'main_search_results',
-                               search_data: {
-                                   search_term: search_term
-                               }
-                           };
-                           dispatcher.dispatch("body_change_state", that, data_state);
-                           // $('body').enterpriseweb_site_structure_body('change_state', change_state_data);
-                       }
-                   });
-
-                   container.find('.navbar-search a').click(function(event){
-                       event.preventDefault();
-
-                       var search_term = $('#main_search_box').val();
-
-                       data_state.change_state_data = {
-                           page_type: 'modal',
-                           state: 'main_search_results',
-                           search_data: {
-                               search_term: search_term
-                           }
-                       };
-                       dispatcher.dispatch("body_change_state", that, data_state);
-                       // $('body').enterpriseweb_site_structure_body('change_state', change_state_data);
-                   });
-
-                   container.find('.nav a').click(function(){
-                       container.find('.nav li').removeClass('active');
-                       $(container).addClass('active');
-                   });
-
-
-                   callback(null, data_state);
-               },
-               
 
                task:function(data_state, callback){
                    callback(null, data_state);
                },
                activity_list:function(data_state, callback){
                    callback(null, data_state);
-               },
-               clean_trays:function(data_state, callback){
-                   callback(null, data_state);
-               },
-               trays:function(data_state, callback){
-                   callback(null, data_state);
                }
+              
+               
+               
                
            };
 
+           /* dynamic templates and html composition   */
            var templates={
                load_object_viewer:function(data_state, callback){
                    //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
@@ -495,17 +458,13 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    callback(null, data_state);
                },
-               configure_object_viewer_header:function(data_state, callback){
-                   callback(null, data_state);
-               },
+             
                object_viewer_header_error:function(data_state, callback){
                    callback(null, data_state);
-               }
-               ,object_viewer_header_function:function(data_state, callback){
+               },
+               object_viewer_header_function:function(data_state, callback){
                    callback(null, data_state);
-               }
-               ,
-
+               },
                render_object_viewer_header:function(data_state, callback){
 
 
@@ -680,7 +639,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    var state_history=data_state.state_history;
                    $('body').data('state_history', state_history);
                    $.cookie('state_history', JSON.stringify(state_history), { expires:365, path:'/', json:true });
-                   console.dir(state_history);
+                   //      console.dir(state_history);
                    callback(null, data_state);
                },
                update_current_name:function(data_state, callback){
@@ -706,33 +665,33 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    // the merge_duplicates body.js method has been moved inside this
 
 
-            var new_state_history = [];
+                   var new_state_history = [];
 
-            //Loop through the list looking for duplicates
-            $.each(state_history, function(index, item){
+                   //Loop through the list looking for duplicates
+                   $.each(state_history, function(index, item){
 
-                if (new_state_history.length > 0) {
+                       if (new_state_history.length > 0) {
 
-                    var previous_state_history_entry = new_state_history[new_state_history.length - 1];
+                           var previous_state_history_entry = new_state_history[new_state_history.length - 1];
 
-                    if (previous_state_history_entry.display_name == item.display_name){
+                           if (previous_state_history_entry.display_name == item.display_name){
 
-                        previous_state_history_entry.time_out = item.time_out;
+                               previous_state_history_entry.time_out = item.time_out;
 
-                        return;
-                    }
-                }
+                               return;
+                           }
+                       }
 
-                new_state_history[new_state_history.length] = item;
-            });
+                       new_state_history[new_state_history.length] = item;
+                   });
 
 
 
                    data_state.state_history=new_state_history;
 
-                  body.data('state_history', new_state_history);
+                   body.data('state_history', new_state_history);
 
-  
+                   
                    callback(null, data_state);
                },
                clear_history:function(data_state, callback){
@@ -754,21 +713,187 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                }
            };
 
+           var trays={
+               clean:function(data_state, callback){
+                   var container=$('#trays');
+                   //Remove any exisring tray
+                   container.html('');
+
+                   callback(null, data_state);
+               },
+               init_child:function(data_state, callback){
+
+                   var tray=data_state.current_data;
+
+
+
+                   var extension=tray.type;
+                   data_state.current_data.tray_type=extension;                   
+                   try{
+
+                       tray.unique_id = "tray_" + guid();
+
+                       //Build the tray header template
+                       var template = $.tmpl('tray_header', tray);
+                       console.dir(data_state.current_data.type);
+                       data_state.current_data.template=template;
+                       //Pass off control to the code that matches the type of this object
+                      // template[jquery_extension_function]('render', tray);
+                       
+
+
+
+                       callback(null, data_state);                       
+
+                   }catch(error){
+                       callback(error, data_state);                       
+                       alert(error+"--->"+extension);
+                   }
+
+
+               },
+               draggable_search:function(data_state, callback){
+           //        data_state.current_data.template.append("<h1>search</h1>");
+
+                     var container = data_state.current_data.template;
+                   var tray_data=data_state.current_data;
+            //Add the tray data to the container
+            container.data('draggable_search_tray_data', tray_data);
+
+            //Build the search data
+            var search_data = {
+                search_term:'',
+                pagination: { page : 0, rows: 25, sort: 'ID', sortDir: 'asc' },
+                selected_facets: []
+            };
+
+            //Augment the search data
+            for (key in tray_data.search_data)
+                search_data[key] = tray_data.search_data[key];
+
+            //Store the search data
+            container.data('search_data', search_data);
+
+            //Attach to the parent moving event and auto select the results tab
+            $('#' + container.attr('id') + '.moving').livequery(function(){
+
+                $(this).find('.tray_draggable_search_tabs > ul li:first a').click();
+            });
+
+            //Attach to the showing of the tray_content
+            $('#' + container.attr('id') + ' .tray_content:visible').livequery(function(){
+                var tray_content = $(this);
+
+                var draggable_tray_items_container = tray_content.find('.draggable_tray_items_container');
+                var relative_top = draggable_tray_items_container.offset().top - tray_content.offset().top;
+                draggable_tray_items_container.height(tray_content.height() - relative_top - 20);
+                tray_content.find('.tray_draggable_search_filters').height(tray_content.height() - relative_top - 20);
+            });
+
+            //Run the search for the first time
+           //  container.enterpriseweb_site_components_trays_draggable_search('run_search');
+                 alert("TODO: run search");
+            //return the container
+
+
+                   callback(null, data_state);
+
+               },
+               draggable_list:function(data_state, callback){
+//                   data_state.current_data.template.append("<h1>list</h1>");
+                   callback(null, data_state);
+               },
+               set_top:function(data_state, callback){
+                   var index=data_state.current_data._index_;
+                   //Set the css top
+                   var template=data_state.current_data.template;
+                   var container=$('#trays');
+                   //Append the tray to the container
+                   container.append(template);
+                   console.log("index:"+index);
+                   template.css('top', (112 + index * 56) + 'px');
+
+
+                   //var tray=data_state.current_data;
+                   template
+                       .mouseenter(function(){
+                           var tray = $(this);
+                           tray.addClass('mouseenter');
+                           if (tray.is('.moving') || tray.is('.pinned') || tray.is('.popped_out'))
+                               return;
+                           if (tray.data('right') == null)
+                               tray.data('right', tray.css('right'));
+                           if (tray.data('top') == null)
+                               tray.data('top', tray.css('top'));
+                           tray.css('right', '-200px');
+                           tray.addClass('popped_out');
+
+                           setTimeout(function(){
+                               if (!tray.is('.mouseenter'))
+                                   tray.mouseleave();
+                           }, 1000);
+                       })
+
+                       .bindWithDelay('mouseleave', function(){
+                           var tray = $(this);
+                           if (tray.is('mouseenter') || tray.is('.moving') || tray.is('.pinned') || tray.is('.dragging'))
+                               return;
+                           tray.removeClass('mouseenter');
+                           tray.css('background', '');
+                           tray.find('.tray_content')
+                               .hide()
+                               .height(0);
+
+                           tray.css('right', tray.data('right'));
+                           tray.removeClass('popped_out');
+                       }, 500)
+
+                       .find('.navbar').click(function(){
+
+                           var button = $(this).find('.pin_button'); 
+                           var tray = button.parents('.tray:first');
+                           var all_trays = $('.tray, sidebar');
+                           if (button.is('.active')) {
+                               tray.removeClass('pinned');
+                               button.removeClass('active');
+                               all_trays.css('z-index', 10);
+                               tray.css('right', tray.data('right'));
+                               tray.css('background', '');
+                               tray.find('.tray_content')
+                                   .hide()
+                                   .height(0);
+                           }
+                           else {
+                               tray.addClass('pinned');
+                               button.addClass('active');
+                               tray.css('background', 'rgba(256, 256,256, 0.9');
+                               tray.find('.tray_content')
+                                   .height($(window).height() - tray.offset().top - 120)
+                                   .show();
+                               tray.animate({ right: -15 }, 200);
+                               all_trays.css('z-index', 9);
+                               tray.css('z-index', 10);
+                           }
+                       });
+
+                   callback(null, data_state);
+               }
+           };
 
            return {
-               footer:common.naming_fns(footer, "footer_"),
+               trays:common.naming_fns(trays, "trays_"),
                component:common.naming_fns(component, "component_"),
                validation:common.naming_fns(validation, "validation_"),
                actions:common.naming_fns(actions, "actions_"),
                metadata:common.naming_fns(metadata, "metadata_"),
-               load_tmpl:common.naming_fns(load_tmpl, "load_tmpl_"),
+
                templates:common.naming_fns(templates, "template_"),
                update:common.naming_fns(update, "update_"),
                state_history:common.naming_fns(state_history, "state_history_"),
                relationships:common.naming_fns(relationships, "relationships_"),
                dao:common.naming_fns(dao, "dao_"),
                modals:common.naming_fns(modals, "modals_"),
-               transformations:common.naming_fns(result),
+               transformations:common.naming_fns(transformations),
                renders:common.naming_fns(renders, "render_"),
                cache_data:common.naming_fns(cache_data, "cache_data_")};
 

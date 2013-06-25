@@ -3,20 +3,62 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
 
            var result={
                
+               render_trays:function(){
+                  return  new Pipeline(this.name)
+                   .addTransformation(t.trays.clean)
+                   .addPipe(
+                       new Foreach_Pipeline("walk_trays", "resource_trays")
+
+                            .addTransformation(t.trays.init_child)
+                       
+                           .addTransformation(function(){return new Switcher_Pipeline("tray_type", 
+                                                                    function switcher(_value){
+                                                                        if(_value=="draggable_search")
+                                                                            return t.trays.draggable_search;
+                                                                        else if(_value=="draggable_list")
+                                                                            return t.trays.draggable_list; 
+                                                                        return t.transformations.alerta;
+                                                                    }, 
+                                                "current_data.tray_type", function(value){
+                                                    if(value==null) return "null";
+                                                    else return value;
+                                                                        
+                                                                    });})
+                           .addTransformation(t.trays.set_top)
+
+                   )
+                   ;
+               },
+
                render_pages_main:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.renders.page)
                        .addTransformation(t.renders.activity_list)
-                       .addTransformation(t.renders.clean_trays)
+                       .addTransformation(t.trays.clean)
                        .addTransformation(t.update.loading_object_editor)
                        .addTransformation(t.dao.load_pages_main_data)
                        .addTransformation(t.state_history.update_current_name)
-                       .addTransformation(t.footer.update_breadcrumbs)                   
+                       .addTransformation(t.update.footer_breadcrumbs)                   
                        .addTransformation(t.state_history.save_to_cookie)
-                       .addTransformation(t.renders.trays)
+                       .addPipe(
+                           new Switcher_Pipeline("trays", 
+                                                function switcher(_value){
+                                                    if(_value!=null)
+                                                        return result.render_trays;
+                                                    else
+                                                        return t.trays.clean;
+                                                    
+                                                }, 
+                                                "resource_trays", function(value){
+                                                    if(value==null) return "null";
+                                                    else return "collection";
+                                                    
+                                                })
+                         )
                        .addPipe(object_viewer_pipes.render_object_viewer)
                    ;
                },
+
                render_page_body:function(){
                    return new Pipeline(this.name)
 
@@ -31,8 +73,6 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    ;
 
                },
-
-
                
                render_modal:function(){
                    return new Pipeline(this.name)
@@ -41,12 +81,12 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                
                render_modal_your_history:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(t.modals.render_your_history);
+                       .addTransformation(t.renders.modal_your_history);
                },
 
-                 render_main_search_results:function(){
+               render_main_search_results:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(t.modals.render_search_results);
+                       .addTransformation(t.renders.modal_search_results);
                },
 
                body_change_state:function(){
@@ -55,14 +95,13 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                        .addTransformation(t.modals.close)
                        .addTransformation(t.state_history.prepare)
                        .addTransformation(t.state_history.save_to_cookie)
-                       .addTransformation(t.transformations.debug)
                        .addPipe(new Mapper_Pipeline("state", 
                                                     {
                                                         "main_search_results":result.render_main_search_results,
                                                         "modal":result.render_modal,
-                                                     "object_view":result.render_page_body}, 
+                                                        "object_view":result.render_page_body}, 
                                                     "change_state_data.state"))
-                       .addTransformation(t.footer.update_breadcrumbs)                   
+                       .addTransformation(t.update.footer_breadcrumbs)                   
                    //                       .throw_event_on_success("body_change_state")
                    ;
                },
@@ -73,24 +112,26 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    p.parallel=true;
                    return new Pipeline(this.name);
                },
+
                init:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.state_history.init)
                        .addTransformation(t.renders.footer)
                        .addTransformation(t.renders.header) 
-                       .addTransformation(t.modals.init)//TODO 
+                       .addTransformation(t.modals.init)
+                   //TODO 
                        .addTransformation(t.dao.load_dashboard_data)
-                   //                       .addTransformation(t.transformations.body_change_state)
-                   // i am proposing this tecnique of throwing an event-domain-name on "end" pipe to improve EOP... not always using on_end event, that doesn mean anyting more, and in this case we are inside of an "init" pipeline that doesn't mean nothing niether
                        .throw_event_on_success("body_change_state")
                    ;
                },
-                   show_profile:function(){
+
+               show_profile:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.dao.load_dashboard_data)
                        .throw_event_on_success("body_change_state")
                    ;
                },
+
                clear_history:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.state_history.clear_history)
@@ -100,18 +141,6 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    ;
 
                }
-
-
-
-
-
-               
-
-               
-               
-               
-               
-               
                
            };
            

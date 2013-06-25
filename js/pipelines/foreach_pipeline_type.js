@@ -30,7 +30,9 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                                    if(i!=collection.length){
 
                                  //    alert(toJson(data_state['the_model'][i+1]));
-                                   results.current_data=collection[i+1];
+                                       results.current_data=collection[i+1];
+                                       if(results.current_data)
+                                           results.current_data._index_=i+1; 
                                        }
                                
                                };
@@ -42,7 +44,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                            
                        }
                        data_state.current_data=collection[0];
-                       
+                       data_state.current_data._index_=0;
                        // change this line with previous code
 //                       data_state.current_data=data_state.get_value(this.model_key)[0];
                        base.apply_transformations.call(this, data_state);

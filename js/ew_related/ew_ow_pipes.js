@@ -7,7 +7,6 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                        .addTransformation(t.update.body_current_state_display_name)
                        .addTransformation(t.templates.load_object_viewer)
                        .addTransformation(t.cache_data.object_viewer)
-
                        .addPipe(new Switcher_Pipeline("resource_header", 
                                                       function switcher(_value){
                                                           switch(_value){
@@ -35,11 +34,10 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                    return new Pipeline(this.name)
                        .addTransformation(t.templates.load_object_viewer_with_header)
                        .addTransformation(t.cache_data.object_viewer_header)
-                       .addTransformation(t.templates.configure_object_viewer_header)
+
                        .addTransformation(t.relationships.object_viewer_header)
                        .addPipe(o_w.switch_header)
                        .addTransformation(t.templates.render_object_viewer_header)
-                   
                    ;
                },
                switch_header:function(){

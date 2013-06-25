@@ -21,6 +21,43 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
 
 
+
+               // Filtering all tansformations ::: AOP 
+               dispatcher.reset_filters();
+
+               //TODO investigate why throw error when the app increase complexity   --> too much recursion --> sync process         
+             //  dispatcher.filter( filters.logging(true));
+               
+               // dispatcher.filter( filters.clone_data);
+
+               
+//               dispatcher.filter( filters.profiling);
+
+               
+ //              dispatcher.filter( filters.show_profiling(true));
+
+               dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click", fn:function(){console.log(this.ns);}}));
+               console.log("INIT******************************** TTTT");
+               pipelines.init().set_on_success(function(result, pipeline){
+                   // setInterval(function(){
+                   //     pipelines.current_state_is_still_active().apply_transformations(data_state);
+                   //  }, 30000);
+                   console.log("END********************************  TTTT");                       
+
+               })
+                   .apply_transformations(data_state);
+
+           };
+
+           
+           return result;
+
+       });
+
+
+
+
+
                /*/ THIS LINES have been moved to pipelines to increment meaning domain
                dispatcher.listen_state_step("ON_END", "body_change_state", pipelines.render_mapper,  false);
                dispatcher.listen_state_step("ON_END", "body_change_state", t.state_history.save_to_cookie,  false);
@@ -41,38 +78,3 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                // this transformations have  been moved to the related pipelines
                //   dispatcher.listen_state_step("ON_END", "render_page_body",  render_pipes.page_body_page_type, false);               // dispatcher.listen_state_step("ON_INIT", "render_pages_main",  t.renders.activity_list, false);
 
-
-               // Filtering all tansformations ::: AOP 
-               dispatcher.reset_filters();
-
-               //TODO investigate why throw error when the app increase complexity   --> too much recursion --> sync process         
-             //  dispatcher.filter( filters.logging(true));
-               
-               // dispatcher.filter( filters.clone_data);
-
-               
-//               dispatcher.filter( filters.profiling);
-
-               
- //              dispatcher.filter( filters.show_profiling(true));
-
-               dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click",
-                                                                                           fn:function(){
-                                                                                               console.log(this.ns);
-                                                                                         }}));
-               console.log("INIT******************************** TTTT");
-               pipelines.init().set_on_success(function(result, pipeline){
-                   setInterval(function(){
-                       pipelines.current_state_is_still_active().apply_transformations(data_state);
-                    }, 30000);
-                   console.log("END********************************  TTTT");                       
-
-               })
-                   .apply_transformations(data_state);
-
-           };
-
-           
-           return result;
-
-       });

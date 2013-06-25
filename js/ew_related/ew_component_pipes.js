@@ -19,7 +19,7 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
                                                     return t.component.object;
 
                                                     else
-                                                        return t.transformations.component;
+                                                        return t.component.generic;
                                                     
                                                 }, 
                                                 "current_data.type");
@@ -28,7 +28,7 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
                
                render_component:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(t.transformations.generate_uid)
+                       .addTransformation(t.component.generate_uid)
                        .addTransformation(c.switch_component)
                        .addPipe(c.render_validation)
 
