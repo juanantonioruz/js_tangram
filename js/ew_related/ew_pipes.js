@@ -58,6 +58,11 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                        .addPipe(object_viewer_pipes.render_object_viewer)
                    ;
                },
+               update_object_viewer:function(){
+                   return new Pipeline(this.name)
+                       .addPipe(object_viewer_pipes.update_header)
+                   ;
+               },
 
                render_page_body:function(){
                    return new Pipeline(this.name)

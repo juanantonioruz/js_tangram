@@ -17,7 +17,9 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.listen_event("show_profile", pipelines.show_profile, true);
                dispatcher.listen_event("show_history", pipelines.render_modal_your_history, true);
                dispatcher.listen_event("clear_history", pipelines.clear_history, true);
-               dispatcher.listen_event("window_reload", t.transformations.window_location_reload, true);
+               dispatcher.listen_event("window_reload", t.transformations.window_location_reload, true);               
+               dispatcher.listen_event("update_object_viewer", pipelines.update_object_viewer, true);
+
 
 
 
@@ -26,7 +28,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset_filters();
 
                //TODO investigate why throw error when the app increase complexity   --> too much recursion --> sync process         
-             //  dispatcher.filter( filters.logging(true));
+            //   dispatcher.filter( filters.logging(true, true));
                
                // dispatcher.filter( filters.clone_data);
 

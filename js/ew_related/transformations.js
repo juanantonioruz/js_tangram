@@ -17,15 +17,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            function is_a_number(n) {
                return !isNaN(parseFloat(n)) && isFinite(n);
            }
-  function guid(){
-                       var id = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(
-                               /[xy]/g,
-                           function(c){
-                               var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);
-                           }
-                       );
-                       return "id_" + id;
+           function guid(){
+               var id = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(
+                       /[xy]/g,
+                   function(c){
+                       var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);
                    }
+               );
+               return "id_" + id;
+           }
            var component={
                generic:function(data_state, callback){
 
@@ -39,12 +39,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    else
                        html=$.tmpl('object_label', data_state.current_data);
                    data_state.current_data.template.html(html);
+
                    callback(null, data_state);
                    
                },
                image:function(data_state, callback){
                    var html = $.tmpl('object_image', data_state.current_data);
+
                    data_state.current_data.template.html(html);
+
                    callback(null, data_state);
                    
                },
@@ -64,7 +67,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                        return id;
                    }
 
-                 
+                   
 
                    var object_id = (data_state.current_data.id != null)
                            ? create_id('object', data_state.current_data.id)
@@ -293,6 +296,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                object_viewer_header:function(data_state, callback){
+
                    $('#page').find('#object_editor')
                        .prepend(data_state.nav_template);
                    callback(null, data_state);},
@@ -404,9 +408,56 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                activity_list:function(data_state, callback){
+                   var activity_list = $.tmpl('activity_list');
+
+                   //Add it to the sidebar
+                   $('#page').find('sidebar').html(activity_list);
+                   var container = activity_list;
+
+                   container.find('.list_container').css('height', $(window).height() - 175);
+                   
+                   container.parents('sidebar:first')
+                       .mouseenter(function(){
+                           //$(this).data('opacity', $(this).css('opacity'));
+                           var sidebar = $(this);
+                           if (sidebar.is('.expanding'))
+                               return;
+                           sidebar.addClass('expanding');
+                           if (sidebar.data('right') == null)
+                               sidebar.data('right', sidebar.css('right'));
+                           sidebar.css('background', 'rgba(251,251,251,0.7)');
+                           sidebar.css('z-index', 11);
+                           sidebar.animate({ right: -15  }, 200, function(){
+                               sidebar.removeClass('expanding')
+                           });
+                           sidebar.find('.list_container').fadeIn();
+
+                       })
+
+                       .mouseleave(function(){
+                           //$(this).animate({ opacity: $(this).data('opacity') }, 500);
+                           var sidebar = $(this);
+                           if (sidebar.is('.retracting'))
+                               return;
+                           sidebar.addClass('retracting');
+                           sidebar.find('.list_container').hide();
+                           sidebar.css('z-index', 8);
+                           sidebar.animate({ right: sidebar.data('right') }, 200, function(){
+                               sidebar.css('background', 'none');
+                               sidebar.removeClass('retracting');
+                           });
+                       })
+
+                       .click(function(){
+                           $(this).mouseleave();
+                       });
+                   if (container.find('.activity_list_item').length > 0)
+                       console.log("return now");
+                   else
+                       console.log("TODO: dao activityList");
                    callback(null, data_state);
                }
-              
+               
                
                
                
@@ -418,18 +469,57 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
                    var content_templates_container = $("<ul></ul>");
                    data_state.object_viewer_template=content_templates_container;
+                  
                    $('#page').find('#object_editor').html(content_templates_container);
                    callback(null, data_state);
                },
                load_object_viewer_with_header:function(data_state, callback){
+                   var that=this;
                    var object=data_state.resource;
                    var object_view=$('#page').find('#object_editor');
+                   var content_templates_container=data_state.object_viewer_template;
+                  
                    var nav_template = $.tmpl('object_viewer_nav_with_header', object);
                    nav_template.find('.nav li:first').addClass('active');
 
 
+                   nav_template.find('.nav li a').click(function(){
+
+
+                       var link = $(this);
+
+                       var all_lis = nav_template.find('.nav li');
+
+                       for(var x=0; x<all_lis.length; x++)
+                           $(all_lis[x]).removeClass('active');
+
+                       link.parent().addClass('active');
+
+                       var target_id = link.data('target_id');
+
+                       object_view.find('.object_viewer_content').fadeOut(500, function(){
+                           setTimeout(function() {
+                               object_view.find('.object_viewer_content').each(function(){
+                                   var object_viewer_content = $(this);
+                                   if(object_viewer_content.data('target') == target_id)
+                                       object_viewer_content.fadeIn(500, function(){
+                                          data_state.resource=object_viewer_content.data('object');
+                                           dispatcher.dispatch("update_object_viewer", that, data_state);
+                                           //  REPLACED with this                                    object_viewer_content.enterpriseweb_site_components_object(object_viewer_content.data('object'));
+                                       });
+                               });
+                           }, 500);
+                       });
+                   });
+
 
                    data_state.nav_template=nav_template;
+
+
+
+
+
+
                    var header_template = ($.template['object_viewer_content_' + object.type] != null)
                            ? $($.tmpl('object_viewer_content_' + object.type, object))
                            : $($.tmpl('object_viewer_content', object));
@@ -455,14 +545,16 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    var nav_template = $.tmpl('object_viewer_nav', object);
                    data_state.nav_template=nav_template;
-
+                   
                    callback(null, data_state);
                },
-             
+               
                object_viewer_header_error:function(data_state, callback){
+                   console.log("TODO");
                    callback(null, data_state);
                },
                object_viewer_header_function:function(data_state, callback){
+                   console.log("TODO");
                    callback(null, data_state);
                },
                render_object_viewer_header:function(data_state, callback){
@@ -492,6 +584,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    var child_template = $('<div></div>');
                    children_template.append(child_template);
                    data_state.current_data.template=child_template;
+                   //console.dir(children_template);
                    
                    callback(null, data_state);
                }
@@ -508,6 +601,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                object_viewer:function(data_state, callback){
                    //var r=data_state.get_value("resource.header.children[0].value");
                    //alert(common.toJson(r));
+
+                   $('#page').find('#object_editor').find(".object_viewer").data('object', data_state.resource);
                    callback(null, data_state);
                },
                object_viewer_header:function(data_state, callback){
@@ -735,10 +830,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                        //Build the tray header template
                        var template = $.tmpl('tray_header', tray);
-                       console.dir(data_state.current_data.type);
+                       //console.dir(data_state.current_data.type);
                        data_state.current_data.template=template;
                        //Pass off control to the code that matches the type of this object
-                      // template[jquery_extension_function]('render', tray);
+                       // template[jquery_extension_function]('render', tray);
                        
 
 
@@ -753,54 +848,54 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                },
                draggable_search:function(data_state, callback){
-           //        data_state.current_data.template.append("<h1>search</h1>");
+                   //        data_state.current_data.template.append("<h1>search</h1>");
 
-                     var container = data_state.current_data.template;
+                   var container = data_state.current_data.template;
                    var tray_data=data_state.current_data;
-            //Add the tray data to the container
-            container.data('draggable_search_tray_data', tray_data);
+                   //Add the tray data to the container
+                   container.data('draggable_search_tray_data', tray_data);
 
-            //Build the search data
-            var search_data = {
-                search_term:'',
-                pagination: { page : 0, rows: 25, sort: 'ID', sortDir: 'asc' },
-                selected_facets: []
-            };
+                   //Build the search data
+                   var search_data = {
+                       search_term:'',
+                       pagination: { page : 0, rows: 25, sort: 'ID', sortDir: 'asc' },
+                       selected_facets: []
+                   };
 
-            //Augment the search data
-            for (key in tray_data.search_data)
-                search_data[key] = tray_data.search_data[key];
+                   //Augment the search data
+                   for (key in tray_data.search_data)
+                       search_data[key] = tray_data.search_data[key];
 
-            //Store the search data
-            container.data('search_data', search_data);
+                   //Store the search data
+                   container.data('search_data', search_data);
 
-            //Attach to the parent moving event and auto select the results tab
-            $('#' + container.attr('id') + '.moving').livequery(function(){
+                   //Attach to the parent moving event and auto select the results tab
+                   $('#' + container.attr('id') + '.moving').livequery(function(){
 
-                $(this).find('.tray_draggable_search_tabs > ul li:first a').click();
-            });
+                       $(this).find('.tray_draggable_search_tabs > ul li:first a').click();
+                   });
 
-            //Attach to the showing of the tray_content
-            $('#' + container.attr('id') + ' .tray_content:visible').livequery(function(){
-                var tray_content = $(this);
+                   //Attach to the showing of the tray_content
+                   $('#' + container.attr('id') + ' .tray_content:visible').livequery(function(){
+                       var tray_content = $(this);
 
-                var draggable_tray_items_container = tray_content.find('.draggable_tray_items_container');
-                var relative_top = draggable_tray_items_container.offset().top - tray_content.offset().top;
-                draggable_tray_items_container.height(tray_content.height() - relative_top - 20);
-                tray_content.find('.tray_draggable_search_filters').height(tray_content.height() - relative_top - 20);
-            });
+                       var draggable_tray_items_container = tray_content.find('.draggable_tray_items_container');
+                       var relative_top = draggable_tray_items_container.offset().top - tray_content.offset().top;
+                       draggable_tray_items_container.height(tray_content.height() - relative_top - 20);
+                       tray_content.find('.tray_draggable_search_filters').height(tray_content.height() - relative_top - 20);
+                   });
 
-            //Run the search for the first time
-           //  container.enterpriseweb_site_components_trays_draggable_search('run_search');
-                 alert("TODO: run search");
-            //return the container
+                   //Run the search for the first time
+                   //  container.enterpriseweb_site_components_trays_draggable_search('run_search');
+                   console.log("TODO: run search");
+                   //return the container
 
 
                    callback(null, data_state);
 
                },
                draggable_list:function(data_state, callback){
-//                   data_state.current_data.template.append("<h1>list</h1>");
+                   //  TODO                 data_state.current_data.template.append("<h1>list</h1>");
                    callback(null, data_state);
                },
                set_top:function(data_state, callback){
@@ -810,7 +905,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    var container=$('#trays');
                    //Append the tray to the container
                    container.append(template);
-                   console.log("index:"+index);
+
                    template.css('top', (112 + index * 56) + 'px');
 
 

@@ -25,8 +25,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                           
                                                       }))
 
-                       .addPipe(t.renders.object_viewer_header)
-                       .addPipe(o_w.render_body_children)
+                        .addPipe(t.renders.object_viewer_header)
+                        .addPipe(o_w.render_body_children)
                    ;
                },
 
@@ -56,13 +56,17 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                 "resource.header.children", function(value){
                                                     if(value==null) return "null";
                                                     else if(value.length==null) return "empty";
-                                                    else if(typeof(value)==='function') return "empty";
+                                                    else if(typeof(value)==='function') return "function";
                                                     else return "collection";
                                                     
                                                 });
                    
                },
-
+               update_header:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.cache_data.object_viewer_header)
+                   .addPipe(o_w.switch_header);
+               },
                render_header_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.header.children")
 
