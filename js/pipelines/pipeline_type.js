@@ -32,6 +32,9 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                        return this;
                    },
                    // this method to add pipes 
+                   xaddPipe:function(pipe){
+                       return this;
+                   },
                    addPipe:function(pipe){
                        this.future_state_steps.push(pipe);
 

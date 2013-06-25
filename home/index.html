@@ -43,6 +43,108 @@
 }
 
 </style>
+<script>
+function global_strings(key){
+    var _global_strings = {
+        error_system_error_saving: "There was a system error while trying to save your changes, please notify your systems administrator",
+        error_system_error_saving_with_reason: "There was a system error while trying to save your changes, please notify your systems administrator and tell them: {ERROR}"
+    };
+    return _global_strings[key];
+}
+
+function color_range(color_one, color_two, number){
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? [
+            parseInt(result[1], 16),
+            parseInt(result[2], 16),
+            parseInt(result[3], 16)
+        ] : null;
+    }
+
+    function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    }
+
+    color_one = hexToRgb(color_one);
+    color_two = hexToRgb(color_two);
+
+    var r_gap = (color_two[0] - color_one[0]) / number;
+    var g_gap = (color_two[1] - color_one[1]) / number;
+    var b_gap = (color_two[2] - color_one[2]) / number;
+
+    var colors = [];
+    while (colors.length < number) {
+        var r = parseInt(color_one[0] + r_gap * (colors.length + 1));
+        var g = parseInt(color_one[1] + g_gap * (colors.length + 1));
+        var b = parseInt(color_one[2] + b_gap * (colors.length + 1));
+
+        colors[colors.length] = rgbToHex(r, g, b);//"rgb(" + r + "," + g + "," + b + ");"
+    }
+
+    return colors;
+}
+
+function clone(object)
+{
+    var newObj = (object instanceof Array) ? [] : {};
+    for (var i in object)
+    {
+        if (i == 'clone')
+            continue;
+        if (object[i] && typeof object[i] == "object")
+            newObj[i] = clone(object[i]);
+        else
+            newObj[i] = object[i];
+    }
+    return newObj;
+}
+
+function create_id(prefix, subject) {
+    var id = prefix + "";
+    for (var x=0; x<subject.length; x++)
+        if(/^[a-zA-Z]$/.test(subject[x]))
+            id += subject[x];
+    id = id.toLowerCase();
+    return id;
+}
+
+function guid(){
+    var id = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(
+            /[xy]/g,
+            function(c){
+                var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);
+            }
+        );
+    return "id_" + id;
+}
+
+function extract_object_property_names(obj){
+    var names = [];
+    if (obj != null)
+        for (var property in obj)
+            names.push("" + property);
+    return names;
+}
+
+function is_in_scroll_view(container, element)
+{
+    if ($(element).position().top < $(container).position().top)
+        return false;
+    if ($(element).position().top + $(element).height() > $(container).position().top +$(container).height())
+        return false;
+    return true;
+}
+
+function is_a_number(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+</script>
 <!-- JS Libraries -->
 <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="../js/bootstrap.min.js"></script>

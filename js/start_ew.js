@@ -28,7 +28,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset_filters();
 
                //TODO investigate why throw error when the app increase complexity   --> too much recursion --> sync process         
-            //   dispatcher.filter( filters.logging(true, true));
+               dispatcher.filter( filters.logging(true, true));
                
                // dispatcher.filter( filters.clone_data);
 

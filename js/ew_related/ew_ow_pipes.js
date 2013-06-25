@@ -29,10 +29,37 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                         .addPipe(o_w.render_body_children)
                    ;
                },
+               render_object_object:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.templates.load_object_object)
+                       .addTransformation(t.templates.foreach_create_object)
+                   ;
+               },
+               render_body_objects:function(){
+                   return new Foreach_Pipeline(this.name, "resource.children")
+                   .addTransformation(t.templates.load_body_object_object_viewer)
 
+                       .addPipe(function(){return new Switcher_Pipeline("object_children", 
+                                                      function switcher(_value){
+
+                                                          if(_value != null && _value.length != null)
+                                                              return o_w.render_object_object;
+                                                          else
+                                                              return t.transformations.alerta;
+
+                                                      }, 
+                                                      "y",function(value){
+                                                          if(value==null) return "null";
+                                                          else return "collection";
+                                                          
+                                                      });})
+                   
+                   ;
+               },
                render_header:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.templates.load_object_viewer_with_header)
+                   .addPipe(o_w.render_body_objects)
                        .addTransformation(t.cache_data.object_viewer_header)
 
                        .addTransformation(t.relationships.object_viewer_header)
@@ -65,6 +92,7 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                update_header:function(){
                    return new Pipeline(this.name)
                        .addTransformation(t.cache_data.object_viewer_header)
+                       .addTransformation(t.transformations.debug)
                    .addPipe(o_w.switch_header);
                },
                render_header_children:function(){
