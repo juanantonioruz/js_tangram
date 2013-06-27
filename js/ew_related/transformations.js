@@ -33,23 +33,26 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                },
                text:function(data_state, callback){
+                   async.nextTick(function () {
                    var html;
-                   if(data_state.current_data.editable)
-                       html=$.tmpl('object_text', data_state.current_data);
+                       console.dir(data_state.current_data);
+                   if(data_state.get_current_data_value("editable"))
+                       html=$.tmpl('object_text', data_state.get_current_data());
                    else
-                       html=$.tmpl('object_label', data_state.current_data);
-                   data_state.current_data.template.html(html);
+                       html=$.tmpl('object_label', data_state.get_current_data());
+                   data_state.get_current_data_value("template").html(html);
 
                    callback(null, data_state);
-                   
+                   });
                },
                image:function(data_state, callback){
-                   var html = $.tmpl('object_image', data_state.current_data);
+                   async.nextTick(function () {
+                   var html = $.tmpl('object_image', data_state.get_current_data());
 
                    data_state.current_data.template.html(html);
 
                    callback(null, data_state);
-                   
+                   });
                },
                object:function(data_state, callback){
                    
@@ -117,6 +120,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            /*update existing templates or html components */
            var update={
                footer_breadcrumbs:function (data_state, callback){
+                                      async.nextTick(function () {
                    var that=this;
                    var state_history=$('body').data('state_history');
                    var container = $('body').find('footer');
@@ -180,12 +184,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
                    callback(null, data_state);
+                                          });
                },
                loading_object_editor:function (data_state, callback){
+                                      async.nextTick(function () {
                    var oe= $('#page').find('#object_editor');
 
                    oe.html($.tmpl('component_loading', { loading_message: 'Loading_object_editor' }));
                    callback(null, data_state);
+                                          });
                },
                body_current_state_display_name:function (data_state, callback){
                    callback(null, data_state);
@@ -306,21 +313,24 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                object_viewer_header:function(data_state, callback){
-
+                   async.nextTick(function () {
                    $('#page').find('#object_editor')
                        .prepend(data_state.nav_template);
-                   callback(null, data_state);},
+                   callback(null, data_state);
+                   });},
                page:function(data_state, callback){
-
+                   async.nextTick(function () {
                    var template = $.tmpl('page_object');
                    $('#pagebody').empty().append(template);
                    callback(null, data_state);
+                   });
                },
                modal:function(data_state, callback){
                    callback(null, data_state);
                },
                
                modal_search_results:function(data_state, callback){
+                                      async.nextTick(function () {
                    var modal= $('body').find('#search_results_viewer');
                    modal.dialog({
                        modal: true,
@@ -387,8 +397,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
                    callback(null, data_state);
+                                          });
                },
                modal_your_history:function (data_state, callback){
+                   async.nextTick(function () {
                    var that=this;
                    var modal=$('#your_history');
                    modal.dialog({
@@ -412,12 +424,14 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    });
                    
                    callback(null, data_state);
+                       });
                },
 
                task:function(data_state, callback){
                    callback(null, data_state);
                },
                activity_list:function(data_state, callback){
+                                      async.nextTick(function () {
                    var activity_list = $.tmpl('activity_list');
 
                    //Add it to the sidebar
@@ -466,6 +480,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    else
                        console.log("TODO: dao activityList");
                    callback(null, data_state);
+                                          });
                }
                
                
@@ -483,7 +498,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                    },
                load_body_object_object_viewer:function(data_state, callback){
-                 
+                                    async.nextTick(function () {
                    var object_view=$('#page').find('#object_editor');
                    var content_templates_container=data_state.object_viewer_template;
                 var child = data_state.current_data;
@@ -500,8 +515,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                 content_templates_container.append(content_template);
                    data_state.current_data.content_template=content_template;
                    callback(null, data_state);
+                                        });
                },
                load_object_object:function(data_state, callback){
+                                      async.nextTick(function () {
                    var container=data_state.current_data.content_template;
                   
                    var object = container.data('object');
@@ -513,10 +530,12 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                     container.html(template);
                    data_state.container=container;
                    callback(null, data_state);
+                                          });
                    },
                
                load_object_object_child:function(data_state, callback){
-                    var children_container = data_state.container.find('.children');
+                                      async.nextTick(function () {
+ var children_container = data_state.container.find('.children');
                    
                      var child_container = $('<div></div>');
 
@@ -528,6 +547,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                     data_state.current_data.template=child_container;
 
                    callback(null, data_state);
+                                          });
                },
                load_object_viewer:function(data_state, callback){
                    //    console.log("loading 'object_viewer' template with this resource: "+data_state.resource);
@@ -538,6 +558,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                load_object_viewer_with_header:function(data_state, callback){
+                                      async.nextTick(function () {
                    var that=this;
                    var object=data_state.resource;
                    var object_view=$('#page').find('#object_editor');
@@ -653,14 +674,17 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                     */
 
                    callback(null, data_state);
+                                          });
                },
                load_object_viewer_without_header:function(data_state, callback){
+                                      async.nextTick(function () {
                    var object=data_state.resource;
 
                    var nav_template = $.tmpl('object_viewer_nav', object);
                    data_state.nav_template=nav_template;
                    
                    callback(null, data_state);
+                                          });
                },
                
                object_viewer_header_error:function(data_state, callback){
@@ -697,7 +721,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    var child_template = $('<div></div>');
                    children_template.append(child_template);
-                   data_state.current_data.template=child_template;
+                   data_state.get_current_data().template=child_template;
                    //console.dir(children_template);
                    
                    callback(null, data_state);
@@ -762,6 +786,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            var state_history={
 
                init:function (data_state, callback){
+                                      async.nextTick(function () {
                    var body = $('body');
                    
                    //Get any state history from the cookie
@@ -789,8 +814,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
                    callback(null, data_state);
+                                          });
                },
                prepare:function (data_state, callback){
+                                      async.nextTick(function () {
                    var data=data_state.change_state_data;
                    
                    var state_history = $('body').data('state_history');
@@ -843,15 +870,19 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    data.time_out = new Date();
                    data_state.state_history=state_history;
                    callback(null, data_state);
+                                          });
                },
                save_to_cookie:function(data_state, callback){
+                                      async.nextTick(function () {
                    var state_history=data_state.state_history;
                    $('body').data('state_history', state_history);
                    $.cookie('state_history', JSON.stringify(state_history), { expires:365, path:'/', json:true });
                    //      console.dir(state_history);
                    callback(null, data_state);
+                                          });
                },
                update_current_name:function(data_state, callback){
+                                      async.nextTick(function () {
                    // GET A HANDEL ON THE BODY
                    var body = $('body');
 
@@ -902,6 +933,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    
                    callback(null, data_state);
+                                          });
                },
                clear_history:function(data_state, callback){
                    data_state.state_history=[];
@@ -931,7 +963,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                init_child:function(data_state, callback){
-
+                                      async.nextTick(function () {
                    var tray=data_state.current_data;
 
 
@@ -958,6 +990,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                        callback(error, data_state);                       
                        alert(error+"--->"+extension);
                    }
+                                          });
 
 
                },

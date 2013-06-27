@@ -36,6 +36,44 @@ define(function(){
             , process_history:[]
             , for_each:[]
             ,children:[]
+            , get_current_data_value:function(property_name){
+
+                for(var i=0; i<result.for_each.length; i++){
+                    var current_data=result.for_each[i];
+                    //console.log(current_data[property_name]);
+                    if(current_data[property_name]!==undefined){
+
+                        console.log("founded property_name:"+property_name+" in iteration index: "+i);
+
+
+                        return current_data[property_name];
+                    }  
+                    
+                }
+                console.log("not founded property_name:"+property_name);
+                return null;
+                
+            },
+            get_current_data:function(){
+                return result.for_each[result.for_each.length-1];
+            },
+            set_next_current_data:function(next_current_data){
+                var current_data=result.get_current_data();
+                next_current_data._index_=current_data._index_+1;
+                result.current_data=next_current_data;
+                 result.for_each[result.for_each.length-1]=next_current_data;
+            },
+            push_current_data:function(current_data){
+                current_data._index_=0;
+                result.current_data=current_data;
+                       
+                           
+                result.for_each.push(current_data);
+
+            },
+            pop_current_data:function(){
+                result.current_data=result.for_each.pop();
+            }
         };
         return result;
     };

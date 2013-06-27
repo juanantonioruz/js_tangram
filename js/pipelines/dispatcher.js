@@ -46,10 +46,10 @@ define(["js/async.js"], function(async) {
 
                 
                 function continue_listeners(){
-                // if(transformation_event_type=="ON_END"  || transformation_event_type=="ON_INIT"){
-                //     callback();
-                //     return;
-                // }
+                if(transformation_event_type=="ON_END"  || transformation_event_type=="ON_INIT"){
+                    callback();
+                    return;
+                }
 
                     var searched=target.ns.split("*")[0];
                     var pipeline_listeners;

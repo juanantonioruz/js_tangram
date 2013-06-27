@@ -13,18 +13,11 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    
                    on_init:function(data_state, callback){
 
-
                        var collection=data_state.get_value(this.model_key);
 
-
-
-
-
                        //console.dir(collection);
-                           data_state.current_data=collection[0];
-                       
-                           data_state.current_data._index_=0;
-                           data_state.for_each.push(data_state.current_data);
+                       data_state.push_current_data(collection[0]);
+
                         //   console.log("+"+data_state.for_each.length+"____ON_INIT_PIPELINE:/"+this.ns);
                            
                        //console.log(data_state.current_data);
@@ -38,7 +31,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    },
                    on_end:function(data_state, callback){
 
-                          data_state.current_data=data_state.for_each.pop();
+                          data_state.pop_current_data();
                         //   console.log("-"+data_state.for_each.length+"____ON_END_PIPELINE:/"+this.ns);
 
 
@@ -66,13 +59,13 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                                    if((j)!=collection.length){
 
                                  //    alert(toJson(data_state['the_model'][i+1]));
-                                       results.current_data=collection[j];
+                                       var next_current_data=collection[j];
+
+                                       results.set_next_current_data(next_current_data);
 
                                        //TODO review this code block  cause it seems the runtime flow pass twice
                                        // console.log(j);
 //                                        console.dir(results);
-                                       if(results.current_data)
-                                           results.current_data._index_=j; 
                                        }
                                
                                };
