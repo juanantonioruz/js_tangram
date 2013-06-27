@@ -35,7 +35,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                text:function(data_state, callback){
                    async.nextTick(function () {
                    var html;
-                       console.dir(data_state.current_data);
+
                    if(data_state.get_current_data().editable)
                        html=$.tmpl('object_text', data_state.get_current_data());
                    else
@@ -49,7 +49,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    async.nextTick(function () {
                    var html = $.tmpl('object_image', data_state.get_current_data());
 
-                   data_state.current_data.template.html(html);
+                   data_state.get_current_data().template.html(html);
 
                    callback(null, data_state);
                    });
@@ -73,11 +73,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    
 
-                   var object_id = (data_state.current_data.id != null)
-                           ? create_id('object', data_state.current_data.id)
+                   var object_id = (data_state.get_current_data().id != null)
+                           ? create_id('object', data_state.get_current_data().id)
                            : guid();
                    
-                   data_state.current_data.id=object_id;
+                   data_state.get_current_data().id=object_id;
 
                        console.log(data_state);
                        callback(null, data_state);
@@ -513,13 +513,13 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                     content_template.removeClass('hide');
 
                 content_templates_container.append(content_template);
-                   data_state.current_data.content_template=content_template;
+                   data_state.get_current_data().content_template=content_template;
                    callback(null, data_state);
                                         });
                },
                load_object_object:function(data_state, callback){
                                       async.nextTick(function () {
-                   var container=data_state.current_data.content_template;
+                   var container=data_state.get_current_data().content_template;
                   
                    var object = container.data('object');
                    
@@ -544,7 +544,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    //  // //Make it an object
                    
-                    data_state.current_data.template=child_container;
+                    data_state.get_current_data().template=child_container;
 
                    callback(null, data_state);
                                           });
@@ -969,15 +969,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
 
                    var extension=tray.type;
-                   data_state.current_data.tray_type=extension;                   
+                   data_state.get_current_data().tray_type=extension;                   
                    try{
 
                        tray.unique_id = "tray_" + guid();
 
                        //Build the tray header template
                        var template = $.tmpl('tray_header', tray);
-                       //console.dir(data_state.current_data.type);
-                       data_state.current_data.template=template;
+                       //console.dir(data_state.get_current_data().type);
+                       data_state.get_current_data().template=template;
                        //Pass off control to the code that matches the type of this object
                        // template[jquery_extension_function]('render', tray);
                        
@@ -995,9 +995,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                },
                draggable_search:function(data_state, callback){
-                   //        data_state.current_data.template.append("<h1>search</h1>");
+                   //        data_state.get_current_data().template.append("<h1>search</h1>");
 
-                   var container = data_state.current_data.template;
+                   var container = data_state.get_current_data().template;
                    var tray_data=data_state.current_data;
                    //Add the tray data to the container
                    container.data('draggable_search_tray_data', tray_data);
@@ -1042,13 +1042,13 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                },
                draggable_list:function(data_state, callback){
-                   //  TODO                 data_state.current_data.template.append("<h1>list</h1>");
+                   //  TODO                 data_state.get_current_data().template.append("<h1>list</h1>");
                    callback(null, data_state);
                },
                set_top:function(data_state, callback){
-                   var index=data_state.current_data._index_;
+                   var index=data_state.get_current_data()._index_;
                    //Set the css top
-                   var template=data_state.current_data.template;
+                   var template=data_state.get_current_data().template;
                    var container=$('#trays');
                    //Append the tray to the container
                    container.append(template);
