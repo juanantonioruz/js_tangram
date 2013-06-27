@@ -36,11 +36,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    async.nextTick(function () {
                    var html;
                        console.dir(data_state.current_data);
-                   if(data_state.get_current_data_value("editable"))
+                   if(data_state.get_current_data().editable)
                        html=$.tmpl('object_text', data_state.get_current_data());
                    else
                        html=$.tmpl('object_label', data_state.get_current_data());
-                   data_state.get_current_data_value("template").html(html);
+                   data_state.get_current_data().template.html(html);
 
                    callback(null, data_state);
                    });

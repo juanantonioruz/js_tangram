@@ -37,21 +37,24 @@ define(function(){
             , for_each:[]
             ,children:[]
             , get_current_data_value:function(property_name){
+                var r=result.get_current_data()[property_name];
+                // for(var i=0; i<result.for_each.length; i++){
+                //     var current_data=result.for_each[i];
+                //     //console.log(current_data[property_name]);
+                //     if(current_data[property_name]!==undefined){
 
-                for(var i=0; i<result.for_each.length; i++){
-                    var current_data=result.for_each[i];
-                    //console.log(current_data[property_name]);
-                    if(current_data[property_name]!==undefined){
-
-                        console.log("founded property_name:"+property_name+" in iteration index: "+i);
+                //         console.log("founded property_name:"+property_name+" in iteration index: "+i);
 
 
-                        return current_data[property_name];
-                    }  
+                //         return current_data[property_name];
+                //     }  
                     
-                }
-                console.log("not founded property_name:"+property_name);
-                return null;
+                // }
+                console.log("xxxx");
+                console.dir(r);
+                return r;
+                // console.log("not founded property_name:"+property_name);
+                // return null;
                 
             },
             get_current_data:function(){
@@ -64,8 +67,15 @@ define(function(){
                  result.for_each[result.for_each.length-1]=next_current_data;
             },
             push_current_data:function(current_data){
+                //TODO comment when updates  all references in transformations.js
                 current_data._index_=0;
-                result.current_data=current_data;
+                if(result.get_current_data()){
+                    var n=Object.create(result.get_current_data());
+                    $.extend(n, current_data);
+                    result.current_data=n;    
+                }else{
+                    result.current_data=current_data;
+                }
                        
                            
                 result.for_each.push(current_data);
