@@ -30,10 +30,10 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
                    return new Pipeline(this.name)
                        .addTransformation(t.component.generate_uid)
                        .addTransformation(c.switch_component)
-                       .addPipe(c.render_validation)
+                      .addPipe(c.render_validation)
 
-                       .addTransformation(t.actions.component_a)
-                       .addTransformation(t.metadata.component_m)
+                        .addTransformation(t.actions.component_a)
+                         .addTransformation(t.metadata.component_m)
                    ;
                    
                    

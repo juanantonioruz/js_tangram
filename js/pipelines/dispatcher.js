@@ -12,10 +12,6 @@ define(["js/async.js"], function(async) {
             
             dispatch:function(transformation_event_type, target, data_state,callback){
                 //                 console.dir(transformation_event_type);
-                // if(transformation_event_type=="ON_END" && target.ns=="state_step_body_change_state" ){
-                //     console.dir(target);
-                //     console.dir(domain_tree);
-                // }
 
 
                 // this line works because is inyected in start_dev... so TODO: its necesary to change!
@@ -23,7 +19,7 @@ define(["js/async.js"], function(async) {
                 
                 
 
-                if(filters.length>0 ){
+                if(filters.length>0){
 
                     //TODO filters have to be an array not only one... reverse!!!
 
@@ -50,6 +46,11 @@ define(["js/async.js"], function(async) {
 
                 
                 function continue_listeners(){
+                // if(transformation_event_type=="ON_END"  || transformation_event_type=="ON_INIT"){
+                //     callback();
+                //     return;
+                // }
+
                     var searched=target.ns.split("*")[0];
                     var pipeline_listeners;
                     var base=domain_tree[transformation_event_type];

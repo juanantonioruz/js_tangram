@@ -34,7 +34,7 @@ define(function(){
             ns:"root"
             , history:[]
             , process_history:[]
-
+            , for_each:[]
             ,children:[]
         };
         return result;

@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.js"],
-       function(common, dispatcher, json_data) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.js","js/async.js"],
+       function(common, dispatcher, json_data, async) {
            function clone(object)
            {
                var newObj = (object instanceof Array) ? [] : {};
@@ -58,7 +58,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                // this two must be moved to ui_prefix
                generate_uid:function(data_state, callback){
-                   function create_id(prefix, subject) {
+                   async.nextTick(function () {
+                         function create_id(prefix, subject) {
                        var id = prefix + "";
                        for (var x=0; x<subject.length; x++)
                            if(/^[a-zA-Z]$/.test(subject[x]))
@@ -75,13 +76,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    data_state.current_data.id=object_id;
 
+                       console.log(data_state);
+                       callback(null, data_state);
 
-                   callback(null, data_state);
+                   });
+
+                 
+
+
+
                }
            };
            
            /*rest of functions, theoritecally they must be moved from here*/
            var transformations= {
+               
                window_location_reload:function (data_state, callback){
                    window.location.reload();
                    
@@ -92,10 +101,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                debug:function (data_state, callback){
-                   console.dir(data_state);
                    callback(null, data_state);
                },
-               
+               else_value:function(data_state, callback){
+                       callback(null, data_state);
+               },
                check_current_state_is_active:function (data_state, callback){
                    console.log("current_state_is_still_active:: TODO: this logic could be get better if we try to do throught events, indeed there is already an event on finish 'body_change_state' ");
                    callback(null, data_state);
@@ -465,27 +475,15 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
            /* dynamic templates and html composition   */
            var templates={
-               load_object_object:function(data_state, callback){
-                   var container=data_state.current_data;
-                   console.dir(container);
-                   console.log("search where is setted this value .data('object')");
-                   // var object = container.data('object');
-                   
-                   // //Load the template
-                   // var template = $.tmpl('object_object', object);
+             
 
-                   // //Add the template to the container
-                   // container.html(template);
-
-                   callback(null, data_state);
-                   },
                foreach_create_object:function(data_state, callback){
                    // var container=data_state.current_data;
                    // console.log("must be foreach");
                    callback(null, data_state);
                    },
                load_body_object_object_viewer:function(data_state, callback){
-                   data_state.y=data_state.current_data.children;
+                 
                    var object_view=$('#page').find('#object_editor');
                    var content_templates_container=data_state.object_viewer_template;
                 var child = data_state.current_data;
@@ -500,6 +498,34 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                     content_template.removeClass('hide');
 
                 content_templates_container.append(content_template);
+                   data_state.current_data.content_template=content_template;
+                   callback(null, data_state);
+               },
+               load_object_object:function(data_state, callback){
+                   var container=data_state.current_data.content_template;
+                  
+                   var object = container.data('object');
+                   
+                   // //Load the template
+                   var template = $.tmpl('object_object', object);
+
+                   // //Add the template to the container
+                    container.html(template);
+                   data_state.container=container;
+                   callback(null, data_state);
+                   },
+               
+               load_object_object_child:function(data_state, callback){
+                    var children_container = data_state.container.find('.children');
+                   
+                     var child_container = $('<div></div>');
+
+                   //  //Append it to the children container
+                     children_container.append(child_container);
+
+                   //  // //Make it an object
+                   
+                    data_state.current_data.template=child_container;
 
                    callback(null, data_state);
                },
@@ -676,7 +702,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    callback(null, data_state);
                }
-               
+              
            };
            
 

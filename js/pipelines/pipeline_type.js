@@ -1,5 +1,5 @@
-define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
-       function( Fiber, async, dispatcher) {
+define(["js/common.js", "js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
+       function( common, Fiber, async, dispatcher) {
            
 
            var Pipeline=Fiber.extend(function(){
@@ -118,8 +118,9 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
 
 
                            }else{
-                       
-                               console.log("big one pipeline error: "+that.ns+"\n"+toJson(data_state));
+                              console.dir(err);
+                               alert(err);
+                               //console.log("big one pipeline error: "+that.ns+"\n"+toJson(data_state));
 
                                    that.on_error(err, that);
                                
@@ -148,7 +149,7 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
 
                        var actual_on_error=this.on_error;
                        var extended_on_error=function(err, that){
-                           console.log("pipeline error"+that.ns+"\n"+toJson(data_state));
+                           console.log("pipeline error"+that.ns+"\n"+common.toJson(data_state));
                            actual_on_error(err, that);
                            
                            callback(err, that);
@@ -170,7 +171,8 @@ define(["js/fiber.min.js","js/async.js","js/pipelines/dispatcher.js"],
                //alert("success"+toJson(error));
            };
            Pipeline.prototype.on_error=   function(error, pipeline){
-               alert("error"+toJson(error));
+
+               alert("error"+common.toJson(error));
            };
            Pipeline.prototype.class_name="Pipeline";
            return Pipeline;

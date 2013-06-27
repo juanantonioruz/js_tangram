@@ -7,10 +7,44 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    init: function(name,model_key) {
                        this.model_key=model_key;
                        this.construct("pipeline_"+name);
+
                        return this;
                    },
                    
+                   on_init:function(data_state, callback){
 
+
+                       var collection=data_state.get_value(this.model_key);
+
+
+
+
+
+                       //console.dir(collection);
+                           data_state.current_data=collection[0];
+                       
+                           data_state.current_data._index_=0;
+                           data_state.for_each.push(data_state.current_data);
+                        //   console.log("+"+data_state.for_each.length+"____ON_INIT_PIPELINE:/"+this.ns);
+                           
+                       //console.log(data_state.current_data);
+
+
+                       // console.dir(data_state.current_data);
+                       // console.dir(data_state.for_each);
+
+                       base.on_init.call(this, data_state, callback);
+
+                   },
+                   on_end:function(data_state, callback){
+
+                          data_state.current_data=data_state.for_each.pop();
+                        //   console.log("-"+data_state.for_each.length+"____ON_END_PIPELINE:/"+this.ns);
+
+
+
+                       base.on_end.call(this, data_state, callback);
+                   },
                    apply_transformations:function(data_state){
 
                        var that=this;
@@ -23,28 +57,32 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                     //   console.log(this.model_key+"SIZE:::::::::::::::::::::::::::::::::"+collection.length);
                      for(var i=0; i<collection.length; i++){
                            var pipe=new Pipeline("$.."+i);
+
                            // TODO: now is cloning to fix the reverse effect in collection
                            pipe.future_state_steps=$.extend(true, [], steps);
-                           pipe.set_on_success((function (i){
+
+                           pipe.set_on_success((function (j){
                                return function(results, pipeline){
-                                   if(i!=collection.length){
+                                   if((j)!=collection.length){
 
                                  //    alert(toJson(data_state['the_model'][i+1]));
-                                       results.current_data=collection[i+1];
+                                       results.current_data=collection[j];
+
+                                       //TODO review this code block  cause it seems the runtime flow pass twice
+                                       // console.log(j);
+//                                        console.dir(results);
                                        if(results.current_data)
-                                           results.current_data._index_=i+1; 
+                                           results.current_data._index_=j; 
                                        }
                                
                                };
                                    
-                               })(i)
+                               })(i+1)
                            );
                            pipe.set_on_error(this.on_error);
                            this.future_state_steps.push(pipe);
                            
                        }
-                       data_state.current_data=collection[0];
-                       data_state.current_data._index_=0;
                        // change this line with previous code
 //                       data_state.current_data=data_state.get_value(this.model_key)[0];
                        base.apply_transformations.call(this, data_state);

@@ -28,7 +28,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset_filters();
 
                //TODO investigate why throw error when the app increase complexity   --> too much recursion --> sync process         
-               dispatcher.filter( filters.logging(true, true));
+             //  dispatcher.filter( filters.logging(true));
                
                // dispatcher.filter( filters.clone_data);
 
@@ -38,7 +38,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                
  //              dispatcher.filter( filters.show_profiling(true));
 
-               dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click", fn:function(){console.log(this.ns);}}));
+                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click", fn:function(){console.log(this.ns);}}));
                console.log("INIT******************************** TTTT");
                pipelines.init().set_on_success(function(result, pipeline){
                    // setInterval(function(){
