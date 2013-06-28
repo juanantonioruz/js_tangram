@@ -39,22 +39,61 @@ function colorize(d){
     var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
 
-    function _create_node(item){
-        return {ns:item.ns,item:item, children:[]};
+    function _create_node(item, path){
+        return {ns:item.ns,item:item, children:[], path:path};
     };
 
-    function recursive(colector, container){
-        if(colector.children){
+
+    function check_path(colector, container, path_array){
+                var is_in_path=false;
+                if(colector.ns=="root") is_in_path=true;
+//            console.log(colector.ns+"........"+container.path+":::::"+path_array);
+        // only check if is pipeline
+
+        if(container.ns.indexOf("pipeline")!=-1 && path_array && path_array.length>0){
+
+            is_in_path=false;
+
+            for(var j=0; j<path_array.length; j++){
+                var path=path_array[j];
+                var path_compared=container.path;
+                console.log("** "+path+"=="+path_compared);
+                if(path.toLowerCase().indexOf(path_compared)!=-1){
+                    is_in_path=true;
+                    break;
+                }
+            }
+   
+
+        }else{
+        console.log(container.ns);
+            return true;}
+
+        return is_in_path;
+
+    }
+
+
+
+    function recursive(colector, container, path_array){
+
+
+        if(colector.children && check_path(colector, container, path_array)){
             for(var i=0; i<colector.children.length; i++){
 
                 var child=colector.children[i];
-                //             console.log(child);
-                var element=_create_node(child);
+                //console.log(child);
+                var int_path=(container.path+"/"+colector.ns).replace("pipeline_", "").replace("state_step_", "").replace("$", "").toLowerCase();
+                var element=_create_node(child, int_path);
+                
+                if(check_path(child, element, path_array)){
                 container.children.push(element);
-                if(!child.closed){
-                    recursive(child, element);
+                
+                if(!child.closed ){
+                    recursive(child, element, path_array);
                 }else{
                     contador++;
+                }
                 }
             }
         }else{
@@ -62,13 +101,13 @@ function colorize(d){
             }
     }
 
-    function render(root, div_id, item_fn){
+    function render(root, div_id, item_fn, path_array){
         console.log("RENDERING VISUALIZATION!!");
 
         contador=2;
-        var int_root=_create_node(root);
+        var int_root=_create_node(root, "");
 
-        recursive(root, int_root);
+        recursive(root, int_root, path_array);
         
         //     console.dir(int_root);
 
@@ -183,7 +222,7 @@ function colorize(d){
                 else
                     d.item.folder=false;
                 // not necesary but this works if(d3.select(this).attr("display"))
-                render(root, div_id, item_fn);
+                render(root, div_id, item_fn, path_array);
             })
         ;
 

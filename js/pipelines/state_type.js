@@ -31,8 +31,9 @@ define(function(){
                 };
                 return search;
             },
-            ns:"root"
-            , history:[]
+            ns:"root",
+
+             history:[]
             , process_history:[]
             , for_each:[]
             ,children:[]
@@ -48,7 +49,7 @@ define(function(){
 
                 //         return current_data[property_name];
                 //     }  
-                    
+                
                 // }
                 console.log("xxxx");
                 console.dir(r);
@@ -64,10 +65,11 @@ define(function(){
                 var current_data=result.get_current_data();
                 next_current_data._index_=current_data._index_+1;
                 result.current_data=next_current_data;
-                 result.for_each[result.for_each.length-1]=next_current_data;
+                result.for_each[result.for_each.length-1]=next_current_data;
             },
             push_current_data:function(current_data){
                 //TODO comment when updates  all references in transformations.js
+                // USING PROTOTYPICAL INHERITANCE TO SOLVE CONTEXT
                 current_data._index_=0;
                 if(result.get_current_data()){
                     var n=Object.create(result.get_current_data());
@@ -76,8 +78,8 @@ define(function(){
                 }else{
                     result.current_data=current_data;
                 }
-                       
-                           
+                
+                
                 result.for_each.push(current_data);
 
             },

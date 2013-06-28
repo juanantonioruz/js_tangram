@@ -62,11 +62,12 @@ define( function() {
         };
     }
 
-    function d3_debug_pipelines_filter(render, div_id, item_fn){
+    function d3_debug_pipelines_filter(render, div_id, item_fn, path){
         
         var active_pipelines=[];
 
         return function (data_state, callback){
+
             if(debug_filters)
                 console.log(">--------------------------debug d3 pipelines");
             var ns=this.target.ns;
@@ -93,7 +94,7 @@ define( function() {
                     this.target.active_parent.children.push(this.target);
 
                     if(active_pipelines.length==0)
-                        render(data_state, div_id,item_fn);
+                        render(data_state, div_id,item_fn, path);
 
                 }else{
                     //active_pipelines.push(this.target);

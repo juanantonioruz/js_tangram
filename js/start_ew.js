@@ -38,7 +38,11 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                
  //              dispatcher.filter( filters.show_profiling(true));
 
-                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click", fn:function(){console.log(this.ns);}}));
+                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click", fn:function(){console.log(this.ns);}}, 
+                                                             [
+                                                  //               "/root/init"
+                                                   //       ,       "/root/EVENT..BODY_CHANGE_STATE/BODY_CHANGE_STATE"
+                                                             ]));
                console.log("INIT******************************** TTTT");
                pipelines.init().set_on_success(function(result, pipeline){
                    // setInterval(function(){
