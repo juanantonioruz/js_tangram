@@ -38,7 +38,21 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                
  //              dispatcher.filter( filters.show_profiling(true));
 
-                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"click", fn:function(){console.log(this.ns);}}, 
+                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"contextmenu", fn:function(){
+                    console.log(this.d.path);
+                    if(this.d.ns.indexOf("pipeline_")!=-1){
+                        this.d.path+="/"+this.d.ns.replace("pipeline_", "").toLowerCase();
+                       // alert(this.d.path);
+                    }
+                    if(this.path_array.indexOf(this.d.path)==-1){
+                        
+                        this.path_array.push(this.d.path);
+                    }else{
+                        this.path_array=this.path_array.splice(this.path_array.indexOf(this.d.path),1);
+                    }
+                    //console.log(this.path_array);
+                    this.rerender=true;
+                }}, 
                                                              [
                                                   //               "/root/init"
                                                    //       ,       "/root/EVENT..BODY_CHANGE_STATE/BODY_CHANGE_STATE"

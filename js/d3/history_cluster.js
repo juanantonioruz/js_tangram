@@ -50,7 +50,7 @@ function colorize(d){
 //            console.log(colector.ns+"........"+container.path+":::::"+path_array);
         // only check if is pipeline
 
-        if(container.ns.indexOf("pipeline")!=-1 && path_array && path_array.length>0){
+        if( path_array && path_array.length>0){
 
             is_in_path=false;
 
@@ -66,7 +66,7 @@ function colorize(d){
    
 
         }else{
-        console.log(container.ns);
+//        console.log(container.ns);
             return true;}
 
         return is_in_path;
@@ -100,6 +100,8 @@ function colorize(d){
                 contador++;
             }
     }
+
+   
 
     function render(root, div_id, item_fn, path_array){
         console.log("RENDERING VISUALIZATION!!");
@@ -146,7 +148,7 @@ function colorize(d){
 
                     return "visible";}else{ return "none";}})
             .attr("width", 200)
-            .attr("height", 4)
+            .attr("height", 8)
             .attr("fill",function(d,i){
                 if(contains(d.ns, "dao")) 
                     return "red";
@@ -170,7 +172,10 @@ function colorize(d){
 
             })
             .on(item_fn.mouse_event_name, function(d,i){
-                item_fn.fn.call(d.item);
+                var context_call={path_array:path_array, d:d};
+                item_fn.fn.bind(context_call).call();
+                if(context_call.rerender)
+                    render(root, div_id, item_fn, path_array);
                 // not necesary but this works if(d3.select(this).attr("display"))
 
             })
@@ -203,6 +208,7 @@ function colorize(d){
             })
             .on("mouseover", function(d,i){
                 var actual=d3.select(this);
+                console.log(d.path);
                 actual.transition().style("fill", "RoyalBlue").each("end", function(){actual.transition().delay(500).style("fill", colorize(d));});
                 if(!d.item.closed){
                     var ele=d3.select(this.parentNode).select(":last-child");
@@ -224,6 +230,15 @@ function colorize(d){
                 // not necesary but this works if(d3.select(this).attr("display"))
                 render(root, div_id, item_fn, path_array);
             })
+            .on(item_fn.mouse_event_name, function(d,i){
+                var context_call={path_array:path_array, d:d};
+                item_fn.fn.bind(context_call).call();
+                if(context_call.rerender)
+                    render(root, div_id, item_fn, path_array);
+                // not necesary but this works if(d3.select(this).attr("display"))
+
+            })
+
         ;
 
         function is_visible(d){
@@ -251,7 +266,16 @@ function colorize(d){
                 if(d.ns.indexOf("pipeline_")!=-1)
                     upper=true;
                 var res=d.ns.replace("pipeline_", "").replace("state_step_", "");
+                var path_m=d.path.toLowerCase();
+                if(d.ns.indexOf("pipeline_")!=-1){
+                    path_m+="/"+res.toLowerCase();
+                    if(path_array.indexOf(path_m)!=-1)
+                        res+="(*)";
+                }
+
                 if(upper) res=res.toUpperCase();
+
+
                 return res; 
             }
                  );
