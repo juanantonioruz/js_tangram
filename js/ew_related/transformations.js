@@ -491,17 +491,18 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            /* dynamic templates and html composition   */
            var templates={
              
-
+               // deprecated, try to delete
                foreach_create_object:function(data_state, callback){
                    // var container=data_state.current_data;
                    // console.log("must be foreach");
+                   alert("not remove");
                    callback(null, data_state);
                    },
                load_body_object_object_viewer:function(data_state, callback){
                                     async.nextTick(function () {
                    var object_view=$('#page').find('#object_editor');
                    var content_templates_container=data_state.object_viewer_template;
-                var child = data_state.current_data;
+                var child = data_state.get_current_data();
 
                 var content_template = $($.tmpl('object_viewer_content', child));
 
@@ -520,7 +521,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                load_object_object:function(data_state, callback){
                                       async.nextTick(function () {
                    var container=data_state.get_current_data().content_template;
-                  
+                  console.dir(container);
+                                          alert("container");
                    var object = container.data('object');
                    
                    // //Load the template
@@ -528,14 +530,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                    // //Add the template to the container
                     container.html(template);
-                   data_state.container=container;
+
+                data_state.get_current_data().container=container;
+                                          document.hola1=data_state.get_current_data();
+                                          alert("primero");
                    callback(null, data_state);
                                           });
                    },
                
                load_object_object_child:function(data_state, callback){
                                       async.nextTick(function () {
- var children_container = data_state.container.find('.children');
+
+                                          document.hola2=data_state;
+                                          alert("segundo");
+ document.hola=data_state.get_current_data();
+var children_container = data_state.get_current_data().container.find('.children');
                    
                      var child_container = $('<div></div>');
 
@@ -626,52 +635,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    object_view.find('ul').append(header_template);
 
 
-                   /*
-               render_body_objects _____ foreach object.children
-                    render_body_object ____ pipe current_data
-                    --- load_template  and cache_data and configure_css and  add_to_parent_container
-                    --- switch if has children
-                    -------  false:::: return
-                    -------  true::::  pipe 
-                    ------------------------ load_object_object_template
-                    ------------------------walk_childs for_each_child
-                    -----------------------  --- acces_parent_container
-                    -----------------------  --- walk_children ___ for_each
-                    ----------------------------- render_component
-                                     //  var object=data_state.resource;
-//                   var content_templates_container=data_state.object_viewer_template;
-
-            for (var x=0; x<object.children.length; x++) {
-
-                var child = object.children[x];
-
-                var content_template = $($.tmpl('object_viewer_content', child));
-
-                content_template.data('object', child);
-
-                content_template.css('height', object_view.height());
-
-                if (content_templates_container.children().length == 0)
-                    content_template.removeClass('hide');
-
-                content_templates_container.append(content_template);
-                
-//TODO                 content_template.enterpriseweb_site_components_object(child);
-
-// COMMENTED IN SOURCE               var children_container = content_template.find('.children');
-//
-//                if (child.children != null)
-//                    for (var y=0; y<child.children.length; y++){
-//                        var object_container = $('<div></div>');
-//                        children_container.append(object_container);
-//                        object_container.enterpriseweb_site_components_object(child.children[y]);
-//                    }
-//                else
-//                    content_template.append($.tmpl('object_viewer_error'));
-            }
-
-                    
-                    */
+               
 
                    callback(null, data_state);
                                           });

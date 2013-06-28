@@ -3,12 +3,12 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
 
            var o_w={
                
-               render_object_object:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(t.templates.load_object_object)
-                       .addTransformation(t.templates.foreach_create_object)
-                   ;
-               },
+               // render_object_object:function(){
+               //     return new Pipeline(this.name)
+               //         .addTransformation(t.templates.load_object_object)
+               //         .addTransformation(t.templates.foreach_create_object)
+               //     ;
+               // },
                render_body_objects:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
                        .addTransformation(t.templates.load_body_object_object_viewer)
@@ -81,13 +81,15 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                 walk_children:function(){
                    return new Foreach_Pipeline(this.name, "current_data.children")
                        .addTransformation(t.templates.load_object_object_child)
-                       .addPipe(component_pipes.render_component)
+                       .xaddPipe(component_pipes.render_component)
 
 
                    ;
                },
                render_object_object:function(){
-                   return new Switcher_Pipeline("has_children", 
+                   return new Pipeline(this.name)
+                       .addTransformation(t.templates.load_object_object)                      
+                       .addPipe(new Switcher_Pipeline("has_children", 
                                                       function switcher(_value){
                                                           if(_value!=null && _value.length!=null)
                                                               return o_w.walk_children;
@@ -98,12 +100,13 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                           if(_value!=null && _value.length!=null) return "collection";
                                                           else return "null";
                                                           
-                                                      });
+                                                      }))
+                   ;
+
                },
                render_body_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
                        .addTransformation(t.templates.load_body_object_object_viewer)
-                       .addTransformation(t.templates.load_object_object)                      
                        .addPipe(o_w.render_object_object)
                        
 

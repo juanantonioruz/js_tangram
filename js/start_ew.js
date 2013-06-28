@@ -57,9 +57,9 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
                 }}, 
                                                              [
-                                                                 "/root/event..body_change_state/body_change_state/state..?object_view/render_page_body/page_type..?object/render_pages_main/render_object_viewer/render_body_children/$..0/has_children..?collection/walk_children/$..0"
-                                                  //               "/root/init"
-                                                   //       ,       "/root/EVENT..BODY_CHANGE_STATE/BODY_CHANGE_STATE"
+ "/root/event..body_change_state/body_change_state/state..?object_view/render_page_body/page_type..?object/render_pages_main/render_object_viewer/render_body_children/$..0/render_object_object/has_children..?collection/walk_children/$..0"
+                                                                 //               "/root/init"
+                                                                 //       ,       "/root/EVENT..BODY_CHANGE_STATE/BODY_CHANGE_STATE"
                                                              ]));
                console.log("INIT******************************** TTTT");
                pipelines.init().set_on_success(function(result, pipeline){

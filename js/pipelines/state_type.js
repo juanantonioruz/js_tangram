@@ -65,22 +65,29 @@ define(function(){
                 var current_data=result.get_current_data();
                 next_current_data._index_=current_data._index_+1;
                 result.current_data=next_current_data;
+                next_current_data.__proto__=current_data.__proto__;
                 result.for_each[result.for_each.length-1]=next_current_data;
             },
             push_current_data:function(current_data){
                 //TODO comment when updates  all references in transformations.js
                 // USING PROTOTYPICAL INHERITANCE TO SOLVE CONTEXT
                 current_data._index_=0;
+                var n=current_data;
                 if(result.get_current_data()){
-                    var n=Object.create(result.get_current_data());
-                    $.extend(n, current_data);
+                    n=Object.create(result.get_current_data());
+                    // console.dir(result.get_current_data());
+                    // console.dir(current_data);
+                    n=$.extend( n, current_data);
+//                    console.dir(n);
                     result.current_data=n;    
+
+
                 }else{
-                    result.current_data=current_data;
+                    result.current_data=n;
                 }
                 
                 
-                result.for_each.push(current_data);
+                result.for_each.push(n);
 
             },
             pop_current_data:function(){

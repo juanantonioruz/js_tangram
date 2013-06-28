@@ -55,7 +55,7 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                                                     
                                                 })
                          )
-                       .addPipe(object_viewer_pipes.render_object_viewer)
+                      .addPipe(object_viewer_pipes.render_object_viewer)
                    ;
                },
                update_object_viewer:function(){
