@@ -12,12 +12,33 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
                                     return new Switcher_Pipeline(this.name, 
                                                 function switcher(_value){
                                                     if(_value=="image")
-                                                    return t.component.image;
-                                                      else if(_value=="text")
-                                                    return c.text_component;
-                                                      else if(_value=="object")
-                                                    return /*t.component.object;*/c.render_object_object;
-
+                                                        return t.component.image;
+                                                    else if(_value=="date")
+                                                        return t.component.date;
+                                                    else if(_value=="boolean")
+                                                        return t.component.booleano;
+                                                    else if(_value=="chart_bar")
+                                                        return t.component.chart_bar;
+                                                    else if(_value=="chart_pie")
+                                                        return t.component.chart_pie;
+                                                    else if(_value=="chart_network")
+                                                        return t.component.chart_network;
+                                                    else if(_value=="button")
+                                                        return t.component.button;
+                                                    else if(_value=="select")
+                                                        return t.component.select;
+                                                    else if(_value=="relationships")
+                                                        return t.component.relationships;
+                                                    else if(_value=="lifecycle_history")
+                                                        return t.component.lifecycle_history;
+                                                      else if(_value=="embedded_user")
+                                                        return t.component.embedded_user;
+                                                      else if(_value=="object_table")
+                                                        return t.component.object_table;
+                                                    else if(_value=="text")
+                                                        return c.text_component;
+                                                    else if(_value=="object")
+                                                        return /*t.component.object;*/c.render_object_object;
                                                     else
                                                         return t.component.generic;
                                                     

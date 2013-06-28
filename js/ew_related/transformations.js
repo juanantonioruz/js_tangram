@@ -28,7 +28,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
            }
            var component={
                generic:function(data_state, callback){
-
+                   console.log("searching for::: "+data_state.get_current_data().type);
                    callback(null, data_state);
                    
                },
@@ -54,8 +54,252 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                        callback(null, data_state);
                    });
                },
+               booleano:function(data_state, callback){
+                   async.nextTick(function () {
+
+                       var html;
+
+                       if(data_state.get_current_data().editable)
+                           html=$.tmpl('object_boolean', data_state.get_current_data());
+                       else
+                           html=$.tmpl('object_label', data_state.get_current_data());
+                       data_state.get_current_data().template.html(html);
+
+                       callback(null, data_state);
+                   });
+               },
+               select:function(data_state, callback){
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               button:function(data_state, callback){
+
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               relationships:function(data_state, callback){
+
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               lifecycle_history:function(data_state, callback){
+
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               embedded_user:function(data_state, callback){
+
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               object_table:function(data_state, callback){
+
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               chart_network:function(data_state, callback){
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });},
+               chart_pie:function(data_state, callback){
+                   async.nextTick(function () {
+
+                       
+
+                       callback(null, data_state);
+                   });
+               },
+               chart_bar:function(data_state, callback){
+                   async.nextTick(function(){
+                       //Get a handle on the container
+                       var container = data_state.get_current_data().container;
+                       container.data('object', data_state.get_current_data());
+                   
+                       //Get the object data from the container
+                       var object = container.data('object');
+
+                       //Load the template
+                       var template = $.tmpl('object_chart_bar', object);
+
+                       //Add the template to the container
+                       container.html(template);
+
+                       //create a guid
+                       var chart_id = "chart_" + guid();
+
+                       //Sizes
+                       var size = {
+                           small: { width:"300px", height:"150px" },
+                           medium: { width:"400px", height:"250px" },
+                           large: { width:"500px", height:"350px" }
+                       }[object.size];
+
+                       template
+                           .attr('id', chart_id)
+                           .css('height', size.height)
+                           .css('width', size.width);
+
+                       var values_for_chart = [];
+                       var series_names = [];
+
+                       $.each(object.values, function(index, item){
+                           series_names[series_names.length] = {label:item.name};
+                           values_for_chart[values_for_chart.length] = item.values;
+                       });
+
+                       var ticks = object.x_axis_labels;
+                     
+                       
+                       if ($('#' + chart_id).is(':visible')) {
+
+                           $.jqplot(chart_id, values_for_chart, {
+                               seriesDefaults:{
+                                   renderer:$.jqplot.BarRenderer,
+                                   rendererOptions: {
+                                       fillToZero: true,
+                                       shadowAlpha: 0,
+                                       shadowOffset: 1
+                                   }
+                               },
+                               series: series_names,
+                               seriesColors:color_range('#0026CF', '#C3CAE8', values_for_chart.length),
+                               legend: {
+                                   show: true,
+                                   placement: 'outsideGrid'
+                               },
+                               axes: {
+                                   xaxis: {
+                                       renderer: $.jqplot.CategoryAxisRenderer,
+                                       ticks: ticks
+                                   },
+                                   yaxis: {
+                                       pad: 0.1,// 1.05,
+                                       tickOptions: {formatString: object.value_format_string || '%d'}
+                                   }
+                               },
+                               grid:{
+                                   background:'#FBFBFB',
+                                   borderWidth:0,
+                                   shadow:false,
+                                   gridLineColor: '#FBFBFB'
+                               },
+                               title: object.display_name
+                           });
+                       }
+
+                       callback(null, data_state);
+                   });
+               },
+
+               date:function(data_state, callback){
+                   async.nextTick(function () {
+                       var html;
+
+                       if(data_state.get_current_data().editable)
+                           html=$.tmpl('object_date', data_state.get_current_data());
+                       else
+                           html=$.tmpl('object_label', data_state.get_current_data());
+                       data_state.get_current_data().template.html(html);
+
+                       var object = html.data('object');
+
+                       html.find('input')
+
+                           .datepicker({
+                               changeMonth: true,
+                               changeYear: true
+                           })
+
+                           .mouseenter(function(){
+                               container.addClass('hover');
+                               setTimeout(function(){
+                                   if(container.is('.hover'))
+                                       container.find('.help_message').slideDown();
+                               }, 500);
+                               $(this).addClass('focus');
+                           })
+
+                           .mouseleave(function(){
+                               container.removeClass('hover');
+                               if (!container.find('input').is(':focus')) {
+                                   container.find('.help_message').slideUp();
+                                   $(this).removeClass('focus');
+                               }
+                           })
+
+                           .focus(function(){
+                               container.find('.help_message').slideDown();
+                           })
+
+                           .blur(function() {
+                               //Get a handle on the input element
+                               var input = $(this);
+
+                               //get a handel on the container
+                               var container = input.parents('.object:first');
+
+                               //Get the current selected value
+                               var new_value = input.val();
+
+                               //build the save_data
+                               var save_data = {
+                                   new_value: new_value
+                               };
+
+                               //Call the object save function
+                               //TODO container.enterpriseweb_site_components_object('save', save_data);
+
+                               container.find('.help_message').slideUp();
+
+                               input.removeClass('focus');
+                           })
+
+                           .change(function(){
+
+                               //Get a handle on the input element
+                               var input = $(this);
+
+                               //get a handel on the container
+                               var container = input.parents('.object:first');
+
+                               //Get the current selected value
+                               var new_value = input.val();
+
+                               //build the save_data
+                               var save_data = {
+                                   new_value: new_value
+                               };
+
+                               //Call the object save function
+                               //TODO                     container.enterpriseweb_site_components_object('save', save_data);
+                           });
+
+                       callback(null, data_state);
+                   });
+               },
                object:function(data_state, callback){
-                  console.dir(data_state.get_current_data());
+                   
                    callback(null, data_state);
                    
                },
@@ -524,7 +768,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                        // console.dir(container);
                        //                         alert("container");
                        var object = container.data('object');
-                       
+                      // console.dir(object);
                        // //Load the template
                        var template = $.tmpl('object_object', object);
 
@@ -568,7 +812,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                },
                load_object_viewer_with_header:function(data_state, callback){
 
-                       var that=this;
+                   var that=this;
                    async.nextTick(function () {
 
                        var object=data_state.resource;
@@ -585,7 +829,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                            var link = $(this);
 
                            var all_lis = nav_template.find('.nav li');
-
+                           //       console.log(all_lis);
                            for(var x=0; x<all_lis.length; x++)
                                $(all_lis[x]).removeClass('active');
 
@@ -593,22 +837,25 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
 
                            var target_id = link.data('target_id');
                            dispatcher.dispatch("update_object_viewer", that, data_state);
+                           //alert("dispathcinkg");
                            object_view.find('.object_viewer_content').fadeOut(500, function(){
-                               setTimeout(function() {
 
-                                   object_view.find('.object_viewer_content').each(function(){
-                                       var object_viewer_content = $(this);
-                                       if(object_viewer_content.data('target') == target_id){
-                                         
-                                           object_viewer_content.fadeIn(500, function(){
-                                              // console.dir(object_viewer_content.data('object'));
-                                               data_state.resource=object_viewer_content.data('object');
-                                               console.dir(object_viewer_content);
-                                               //  REPLACED with this                                    object_viewer_content.enterpriseweb_site_components_object(object_viewer_content.data('object'));
-                                           });
-                                           }
-                                   });
-                               }, 500);
+                               object_view.find('.object_viewer_content').each(function(){
+
+                                   var object_viewer_content = $(this);
+
+                                   if(object_viewer_content.data('target') == target_id){
+                                       //                                         alert("find!!"+object_viewer_content.data('target')+" =="+ target_id);
+                                       //                                       console.log(object_viewer_content.attr('data-target'));
+                                       object_viewer_content.fadeIn(500, function(){
+                                           // console.dir(object_viewer_content.data('object'));
+                                           data_state.resource=object_viewer_content.data('object');
+                                           
+                                           //  REPLACED with this                                    object_viewer_content.enterpriseweb_site_components_object(object_viewer_content.data('object'));
+                                       });
+                                   }
+                               });
+
                            });
                        });
 
@@ -663,20 +910,22 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    console.log("TODO");
                    callback(null, data_state);
                },
-               render_object_viewer_header:function(data_state, callback){
+               object_viewer_header:function(data_state, callback){
 
-
+                   // this function makes the nav bar visualizable
                    // var object=data_state.resource;
                    //                   console.dir(data_state.resource);
                    
+                   async.nextTick(function () {
 
-                   var oe=$('#object_editor');
+                       var oe=$('#object_editor');
 
-                   //TODO improve this ... still i dont know in wich place find this functionality
-                   oe.find('.object_viewer_content').css('height', "300px");
+                       //TODO improve this ... still i dont know in wich place find this functionality
+                       oe.find('.object_viewer_content').css('height', "300px");
 
-                   
-                   callback(null, data_state);
+                       
+                       callback(null, data_state);
+                   });
                },
                load_object_viewer_child:function(data_state, callback){
 

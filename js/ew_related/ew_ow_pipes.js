@@ -39,7 +39,7 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
 
                        .addTransformation(t.relationships.object_viewer_header)
                        .addPipe(o_w.switch_header)
-                       .addTransformation(t.templates.render_object_viewer_header)
+                       .addTransformation(t.templates.object_viewer_header)
                    ;
                },
                switch_header:function(){
@@ -84,6 +84,7 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
           
                render_body_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
+
                        .addTransformation(t.templates.load_body_object_object_viewer)
                        .addPipe(component_pipes.render_object_object)
                        
@@ -115,8 +116,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                           
                                                       }))
 
-                      .addPipe(t.renders.object_viewer_header)
-                      .addPipe(o_w.render_body_children)
+                       .addPipe(t.renders.object_viewer_header)
+                     .addPipe(o_w.render_body_children)
                    ;
                }
                
