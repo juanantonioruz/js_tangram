@@ -79,7 +79,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    
                    data_state.get_current_data().id=object_id;
 
-                       console.log(data_state);
+//                       console.log(data_state);
                        callback(null, data_state);
 
                    });

@@ -39,7 +39,8 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
  //              dispatcher.filter( filters.show_profiling(true));
 
                 dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"contextmenu", fn:function(){
-                    console.log(this.d.path);
+                    console.log("NS: "+this.d.ns);
+                    console.log("PATH: "+this.d.path);
                     if(this.d.ns.indexOf("pipeline_")!=-1){
                         this.d.path+="/"+this.d.ns.replace("pipeline_", "").toLowerCase();
                        // alert(this.d.path);
@@ -52,8 +53,11 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                     }
                     //console.log(this.path_array);
                     this.rerender=true;
+                    d3.event.preventDefault();
+
                 }}, 
                                                              [
+                                                                 "/root/event..body_change_state/body_change_state/state..?object_view/render_page_body/page_type..?object/render_pages_main/render_object_viewer/render_body_children/$..0/has_children..?collection/walk_children/$..0"
                                                   //               "/root/init"
                                                    //       ,       "/root/EVENT..BODY_CHANGE_STATE/BODY_CHANGE_STATE"
                                                              ]));

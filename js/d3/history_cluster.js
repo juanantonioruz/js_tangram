@@ -57,7 +57,7 @@ function colorize(d){
             for(var j=0; j<path_array.length; j++){
                 var path=path_array[j];
                 var path_compared=container.path;
-                console.log("** "+path+"=="+path_compared);
+//                console.log("** "+path+"=="+path_compared);
                 if(path.toLowerCase().indexOf(path_compared)!=-1){
                     is_in_path=true;
                     break;
@@ -83,7 +83,7 @@ function colorize(d){
 
                 var child=colector.children[i];
                 //console.log(child);
-                var int_path=(container.path+"/"+colector.ns).replace("pipeline_", "").replace("state_step_", "").replace("$", "").toLowerCase();
+                var int_path=(container.path+"/"+colector.ns).replace("pipeline_", "").replace("state_step_", "").toLowerCase();
                 var element=_create_node(child, int_path);
                 
                 if(check_path(child, element, path_array)){
@@ -220,15 +220,15 @@ function colorize(d){
 
             })
             .on("click", function(d,i){
-                
-                d.item.closed=!d.item.closed;
+                console.log("deactived onclick closed");
+                // d.item.closed=!d.item.closed;
 
-                if(!d.item.closed)
-                    d.item.folder=true;
-                else
-                    d.item.folder=false;
-                // not necesary but this works if(d3.select(this).attr("display"))
-                render(root, div_id, item_fn, path_array);
+                // if(!d.item.closed)
+                //     d.item.folder=true;
+                // else
+                //     d.item.folder=false;
+                // // not necesary but this works if(d3.select(this).attr("display"))
+                // render(root, div_id, item_fn, path_array);
             })
             .on(item_fn.mouse_event_name, function(d,i){
                 var context_call={path_array:path_array, d:d};
