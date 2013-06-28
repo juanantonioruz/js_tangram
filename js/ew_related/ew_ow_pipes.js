@@ -11,13 +11,14 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                // },
                render_body_objects:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
-                       .addTransformation(t.templates.load_body_object_object_viewer)
+                    //this is done in header logic
+                       // so now is commented .addTransformation(t.templates.load_body_object_object_viewer)
 
                        .addPipe(function(){return new Switcher_Pipeline("object_children", 
                                                                         function switcher(_value){
 
                                                                             if(_value != null && _value.length != null)
-                                                                                return o_w.render_object_object;
+                                                                                return component_pipes.render_object_object;
                                                                             else
                                                                                 return t.transformations.else_value;
 
@@ -67,7 +68,8 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                    return new Pipeline(this.name)
                        .addTransformation(t.cache_data.object_viewer_header)
                        .addTransformation(t.transformations.debug)
-                       .addPipe(o_w.switch_header);
+                                          .addPipe(o_w.switch_header);
+                   ;
                },
                render_header_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.header.children")
@@ -78,36 +80,12 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                        .addPipe(component_pipes.render_component)
                    ;
                },
-                walk_children:function(){
-                   return new Foreach_Pipeline(this.name, "current_data.children")
-                       .addTransformation(t.templates.load_object_object_child)
-                       .xaddPipe(component_pipes.render_component)
-
-
-                   ;
-               },
-               render_object_object:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(t.templates.load_object_object)                      
-                       .addPipe(new Switcher_Pipeline("has_children", 
-                                                      function switcher(_value){
-                                                          if(_value!=null && _value.length!=null)
-                                                              return o_w.walk_children;
-                                                          else
-                                                              return t.transformations.debug;
-                                                      }, 
-                                                      "current_data.children",function(_value){
-                                                          if(_value!=null && _value.length!=null) return "collection";
-                                                          else return "null";
-                                                          
-                                                      }))
-                   ;
-
-               },
+             
+          
                render_body_children:function(){
                    return new Foreach_Pipeline(this.name, "resource.children")
                        .addTransformation(t.templates.load_body_object_object_viewer)
-                       .addPipe(o_w.render_object_object)
+                       .addPipe(component_pipes.render_object_object)
                        
 
                     
@@ -138,7 +116,7 @@ define([   "js/ew_related/ew_component_pipes.js", "js/pipelines/dispatcher.js", 
                                                       }))
 
                       .addPipe(t.renders.object_viewer_header)
-                       .addPipe(o_w.render_body_children)
+                      .addPipe(o_w.render_body_children)
                    ;
                }
                

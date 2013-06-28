@@ -110,6 +110,14 @@ define([  "js/ew_related/ew_ow_pipes.js", "js/pipelines/dispatcher.js",  "js/com
                    //                       .throw_event_on_success("body_change_state")
                    ;
                },
+body_change_state_nav:function(){
+                   return new Pipeline(this.name)
+
+                       .addTransformation(t.modals.close)
+                  
+
+                   ;
+               },
                
                current_state_is_still_active:function(){
                    var p=new Pipeline(this.name);

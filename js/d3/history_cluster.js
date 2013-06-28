@@ -221,14 +221,14 @@ function colorize(d){
             })
             .on("click", function(d,i){
                 console.log("deactived onclick closed");
-                // d.item.closed=!d.item.closed;
+                d.item.closed=!d.item.closed;
 
-                // if(!d.item.closed)
-                //     d.item.folder=true;
-                // else
-                //     d.item.folder=false;
-                // // not necesary but this works if(d3.select(this).attr("display"))
-                // render(root, div_id, item_fn, path_array);
+                if(!d.item.closed)
+                    d.item.folder=true;
+                else
+                    d.item.folder=false;
+                // not necesary but this works if(d3.select(this).attr("display"))
+                render(root, div_id, item_fn, path_array);
             })
             .on(item_fn.mouse_event_name, function(d,i){
                 var context_call={path_array:path_array, d:d};

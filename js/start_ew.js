@@ -14,10 +14,13 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset();
 
                dispatcher.listen_event("body_change_state", pipelines.body_change_state, true);
+//               dispatcher.listen_event("body_change_state_bis",t.transformations.alerta, true);
                dispatcher.listen_event("show_profile", pipelines.show_profile, true);
                dispatcher.listen_event("show_history", pipelines.render_modal_your_history, true);
                dispatcher.listen_event("clear_history", pipelines.clear_history, true);
                dispatcher.listen_event("window_reload", t.transformations.window_location_reload, true);               
+
+
                dispatcher.listen_event("update_object_viewer", pipelines.update_object_viewer, true);
 
 
@@ -28,7 +31,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset_filters();
 
                //TODO investigate why throw error when the app increase complexity   --> too much recursion --> sync process         
-             //  dispatcher.filter( filters.logging(true));
+//               dispatcher.filter( filters.logging(true));
                
                // dispatcher.filter( filters.clone_data);
 
@@ -57,7 +60,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
                 }}, 
                                                              [
- "/root/event..body_change_state/body_change_state/state..?object_view/render_page_body/page_type..?object/render_pages_main/render_object_viewer/render_body_children/$..0/render_object_object/has_children..?collection/walk_children/$..0"
+ // "/root/event..body_change_state/body_change_state/state..?object_view/render_page_body/page_type..?object/render_pages_main/render_object_viewer/render_body_children/$..0/render_object_object/has_children..?collection/walk_children/$..0",""
                                                                  //               "/root/init"
                                                                  //       ,       "/root/EVENT..BODY_CHANGE_STATE/BODY_CHANGE_STATE"
                                                              ]));

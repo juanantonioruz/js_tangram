@@ -55,7 +55,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    });
                },
                object:function(data_state, callback){
-                   
+                  console.dir(data_state.get_current_data());
                    callback(null, data_state);
                    
                },
@@ -567,8 +567,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                    callback(null, data_state);
                },
                load_object_viewer_with_header:function(data_state, callback){
-                   async.nextTick(function () {
+
                        var that=this;
+                   async.nextTick(function () {
+
                        var object=data_state.resource;
                        var object_view=$('#page').find('#object_editor');
                        var content_templates_container=data_state.object_viewer_template;
@@ -590,19 +592,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/ew_related/json_data.j
                            link.parent().addClass('active');
 
                            var target_id = link.data('target_id');
-
+                           dispatcher.dispatch("update_object_viewer", that, data_state);
                            object_view.find('.object_viewer_content').fadeOut(500, function(){
                                setTimeout(function() {
 
                                    object_view.find('.object_viewer_content').each(function(){
                                        var object_viewer_content = $(this);
-                                       if(object_viewer_content.data('target') == target_id)
+                                       if(object_viewer_content.data('target') == target_id){
+                                         
                                            object_viewer_content.fadeIn(500, function(){
-                                               console.dir(object_viewer_content.data('object'));
+                                              // console.dir(object_viewer_content.data('object'));
                                                data_state.resource=object_viewer_content.data('object');
-                                               dispatcher.dispatch("update_object_viewer", that, data_state);
+                                               console.dir(object_viewer_content);
                                                //  REPLACED with this                                    object_viewer_content.enterpriseweb_site_components_object(object_viewer_content.data('object'));
                                            });
+                                           }
                                    });
                                }, 500);
                            });

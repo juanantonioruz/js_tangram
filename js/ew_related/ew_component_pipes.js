@@ -16,7 +16,7 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
                                                       else if(_value=="text")
                                                     return c.text_component;
                                                       else if(_value=="object")
-                                                    return t.component.object;
+                                                    return /*t.component.object;*/c.render_object_object;
 
                                                     else
                                                         return t.component.generic;
@@ -47,8 +47,38 @@ define([   "js/pipelines/dispatcher.js",  "js/common.js",  "js/ew_related/transf
                        .addTransformation(t.validation.is_mail)
                    ;
                    
+               },
+                  walk_children:function(){
+                   return new Foreach_Pipeline(this.name, "current_data.children")
+                       .addTransformation(t.templates.load_object_object_child)
+                       .addPipe(c.render_component)
+
+
+                   ;
+               },
+               render_object_object:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(t.templates.load_object_object)                      
+                       .addPipe(new Switcher_Pipeline("has_children", 
+                                                      function switcher(_value){
+                                                          if(_value!=null && _value.length!=null)
+                                                              return c.walk_children;
+                                                          else
+                                                              return t.transformations.debug;
+                                                      }, 
+                                                      "current_data.children",function(_value){
+                                                          if(_value!=null && _value.length!=null) return "collection";
+                                                          else return "null";
+                                                          
+                                                      }))
+                   ;
+
                }
            };
+
+
+
+
            return common.naming_pipes(c);
        });
 
