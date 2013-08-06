@@ -15,7 +15,7 @@ define( function() {
 
 
 
-    function render(open_stack_tree_display_data,data_state,  on_success_callback){
+    function render(open_stack_tree_display_data,data_state, target, dispatcher,  on_success_callback){
 
         $('#chart').empty();
         $('#chart').hide();
@@ -53,7 +53,14 @@ define( function() {
                 var selection=d3.select(this);
                 show_message_to_the_user(d.data_displayed.type);
                 d.selected = !d.selected;
-                alert(d.data_displayed.type);
+
+//                console.dir(d);
+                 if(d.data_displayed.type=="tenant"){
+                     data_state.tenant_name=d.data_displayed.data.item.name;
+                     data_state.tenant_id=d.data_displayed.data.item.id;
+
+                     dispatcher.dispatch("tenant_selected", target, data_state,  function(res,pipeline){console.log("tenant_selected!");} );
+}
                 if(d.selected)
                 data_state[d.data_displayed.type+"_selected"]=d.data_displayed.data.href;
                 var color=(d.selected)?"red":"blue";

@@ -5,7 +5,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                var target_pipeline=this.pipeline;
                $('#right').prepend("<h3 class='left_message'>show_register_form,  ...</h3>");
 //
-               $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (external_ip: 85.136.103.122): <input type='text' id='stack_ip' value='192.168.1.100'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
+               $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:192.168.1.100,  external_ip: 85.136.107.32): <input type='text' id='stack_ip' value='85.136.107.32'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
 
                
                $('#stack_logging').on('click', function(){

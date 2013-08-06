@@ -84,7 +84,7 @@ define([  "js/open_stack/loadings.js",
                        data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
                        var tenants=create_node("tenants", create_data("folder", {name:"tenants"}));
                        data_state.tenants_select.map(function(item){
-                           tenants.children.push(create_node(item.visible, create_data("tenant", {})));
+                           tenants.children.push(create_node(item.visible, create_data("tenant", item)));
                        } );
                        
 
@@ -96,7 +96,7 @@ define([  "js/open_stack/loadings.js",
                        }
 
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),
-                                  data_state, on_success_callback);
+                                  data_state, this, dispatcher, on_success_callback);
                        // this line uncommented means that the user is using the select dropmenu to select the tenant, otherwise we have to useon_success_callback and wait to be called from d3 interface
                        callback(null, data_state);
                        
