@@ -269,7 +269,7 @@ function colorize(d){
                 var path_m=d.path.toLowerCase();
                 if(d.ns.indexOf("pipeline_")!=-1){
                     path_m+="/"+res.toLowerCase();
-                    if(path_array.indexOf(path_m)!=-1)
+                    if(path_array && path_array.indexOf(path_m)!=-1)
                         res+="(*)";
                 }
 

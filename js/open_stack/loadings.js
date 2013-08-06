@@ -2,8 +2,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result= {
                prepare_tokens:function (data_state, callback){
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/tokens", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip}};
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/tokens", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip},error_property:"message"};
                    data_state.dao=dao_object;
+
                    $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
                    callback(null, data_state);
                    
@@ -40,6 +41,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
+
                prepare_endpoints:function (data_state, callback){
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/endpoints", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip, tenant_name:data_state.tenant_name}};
                    data_state.dao=dao_object;
@@ -48,6 +50,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
                    
                },
+
                store_endpoints:function (data_state, callback){
                    //TODO : use error case if(dao.error)
                    var x=data_state.dao.result;
@@ -106,6 +109,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
+
                nova_operations:function(data_state, callback){
                    data_state.suboptions_select=[];
                    data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
@@ -123,6 +127,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
+
                create_server:function (data_state, callback){
                    
                    var data_operation=data_state.data_operation;

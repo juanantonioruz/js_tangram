@@ -1,7 +1,7 @@
 define( function() {
- function contains(context, search){
-            return (context.indexOf(search) !== -1);
-        }
+    function contains(context, search){
+        return (context.indexOf(search) !== -1);
+    }
 
 
     function getStart(){return (new Date).getTime();};
@@ -52,13 +52,13 @@ define( function() {
 
     function logging_filter(pipeline, state_step){
         return function(data_state, callback){
-        if(debug_filters)  console.log(">logging");
-        var event_type=this.transformation_event_type;
-        var ns=this.target.ns;
+            if(debug_filters)  console.log(">logging");
+            var event_type=this.transformation_event_type;
+            var ns=this.target.ns;
             if((pipeline && is_pipeline(this.target.ns))|| (state_step && is_state_step(this.target.ns)) )
-       console.log("-> "+ event_type+"/"+ns);
+                console.log("-> "+ event_type+"/"+ns);
 
-        callback(null, data_state);
+            callback(null, data_state);
         };
     }
 
@@ -106,34 +106,34 @@ define( function() {
                     this.target.pipeline.children.push(this.target);
                 }
             }
-                
+            
             callback(null, data_state);
         };
     }
 
     function timming_filter(pipeline, state_step){
         return function(data_state, callback){
-        if(debug_filters)      console.log(">show profiling");
-                        if((pipeline && is_pipeline(this.target.ns))|| (state_step && is_state_step(this.target.ns)) ){
-        var history_message=this.transformation_event_type+"/"+
-                this.target.ns+((this.transformation_event_type=="ON_END")? " finished in "+this.target.diff+" ms":" ... timing ..." );
-        if(contains(history_message, "state_step_")){
-            history_message=" -------- "+history_message;
-            if(this.transformation_event_type=="ON_END")
-                $('.left_message').last().fadeOut(200, function(){ $('.left_message').last().remove();});
-        }else{
-            if(this.transformation_event_type=="ON_INIT"){
-                clean_history();
-            }else{
+            if(debug_filters)      console.log(">show profiling");
+            if((pipeline && is_pipeline(this.target.ns))|| (state_step && is_state_step(this.target.ns)) ){
+                var history_message=this.transformation_event_type+"/"+
+                        this.target.ns+((this.transformation_event_type=="ON_END")? " finished in "+this.target.diff+" ms":" ... timing ..." );
+                if(contains(history_message, "state_step_")){
+                    history_message=" -------- "+history_message;
+                    if(this.transformation_event_type=="ON_END")
+                        $('.left_message').last().fadeOut(200, function(){ $('.left_message').last().remove();});
+                }else{
+                    if(this.transformation_event_type=="ON_INIT"){
+                        clean_history();
+                    }else{
 
+                        
+
+                    }
+                }
                 
-
+                $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
             }
-        }
-        
-        $('#history_status').append("<li>"+history_message.replace("ON_", "")+"</li>");
-                            }
-        callback(null, data_state);
+            callback(null, data_state);
         };
     }
 

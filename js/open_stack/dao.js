@@ -19,7 +19,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            callback(null, data_state);   
                        }else{
                            dao_object.error=msg.error;                           
-                           callback(msg.edevrror, data_state);
+
+                           callback(msg.error[dao_object.error_property], data_state);
                        }
                    });
                }
