@@ -52,6 +52,12 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                                           .addTransformation( loadings.glance_operations)
                                                           .addTransformation( selects.available_service_operations);
                                                   }, 
+                                                  "quantum":
+                                                  function(){
+                                                      return new Pipeline("quantum_operations")
+                                                          .addTransformation( loadings.quantum_operations)
+                                                          .addTransformation( selects.available_service_operations);
+                                                  }, 
 
 
                                                   "nova":function(){
@@ -72,7 +78,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
                        .addTransformation(loadings.prepare_operation)
-                       .addTransformatiolon(dao.dao)
+                       .addTransformation(dao.dao)
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },

@@ -100,7 +100,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    data_state.suboptions_select.push({item:{service_type:"image", url:"/v2.0/images"}, visible:"LIST IMAGES", hidden:'images'});
                    callback(null, data_state);
                },
-
+               quantum_operations:function(data_state, callback){
+                   data_state.suboptions_select=[];
+                   data_state.suboptions_select.push({item:{service_type:"network", url:"/v2.0/networks"}, visible:"LIST NETWORKS", hidden:'networks'});
+                   callback(null, data_state);
+               },
                cinder_operations:function(data_state, callback){
                    data_state.suboptions_select=[];
                    data_state.suboptions_select.push({item:{service_type:"volume", url:"/volumes"}, visible:"LIST VOLUMES", hidden:'cinder-volumes'});
