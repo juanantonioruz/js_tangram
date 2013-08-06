@@ -43,23 +43,19 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
            dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_list_resources", 
                                                 os_pipelines.load_endpoints_and_select_for_current_tenant, false);
 
-           dispatcher.listen_event("endpoint_selected", os_pipelines.load_endpoint_selected, false);
+           dispatcher.listen_event("service_selected", os_pipelines.load_endpoint_selected, false);
 
            dispatcher.listen_event("operation_selected", os_pipelines.load_operation_selected, false);
 
-
-
            dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_create_server",  os_pipelines.create_server_for_selected_tenant, false);
 
-
            // d3js hooks, running in parallel! last parameter:true!
-           dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "select_tenant_to_create_server", d3_pipelines.d3_show_tenants,true);   
-
-           dispatcher.listen_state_step_in_pipe("ON_INIT", "create_server_wait_for_the_name","create_server_for_selected_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
+               dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "select_tenant_to_create_server", d3_pipelines.d3_show_tenants,true);   
+               dispatcher.listen_state_step_in_pipe("ON_INIT", "create_server_wait_for_the_name","create_server_for_selected_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();
-               dispatcher.filter( filters.logging(true));
+               dispatcher.filter( filters.logging(true, true));
 
            
  //          dispatcher.filter( filters.clone_data);
@@ -74,6 +70,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                                                                                        }}));
                os_pipelines.register()
                    .apply_transformations(data_state);
+
 
            };
 

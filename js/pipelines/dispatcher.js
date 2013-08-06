@@ -44,14 +44,17 @@ define(["js/async.js"], function(async) {
                 // //     ff.map(function(o){ pipeline_listeners.push(o);});
 
 
-                
-                function continue_listeners(){
-                if(transformation_event_type=="ON_END"  || transformation_event_type=="ON_INIT"){
-                    callback();
-                    return;
-                }
 
+
+
+                function continue_listeners(){
                     var searched=target.ns.split("*")[0];
+                   // console.log("??????????"+transformation_event_type+"---"+searched);
+                // if(transformation_event_type=="ON_END"  || transformation_event_type=="ON_INIT"){
+                //     callback();
+                //     return;
+                // }
+
                     var pipeline_listeners;
                     var base=domain_tree[transformation_event_type];
                     if(base){
@@ -81,7 +84,7 @@ define(["js/async.js"], function(async) {
 
 
                         
-                        //  console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
+                          console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
 
                         var paralels=pipeline_listeners.filter(function(element, index, array){return (element.parallel)?true:false;});
                         var syncq=pipeline_listeners.filter(function(element, index, array){return (!element.parallel)?true:false;});
@@ -198,6 +201,7 @@ define(["js/async.js"], function(async) {
 
 
                 }
+                //console.dir(domain_tree);
             },
 
             filter:function(_fn){
@@ -236,6 +240,7 @@ define(["js/async.js"], function(async) {
             reset:function(){
                 domain_tree={};
             }
+
 
             
         };

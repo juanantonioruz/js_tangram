@@ -72,11 +72,20 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
                        .addTransformation(loadings.prepare_operation)
-                       .addTransformation(dao.dao)
+                       .addTransformatiolon(dao.dao)
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },
-              
+              alerta:function(){
+
+                     return new Pipeline(this.name)
+                           .addTransformation(new StateStep("alerta", function(data_state, callback){
+                               alert("here");
+                               callback(null, data_state);
+                           }));
+
+
+},
                create_server_for_selected_tenant:function(){
 
 
@@ -94,21 +103,23 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    return new Pipeline(this.name)
                         .addTransformation( loadings.prepare_endpoints)
                        .addTransformation( dao.dao)
-                       .addTransformation( loadings.prepare_select_endpoints)
+                       .addTransformation( loadings.store_endpoints)
+                     //   .addTransformation( loadings.prepare_select_endpoints)
                        .addTransformation(new StateStep("create_server_select_nova_endpoint", function(data_state, callback){
+
                            var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
                                return (element.type == "compute");
                            });
                                if(data_state.ip.indexOf('192.168.1.100')!=-1)
-                               concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
+                                   concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
                                // end change
 
                            data_state.nova_endpoint_url=concordances[0].endpoints[0].publicURL;
                            
                            callback(null, data_state);
                        }))
-                       .addPipe(get_load_pipe("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
-                       .addPipe(get_load_pipe("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
+                        .addPipe(get_load_pipe("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
+                        .addPipe(get_load_pipe("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
                        .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            
@@ -133,7 +144,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            alert("server_name: "+results.server_name+"\n------>endpoint: "+results.nova_endpoint_url+"\n---> first_image: "+results.nova_images.images[0].links[0].href+"\n--->first_flavor: "+
                                  results.nova_flavors.flavors[0].links[0].href);
                            
-                       });
+                       })
+;
                }
 
            };
