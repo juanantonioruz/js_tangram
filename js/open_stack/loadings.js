@@ -51,7 +51,14 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                },
 
                prepare_endpoints:function (data_state, callback){
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/endpoints", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip, tenant_name:data_state.tenant_name}};
+                   var dao_object={
+                       method:'POST',
+                       action:"http://"+data_state.host+"/endpoints",
+                       data:{
+                           s_user:data_state.user,
+                           s_pw:data_state.password, 
+                           s_ip:data_state.ip, 
+                           tenant_name:data_state.tenant_name}};
                    data_state.dao=dao_object;
                    $('#right').prepend("<h3 class='left_message'>Loading endpoints, please wait ...</h3>");
 
@@ -61,21 +68,21 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                store_endpoints:function (data_state, callback){
                    //TODO : use error case if(dao.error)
-                   var x=data_state.dao.result;
+
                    if(data_state.dao.error){
                            callback("laod_endpoints.error->"+data_state.dao.error, data_state);
                    }else{
- data_state.serviceCatalog=x.access.serviceCatalog;
-                           data_state.service_catalog_select=[];
-                           x.access.serviceCatalog.map(function(item){
+                       data_state.serviceCatalog=data_state.dao.result.access.serviceCatalog;
+                       data_state.service_catalog_select=[];
+                       data_state.dao.result.access.serviceCatalog.map(function(item){
                                //TODO  related to openstack local conf
-                               if(data_state.ip.indexOf('192.168.1.100')!=-1)
+                           if(data_state.ip.indexOf('192.168.1.100')!=-1)
                                item.endpoints[0].publicURL=item.endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
                                // end change
                                data_state.service_catalog_select.push({item:item, hidden:item.name,visible:item.name+":"+item.type });
                            });
-                           data_state.token_id=x.access.token.id;
-                           $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+common.toJson(x)+"</code></pre>" );                                                  
+                           data_state.token_id=data_state.dao.result.access.token.id;
+                           $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );                                                  
                            callback(null, data_state);
                    }
 
@@ -89,8 +96,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        data:{token:data_state.token_id, s_ip:data_state.ip},
                        error_property:"message"
                    };
-                   
-
 
                    $('#right').prepend("<h3 class='left_message'>Loading tenants/projects, please wait ...</h3>");
                    
@@ -117,25 +122,25 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                },
 
 
-               tenants:function (data_state, callback){
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/tenants",
-                       data:{token:data_state.token_id, s_ip:data_state.ip}
-                   }).done(function( msg ) {
-                       if(!msg.error){
+               // tenants:function (data_state, callback){
+               //     $.ajax({
+               //         type: "POST",
+               //         url: "http://"+data_state.host+"/tenants",
+               //         data:{token:data_state.token_id, s_ip:data_state.ip}
+               //     }).done(function( msg ) {
+               //         if(!msg.error){
 
-                           data_state.tenants_select=[];
-                           msg.tenants.map(function(item){
-                               data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
-                           });
-                           $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
-                           callback(null, data_state);
-                       }else{
-                           callback(msg.error, data_state);
-                       }
-                   });
-               },
+               //             data_state.tenants_select=[];
+               //             msg.tenants.map(function(item){
+               //                 data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
+               //             });
+               //             $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
+               //             callback(null, data_state);
+               //         }else{
+               //             callback(msg.error, data_state);
+               //         }
+               //     });
+               // },
 
                glance_operations:function(data_state, callback){
                    data_state.suboptions_select=[];
@@ -197,5 +202,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            };
 
            return common.naming_fns(result);
+
+
+
+
+
+
 
        });

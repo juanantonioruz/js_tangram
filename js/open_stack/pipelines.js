@@ -3,11 +3,10 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
            function get_select_tenant_for_current_user(pipe_ns){
                return new Pipeline(pipe_ns)
-                   // .addTransformation(loadings.tenants)
-                   // .addTransformation(selects.tenants);
-               .addTransformation(loadings.prepare_tenants_dao)
-               .addTransformation(dao.dao)
-               .addTransformation(loadings.store_tenants);
+                   .addTransformation(loadings.prepare_tenants_dao)
+                   .addTransformation(dao.dao)
+                   .addTransformation(loadings.store_tenants)
+                   .addTransformation(selects.tenants);
            }
 
            function add_load(pipe, fn){
@@ -85,7 +84,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },
-              alerta:function(){
+               alerta:function(){
 
                      return new Pipeline(this.name)
                            .addTransformation(new StateStep("alerta", function(data_state, callback){
