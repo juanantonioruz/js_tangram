@@ -3,8 +3,11 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
            function get_select_tenant_for_current_user(pipe_ns){
                return new Pipeline(pipe_ns)
-                   .addTransformation(loadings.tenants)
-                   .addTransformation(selects.tenants);
+                   // .addTransformation(loadings.tenants)
+                   // .addTransformation(selects.tenants);
+               .addTransformation(loadings.prepare_tenants_dao)
+               .addTransformation(dao.dao)
+               .addTransformation(loadings.store_tenants);
            }
 
            function add_load(pipe, fn){

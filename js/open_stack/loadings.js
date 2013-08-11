@@ -2,10 +2,17 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result= {
                prepare_tokens:function (data_state, callback){
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/tokens", data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip},error_property:"message"};
-                   data_state.dao=dao_object;
+                   data_state.dao={
+                       method:'POST',
+                       action:"http://"+data_state.host+"/tokens", 
+                       data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip},
+                       error_property:"message"
+                   };
+                   
+
 
                    $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
+                   
                    callback(null, data_state);
                    
                },
@@ -74,6 +81,41 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
            
                },
+
+               prepare_tenants_dao:function(data_state, callback){
+                   data_state.dao={
+                       method:'POST',
+                       action:"http://"+data_state.host+"/tenants", 
+                       data:{token:data_state.token_id, s_ip:data_state.ip},
+                       error_property:"message"
+                   };
+                   
+
+
+                   $('#right').prepend("<h3 class='left_message'>Loading tenants/projects, please wait ...</h3>");
+                   
+                   callback(null, data_state);
+
+               },
+               store_tenants:function (data_state, callback){
+                   if(data_state.dao.result){
+
+                           data_state.tenants_select=[];
+                           data_state.dao.result.tenants.map(function(item){
+                               data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
+                           });
+
+                       $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
+
+
+                       callback(null, data_state);
+                   } else{
+                          $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
+                   callback(data_state.dao.error, data_state);
+                   }
+                   
+               },
+
 
                tenants:function (data_state, callback){
                    $.ajax({
