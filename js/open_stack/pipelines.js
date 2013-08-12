@@ -16,14 +16,19 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    return new Pipeline(this.name)
                        .addTransformation( html_helper.register_form  );
                },
-               load_tokens_and_select_actions:function(){
+               load_tokens_and_select_tenants:function(){
                    return new Pipeline(this.name)
                        .addTransformation(loadings.prepare_tokens)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.store_token_id)
-                       .addTransformation( selects.actions );
+                       .addTransformation( get_select_tenant_for_current_user("load_and_show_select_tenants"));
                },
+               select_actions:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(selects.actions);
 
+               },
+               
                load_action_selected:function(){
                    return new Mapper_Pipeline(this.name, 
                                               {"listing_resources": result.select_tenant_to_list_resources,
@@ -37,12 +42,44 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    return get_select_tenant_for_current_user(this.name);
                },
                
-               load_endpoints_and_select_for_current_tenant:function(){
+               load_endpoints_for_current_tenant:function(){
                    return new Pipeline(this.name)
-                        .addTransformation( loadings.prepare_endpoints)
+                       .addTransformation( loadings.prepare_endpoints)
                        .addTransformation( dao.dao)
-                       .addTransformation( loadings.store_endpoints)
-                       .addTransformation(  selects.endpoints);
+                       .addTransformation( loadings.store_endpoints);
+                   //                       .addTransformation(  selects.endpoints);
+               },
+               run_action_selected:function(){
+                   
+                   return new Mapper_Pipeline(this.name, 
+                                              {
+                                                  "listing_images":
+                                                  function(){
+                                                      return new Pipeline("listing_images")
+
+
+                                                          .addTransformation(new StateStep("alerta", function(data_state, callback){
+                                                              //                       $('#content').prepend( "<h2>endPoints loadedlsi</h2><pre><code class='json'>"+common.toJson(data_state.action_selected)+"</code></pre>" );        
+                                                              $('#content').prepend( "<h2>action_selected:</h2><pre><code class='json'>"+common.toJson(data_state.action_selected)+"</code></pre>" );                                                  
+
+                                                              $('#content').prepend( "<h2>analyse:</h2><pre><code class='json'>"+common.toJson(data_state.endpoints)+"</code></pre>" );                                                  
+                                                              data_state.data_operation= {item:{service_type:"image", url:"/images"}, visible:"LIST IMAGES", hidden:'images'};
+                                                              data_state.data_operation.title="listing_images";
+                                                              data_state.data_operation.url=data_state.data_operation.item.url;
+                                                              data_state.data_operation.host=data_state.endpoints.nova;
+                                                              
+                                                              callback(null, data_state);
+                                                          }))
+                                                          .addTransformation(new Pipeline("loading_operation")
+                                                                             .addTransformation(loadings.prepare_operation)
+                                                                             .addTransformation(dao.dao)
+                                                                             .addTransformation(loadings.show_operation_result))
+
+                                                      ;
+                                                  }
+
+                                              }, 
+                                              "action_selected");
                },
                load_endpoint_selected:function(){
                    
@@ -86,14 +123,23 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                alerta:function(){
 
-                     return new Pipeline(this.name)
-                           .addTransformation(new StateStep("alerta", function(data_state, callback){
-                               alert("here");
-                               callback(null, data_state);
-                           }));
+                   return new Pipeline(this.name)
+                       .addTransformation(new StateStep("alerta", function(data_state, callback){
+                           alert("here");
+                           callback(null, data_state);
+                       }));
 
 
-},
+               },
+
+               run_action:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(new StateStep("alerta", function(data_state, callback){
+                           $('#content').prepend( "<h2>action_selected:</h2><pre><code class='json'>"+common.toJson(data_state.action_selected)+"</code></pre>" );                                                  
+                           common.toJson(data_state.action_selected);
+                           callback(null, data_state);
+                       }));
+               },
                create_server_for_selected_tenant:function(){
 
 
@@ -109,25 +155,25 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
 
                    return new Pipeline(this.name)
-                        .addTransformation( loadings.prepare_endpoints)
+                       .addTransformation( loadings.prepare_endpoints)
                        .addTransformation( dao.dao)
                        .addTransformation( loadings.store_endpoints)
-                     //   .addTransformation( loadings.prepare_select_endpoints)
+                   //   .addTransformation( loadings.prepare_select_endpoints)
                        .addTransformation(new StateStep("create_server_select_nova_endpoint", function(data_state, callback){
 
                            var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
                                return (element.type == "compute");
                            });
-                               if(data_state.ip.indexOf('192.168.1.100')!=-1)
-                                   concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
-                               // end change
+                           if(data_state.ip.indexOf('192.168.1.100')!=-1)
+                               concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
+                           // end change
 
                            data_state.nova_endpoint_url=concordances[0].endpoints[0].publicURL;
                            
                            callback(null, data_state);
                        }))
-                        .addPipe(get_load_pipe("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
-                        .addPipe(get_load_pipe("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
+                       .addPipe(get_load_pipe("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
+                       .addPipe(get_load_pipe("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
                        .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            
@@ -153,7 +199,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                  results.nova_flavors.flavors[0].links[0].href);
                            
                        })
-;
+                   ;
                }
 
            };

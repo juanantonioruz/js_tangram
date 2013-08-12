@@ -102,7 +102,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
 
                        //                                          var select_dom_id=;
-                       var the_dom_place_to_append_the_select='#suboperations';
+                       var the_dom_place_to_append_the_select='#register_form';
                        var the_on_change_select_fn=function(select_dom_id){
                            return function(){
                                $("#suboptions").remove();
@@ -132,7 +132,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                actions:function(data_state, callback){
                    var target_pipeline=this.pipeline;
-                   show_fn_result_to_the_user_and_wait("you are logged now!, please select an option: ", 
+                   show_fn_result_to_the_user_and_wait("please select an action: ", 
                                                        function(){
                                                            $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div><div id='suboperations'></div>").fadeIn(100, function(){
                                                                
@@ -141,7 +141,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                                
                                                                    "#actions_available",
                                                                                
-                                                                   [{visible:"create server", hidden:"create_server"}, {visible:"listing resources", hidden:"listing_resources"}], 
+                                                                   [
+                                                                       {visible:"listing_images", hidden:"listing_images"},
+                                                                       {visible:"create server", hidden:"create_server"}
+                                                                       ,{visible:"listing resources", hidden:"listing_resources"}
+                                                                   ], 
                                                                                
                                                                    function(select_dom_id){ 
                                                                        return function(){
