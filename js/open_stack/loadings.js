@@ -76,8 +76,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        data_state.service_catalog_select=[];
                        data_state.dao.result.access.serviceCatalog.map(function(item){
                                //TODO  related to openstack local conf
-                           if(data_state.ip.indexOf('192.168.1.100')!=-1)
+                            console.log(item.endpoints[0].publicURL);
+                           if(data_state.ip.indexOf('192.168.1.100')!=-1){
+                               console.log("---_____"+item.endpoints[0].publicURL);
                                item.endpoints[0].publicURL=item.endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
+                           }
                                // end change
                                data_state.service_catalog_select.push({item:item, hidden:item.name,visible:item.name+":"+item.type });
                            });

@@ -19,6 +19,7 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
             }
              return result;
 
-        }
+        },
+        local_ip:"192.168.1.26"
 };
 });
