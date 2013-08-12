@@ -33,7 +33,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                prepare_operation:function (data_state, callback){
 
                    var data_operation=data_state.data_operation;
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "").replace('192.168.1.100',data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "").replace(common.local_ip,data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
                    data_state.dao=dao_object;
                    $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");
 //                   console.dir(dao_object);
@@ -76,10 +76,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        data_state.service_catalog_select=[];
                        data_state.dao.result.access.serviceCatalog.map(function(item){
                                //TODO  related to openstack local conf
-                            console.log(item.endpoints[0].publicURL);
-                           if(data_state.ip.indexOf('192.168.1.100')!=-1){
-                               console.log("---_____"+item.endpoints[0].publicURL);
-                               item.endpoints[0].publicURL=item.endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
+
+                           if(data_state.ip.indexOf(common.local_ip)!=-1){
+
+                               item.endpoints[0].publicURL=item.endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
                            }
                                // end change
                                data_state.service_catalog_select.push({item:item, hidden:item.name,visible:item.name+":"+item.type });

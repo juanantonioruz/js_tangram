@@ -118,8 +118,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
                                return (element.type == "compute");
                            });
-                               if(data_state.ip.indexOf('192.168.1.100')!=-1)
-                                   concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace('192.168.1.100',data_state.ip );
+                               if(data_state.ip.indexOf(common.local_ip)!=-1)
+                                   concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
                                // end change
 
                            data_state.nova_endpoint_url=concordances[0].endpoints[0].publicURL;
