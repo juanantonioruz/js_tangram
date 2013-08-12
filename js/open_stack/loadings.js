@@ -190,7 +190,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    $.ajax({
                        type: "POST",
                        url: "http://"+data_state.host+"/create_server",
-                       data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.nova_endpoint_url, imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected}
+                       data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.nova_endpoint_url.replace(common.local_ip,data_state.ip ), imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected}
                    }).done(function( msg ) {
                        if(!msg.error){
 
