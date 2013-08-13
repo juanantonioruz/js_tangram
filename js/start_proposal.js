@@ -36,12 +36,15 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
  // EOP
            dispatcher.reset();
 
-           dispatcher.listen_event("try_to_log", os_pipelines.load_tokens_and_select_actions, false);
+           dispatcher.listen_event("try_to_log", os_pipelines.load_tokens_and_select_tenants, false);
 
-           dispatcher.listen_event("action_selected", os_pipelines.load_action_selected, false);
+           dispatcher.listen_event("tenant_selected", os_pipelines.select_actions, false);
            
-           dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_list_resources", 
-                                                os_pipelines.load_endpoints_and_select_for_current_tenant, false);
+               dispatcher.listen_pipe("ON_INIT", "select_actions",  os_pipelines.load_endpoints_for_current_tenant, false);   
+           dispatcher.listen_event("action_selected", os_pipelines.run_action_selected, false);
+           
+           // dispatcher.listen_state_step_in_pipe("acttttenant_selected","select_tenants","select_tenant_to_list_resources", 
+           //                                      os_pipelines.load_endpoints_and_select_for_current_tenant, false);
 
            dispatcher.listen_event("service_selected", os_pipelines.load_endpoint_selected, false);
 
@@ -56,7 +59,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
            // Filtering all tansformations ::: AOP 
            dispatcher.reset_filters();
-               dispatcher.filter( filters.logging(true));
+//               dispatcher.filter( filters.logging(true));
 
                
  //          dispatcher.filter( filters.clone_data);

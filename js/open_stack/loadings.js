@@ -35,6 +35,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    var data_operation=data_state.data_operation;
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "").replace(common.local_ip,data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
                    data_state.dao=dao_object;
+                   console.dir(data_state.dao);
                    $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");
 //                   console.dir(dao_object);
                    callback(null, data_state);
@@ -78,6 +79,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                //TODO  related to openstack local conf
 
                            if(data_state.ip.indexOf(common.local_ip)!=-1){
+                               console.log("---_____"+item.endpoints[0].publicURL);
 
                                item.endpoints[0].publicURL=item.endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
                            }
@@ -86,6 +88,13 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            });
                            data_state.token_id=data_state.dao.result.access.token.id;
                            $('#content').prepend( "<h2>endPoints loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );                                                  
+                       data_state.endpoints={};
+                       data_state.service_catalog_select.map(function(item){
+                           data_state.endpoints[item.hidden]=item.item.endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
+                       });
+                       
+
+
                            callback(null, data_state);
                    }
 
@@ -125,25 +134,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                },
 
 
-               // tenants:function (data_state, callback){
-               //     $.ajax({
-               //         type: "POST",
-               //         url: "http://"+data_state.host+"/tenants",
-               //         data:{token:data_state.token_id, s_ip:data_state.ip}
-               //     }).done(function( msg ) {
-               //         if(!msg.error){
-
-               //             data_state.tenants_select=[];
-               //             msg.tenants.map(function(item){
-               //                 data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
-               //             });
-               //             $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );
-               //             callback(null, data_state);
-               //         }else{
-               //             callback(msg.error, data_state);
-               //         }
-               //     });
-               // },
 
                glance_operations:function(data_state, callback){
                    data_state.suboptions_select=[];
