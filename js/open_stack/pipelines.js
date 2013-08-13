@@ -64,7 +64,37 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                                   "listing_flavors": function(){return get_load_operation("list_flavors", operations.list_flavors);},
                                                   "listing_networks": function(){return get_load_operation("list_networks", operations.list_networks);},
                                                   "listing_subnets": function(){return get_load_operation("list_subnets", operations.list_subnets);},
-                                                  "listing_servers": function(){return get_load_operation("list_servers", operations.list_servers);}
+                                                  "listing_servers": function(){return get_load_operation("list_servers", operations.list_servers);},
+                                                  "create_server":function(){
+                                                      return new Pipeline("create_server")
+                       .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
+                           //                    $('#tenants').fadeOut();
+                           
+                           $('#suboperations').append("<div id='server_name_form'><input type='text' id='server_name' value='test_server'></div>");
+
+                           
+                           $('#server_name').keypress( function(e){
+                               if(e.which==13){
+                                   data_state.server_name=$('#server_name').val();
+                                   if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected)
+                                       callback(null, data_state);
+                                   else
+                                       alert("select first and image and flavor to create this server");
+                               }else{
+
+                                   
+                               }
+                           });
+                       }))
+                       .addTransformation( loadings.create_server)
+                       .set_on_success(function(results, pipeline){
+                           alert("server_name: "+results.server_name+"\n------>CREATED");
+                           
+                       });
+
+                                                      
+                                                  }
+                                                  
                                               }, 
                                               "action_selected");
                },
@@ -127,6 +157,9 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    ;
 },
 
+               
+
+               
                run_action:function(){
                    return new Pipeline(this.name)
                        .addTransformation(new StateStep("alerta", function(data_state, callback){
@@ -179,7 +212,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                            $('#server_name').keypress( function(e){
                                if(e.which==13){
                                    data_state.server_name=$('#server_name').val();
-                                   if(data_state.flavor_selected && data_state.image_selected)
+                                   if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected)
                                        callback(null, data_state);
                                    else
                                        alert("select first and image and flavor to create this server");
