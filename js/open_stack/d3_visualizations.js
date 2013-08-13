@@ -6,6 +6,7 @@ define([  "js/common.js","js/open_stack/loadings.js",
                return new Pipeline("d3_show_resources_from_tenant")
                    .addTransformation(d3_show_tenants())
                    .addTransformation(new StateStep("d3_show_images", function(data_state, callback){
+                       if(data_state["LIST IMAGES"]){
                        var images_node=create_node("images", create_data("folder", {name:"images"}));
                        
                        data_state["LIST IMAGES"].images.map(function(item){
@@ -38,10 +39,12 @@ define([  "js/common.js","js/open_stack/loadings.js",
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),
                                   data_state,this, dispatcher, on_success_callback);
                        //TODO remove if we need selection
+                       }
                        callback(null, data_state);
                        
                    }))
                    .addTransformation(new StateStep("d3_show_networks", function(data_state, callback){
+                       if(data_state["LIST NETWORKS"]){
                        var networks_node=create_node("networks", create_data("folder", {name:"networks"}));
                        
                        data_state["LIST NETWORKS"].networks.map(function(item){
@@ -70,10 +73,12 @@ define([  "js/common.js","js/open_stack/loadings.js",
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),
                                   data_state,this, dispatcher, on_success_callback);
                        //TODO remove if we need selection
+                         }
                        callback(null, data_state);
                        
                    }))
                    .addTransformation(new StateStep("d3_show_flavors", function(data_state, callback){
+                          if(data_state["LIST FLAVORS"]){
                        var flavors_node=create_node("flavors", create_data("folder", {name:"flavors"}));
                        
                        data_state["LIST FLAVORS"].flavors.map(function(item){
@@ -105,6 +110,7 @@ define([  "js/common.js","js/open_stack/loadings.js",
                        d3_cluster($.extend(true, {}, data_state.d3_open_stack),
                                   data_state,this, dispatcher, on_success_callback);
                        //TODO remove if we need selection
+                         }
                        callback(null, data_state);
                        
                    }));

@@ -112,7 +112,37 @@ app.post('/endpoints', function(req, res){
 app.post('/create_server', function(req, res){
     sys.puts(toJson(req.body));
     rest.postJson(req.body.endpoint+'/servers',
-            {"server": {"name": req.body.server_name, "flavorRef":req.body.flavorRef, "imageRef":req.body.imageRef}},{headers:{ "X-Auth-Token": req.body.token }} ).on('complete', function(result) {
+            {"server": {"name": req.body.server_name, "flavorRef":req.body.flavorRef, "imageRef":req.body.imageRef,"networks": [{"uuid": req.body.network_id}]}},{headers:{ "X-Auth-Token": req.body.token }} ).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+          //  sys.puts("NO communication ERROR: "+toJson(result));
+        }
+    });
+});
+app.post('/create_network', function(req, res){
+//{"network":{"name": "sample_network","admin_state_up": false}}
+    sys.puts(toJson(req.body));
+    rest.postJson(req.body.endpoint+'/v2.0/networks',
+            {"network": {"name": req.body.network_name, "admin_state_up":false, "shared":true}},{headers:{ "X-Auth-Token": req.body.token }} ).on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+          //  sys.puts("NO communication ERROR: "+toJson(result));
+        }
+    });
+});
+app.post('/create_subnet', function(req, res){
+//{"subnet":{"network_id":"'$__NETWORK_ID__'","ip_version":4,"cidr":"10.0.3.0/24","allocation_pools":[{"start":"10.0.3.20","end":"10.0.3.150"}]}}
+    sys.puts(toJson(req.body));
+    rest.postJson(req.body.endpoint+'/v2.0/subnets',
+            {"subnet": {"network_id": req.body.network_id, "ip_version":4,"cidr":req.body.cidr, "allocation_pools":[{"start":req.body.start, "end":req.body.end}]}},{headers:{ "X-Auth-Token": req.body.token }} ).on('complete', function(result) {
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
             res.send('Error: ' + result.message);
@@ -140,62 +170,8 @@ sys.puts('**************** http://'+req.body.s_host+req.body.s_url);
 
 });
 
-/*
-app.get('/tenant/:id', function(req, res){
-
-    rest.get('http://192.168.1.22:35357/v2.0/tenants/'+req.params.id,
-             {headers:{ "X-Auth-Token": auth_token_admin }}).on('complete', function(result) {
-        if (result instanceof Error) {
-            sys.puts('Error: ' + result.message);
-            res.send('Error: ' + result.message);
-            //            this.retry(5000); // try again after 5 sec
-        } else {
-            res.send(result);
-            sys.puts(toJson(result));
-        }
-    });
-});
 
 
-app.get('/tokens/:id', function(req, res){
-
-    rest.get('http://192.168.1.22:35357/v2.0/tokens/'+req.params.id,
-             {headers:{ "X-Auth-Token": auth_token_admin }}).on('complete', function(result) {
-        if (result instanceof Error) {
-            sys.puts('Error: ' + result.message);
-            res.send('Error: ' + result.message);
-            //            this.retry(5000); // try again after 5 sec
-        } else {
-            res.send(result);
-            sys.puts(toJson(result));
-        }
-    });
-});
-app.get('/tenant_servers/:id', function(req, res){
-    sys.puts("*************"+req.params.id);
-    rest.get('http://192.168.1.22:3333/v2.0/'+req.params.id+'/servers',
-             {headers:{ "X-Auth-Token": auth_token_admin}}).on('complete', function(result) {
-        if (result instanceof Error) {
-            sys.puts('Error: ' + result.message);
-            res.send('Error: ' + result.message);
-            //            this.retry(5000); // try again after 5 sec
-        } else {
-            res.send(result);
-            sys.puts(toJson(result));
-        }
-    });
-});
-*/
-
-    // $.ajax({
-    //     type: "GET",
-    //     url: "http://192.168.1.22:35357/v2.0/tenants",
-    //     headers: { "X-Auth-Token": "tokentoken" }
-    // }).done(function( msg ) {
-    //     res.send("hola!");
-    //     // alert( "Data recieved: " + msg );
-    //     // callback(null, data_state);
-    // });
 
 var port = process.env.PORT || 3000;
 app.listen(port, function() {

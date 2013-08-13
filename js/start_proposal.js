@@ -51,10 +51,12 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
 
                //D3 openStack client UI
-               dispatcher.listen_event("server_resources_loaded", d3_pipelines.d3_show_images_and_flavors,false);                   
+               dispatcher.listen_event("server_resources_loaded", d3_pipelines.d3_show_images_and_flavors,true);                   
 
 
                dispatcher.listen_event("send_create_server", os_pipelines.create_server, false);
+               dispatcher.listen_event("send_create_network", os_pipelines.create_network, false);
+               dispatcher.listen_event("send_create_subnet", os_pipelines.create_subnet, false);
                
 
 

@@ -47,7 +47,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                        {visible:"listing_networks", hidden:"listing_networks"},
                                                                        {visible:"listing_subnets", hidden:"listing_subnets"},
                                                                        {visible:"listing_servers", hidden:"listing_servers"},
-                                                                       {visible:"create server", hidden:"create_server"}
+                                                                       {visible:"create server", hidden:"create_server"},
+                                                                       {visible:"create network", hidden:"create_network"},
+                                                                       {visible:"create subnet", hidden:"create_subnet"}
 
                                                                    ], 
                                                                                
