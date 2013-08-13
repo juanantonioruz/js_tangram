@@ -44,7 +44,8 @@ function colorize(d){
     };
 
 
-    function check_path(colector, container, path_array){
+    function check_path(colector,  container, path_array){
+
                 var is_in_path=false;
                 if(colector.ns=="root") is_in_path=true;
 //            console.log(colector.ns+"........"+container.path+":::::"+path_array);
@@ -103,7 +104,12 @@ function colorize(d){
 
    
 
-    function render(root, div_id, item_fn, path_array){
+    function render(root,window_id_ref,  div_id, item_fn, path_array){
+        if(arguments.length!=5) alert("you have to adapt to the changes of this function arguments.. in history_cluster.js/render"+arguments.length);
+
+
+        var div_container=$(window_id_ref.document).find(div_id);
+
         console.log("RENDERING VISUALIZATION!!");
 
         contador=2;
@@ -113,9 +119,9 @@ function colorize(d){
         
         //     console.dir(int_root);
 
-        $(div_id).empty();
-        $(div_id).hide();
-        var svg = d3.select(div_id).append("svg")
+        div_container.empty();
+        div_container.hide();
+        var svg = d3.select(window_id_ref.document).select(div_id).append("svg")
                 .attr("width", width)
                 .attr("height", contador*space_item)
                 .append("g")
@@ -175,7 +181,7 @@ function colorize(d){
                 var context_call={path_array:path_array, d:d};
                 item_fn.fn.bind(context_call).call();
                 if(context_call.rerender)
-                    render(root, div_id, item_fn, path_array);
+                    render(root, window_id_ref, div_id, item_fn, path_array);
                 // not necesary but this works if(d3.select(this).attr("display"))
 
             })
@@ -228,13 +234,13 @@ function colorize(d){
                 else
                     d.item.folder=false;
                 // not necesary but this works if(d3.select(this).attr("display"))
-                render(root, div_id, item_fn, path_array);
+                render(root, window_id_ref, div_id, item_fn, path_array);
             })
             .on(item_fn.mouse_event_name, function(d,i){
                 var context_call={path_array:path_array, d:d};
                 item_fn.fn.bind(context_call).call();
                 if(context_call.rerender)
-                    render(root, div_id, item_fn, path_array);
+                    render(root, window_id_ref, div_id, item_fn, path_array);
                 // not necesary but this works if(d3.select(this).attr("display"))
 
             })
@@ -281,7 +287,9 @@ function colorize(d){
                  );
 
         d3.select(self.frameElement).style("height", contador*space_item + "px");        
-        $(div_id).fadeIn(100, function(){
+
+       
+        $(window_id_ref.document).find(div_id).fadeIn(100, function(){
             var selection=d3.select("#folder");
             if(!selection.empty()){
 
@@ -292,8 +300,10 @@ function colorize(d){
 
             }
             
-            
+            $(window_id_ref).scrollTop($(window_id_ref.document).height());
         });
+            
+
         
 
 

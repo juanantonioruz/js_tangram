@@ -1,14 +1,21 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
-       function(common, dao, selects, loadings,html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
+       function(common, dao, selects, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
 
            function get_select_tenant_for_current_user(pipe_ns){
                return new Pipeline(pipe_ns)
-                   .addTransformation(loadings.prepare_tenants_dao)
+                   .addTransformation(loadings.prepare_tenants)
                    .addTransformation(dao.dao)
                    .addTransformation(loadings.store_tenants)
                    .addTransformation(selects.tenants);
            }
-
+           function get_load_operation(pipe_ns, operation_fn){
+               return new Pipeline(pipe_ns+ "_load_operation")
+                   .addTransformation(operations.show_operation_value_selected)
+                   .addTransformation(operation_fn)
+                   .addTransformation(loadings.prepare_operation)
+                   .addTransformation(dao.dao)
+                   .addTransformation(loadings.show_operation_result);
+           }
            function add_load(pipe, fn){
            }
            var result={
@@ -53,31 +60,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    
                    return new Mapper_Pipeline(this.name, 
                                               {
-                                                  "listing_images":
-                                                  function(){
-                                                      return new Pipeline("listing_images")
-
-
-                                                          .addTransformation(new StateStep("alerta", function(data_state, callback){
-                                                              //                       $('#content').prepend( "<h2>endPoints loadedlsi</h2><pre><code class='json'>"+common.toJson(data_state.action_selected)+"</code></pre>" );        
-                                                              $('#content').prepend( "<h2>action_selected:</h2><pre><code class='json'>"+common.toJson(data_state.action_selected)+"</code></pre>" );                                                  
-
-                                                              $('#content').prepend( "<h2>analyse:</h2><pre><code class='json'>"+common.toJson(data_state.endpoints)+"</code></pre>" );                                                  
-                                                              data_state.data_operation= {item:{service_type:"image", url:"/images"}, visible:"LIST IMAGES", hidden:'images'};
-                                                              data_state.data_operation.title="listing_images";
-                                                              data_state.data_operation.url=data_state.data_operation.item.url;
-                                                              data_state.data_operation.host=data_state.endpoints.nova;
-                                                              
-                                                              callback(null, data_state);
-                                                          }))
-                                                          .addTransformation(new Pipeline("loading_operation")
-                                                                             .addTransformation(loadings.prepare_operation)
-                                                                             .addTransformation(dao.dao)
-                                                                             .addTransformation(loadings.show_operation_result))
-
-                                                      ;
-                                                  }
-
+                                                  "listing_images": function(){return get_load_operation("list_images", operations.list_images);},
+                                                  "listing_flavors": function(){return get_load_operation("list_flavors", operations.list_flavors);}
                                               }, 
                                               "action_selected");
                },
@@ -165,8 +149,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                return (element.type == "compute");
                            });
 
-                               if(data_state.ip.indexOf(common.local_ip)!=-1)
-                                   concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
+                           if(data_state.ip.indexOf(common.local_ip)!=-1)
+                               concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
 
 
                            data_state.nova_endpoint_url=concordances[0].endpoints[0].publicURL;

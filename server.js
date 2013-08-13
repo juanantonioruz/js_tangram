@@ -48,6 +48,13 @@ app.get('/home/', function(req, res) {
     });
 });
 
+app.get('/child.html', function(req, res) {
+    fs.readFile(__dirname + '/child.html', 'utf8', function(err, text){
+        res.send(text);
+    });
+});
+
+
 
 app.get('/SpecRunner', function(req, res) {
     fs.readFile(__dirname + '/SpecRunner.html', 'utf8', function(err, text){

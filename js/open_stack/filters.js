@@ -62,8 +62,8 @@ define( function() {
         };
     }
 
-    function d3_debug_pipelines_filter(render, div_id, item_fn, path){
-        
+    function d3_debug_pipelines_filter(render, window_id_ref, div_id, item_fn, path){
+
         var active_pipelines=[];
 
         return function (data_state, callback){
@@ -94,7 +94,7 @@ define( function() {
                     this.target.active_parent.children.push(this.target);
 
                     if(active_pipelines.length==0)
-                        render(data_state, div_id,item_fn, path);
+                        render(data_state,window_id_ref, div_id,item_fn, path);
 
                 }else{
                     //active_pipelines.push(this.target);

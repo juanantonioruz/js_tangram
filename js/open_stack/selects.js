@@ -143,6 +143,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                                
                                                                    [
                                                                        {visible:"listing_images", hidden:"listing_images"},
+                                                                       {visible:"listing_flavors", hidden:"listing_flavors"},
                                                                        {visible:"create server", hidden:"create_server"}
                                                                        ,{visible:"listing resources", hidden:"listing_resources"}
                                                                    ], 

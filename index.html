@@ -17,6 +17,12 @@
     <script src="js/jquery.cookie.js"></script>
     <script>
 
+var childWin;
+          childWin = window.open('child.html','child', "width=1900, height=1150, location=no, menubar=no, scrollbars=no, status=no, toolbar=no");
+          if (window.focus) {childWin.focus();};
+//$(childWin.document).find("#pipelines")
+        childWin.moveBy(250, 250);
+
    
 // d3 related functions
 function create_node(the_name, _data){
@@ -40,6 +46,7 @@ function create_data(_type, _data){
       $.get('../js/html/my_template.html', function(t) { $.template('my_template', t); });
       $.get('../js/html/component_text.html', function(t) { $.template('component_text', t); });
       $.get('../js/html/component_image.html', function(t) { $.template('component_image', t); });
+
 
 
     </script>
@@ -109,6 +116,7 @@ border: 1px solid #DDD;
 <div id="history"></div>
 <div class='chart' id='chart'>
 </div>
+<!--input id="openWin" type="button" value="open window d3 visualizations"-->
 You can select one: <a href='?dev=true'>dev examples</a>
 or <a href='?proposal=true'>proposal</a>  
     <div id="input_user" >

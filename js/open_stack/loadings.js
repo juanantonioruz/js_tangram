@@ -1,6 +1,7 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result= {
+
                prepare_tokens:function (data_state, callback){
                    data_state.dao={
                        method:'POST',
@@ -92,6 +93,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        data_state.service_catalog_select.map(function(item){
                            data_state.endpoints[item.hidden]=item.item.endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
                        });
+
+                       $('#content').prepend( "<h2>endPoints analysed:</h2><pre><code class='json'>"+common.toJson(data_state.endpoints)+"</code></pre>" );                                             
+
                        
 
 
@@ -101,7 +105,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            
                },
 
-               prepare_tenants_dao:function(data_state, callback){
+               prepare_tenants:function(data_state, callback){
                    data_state.dao={
                        method:'POST',
                        action:"http://"+data_state.host+"/tenants", 
