@@ -48,6 +48,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    var msg=data_state.dao.result;
                    $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
                    data_state[data_operation.title]=msg;
+//                   alert(data_operation.title);
                    callback(null, data_state);
 
                },

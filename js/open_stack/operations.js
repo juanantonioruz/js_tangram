@@ -24,7 +24,23 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                   data_state.data_operation= {item:{service_type:"nova", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"};
                   customize_operation_data(data_state);
                    callback(null, data_state);
+               },
+              list_networks:function (data_state, callback){
+                  data_state.data_operation= {item:{service_type:"quantum", url:"/v2.0/networks"}, visible:"LIST NETWORKS", hidden:"quantum-networks"};
+                  customize_operation_data(data_state);
+                   callback(null, data_state);
+               },
+              list_subnets:function (data_state, callback){
+                  data_state.data_operation= {item:{service_type:"quantum", url:"/v2.0/subnets"}, visible:"LIST SUBNETS", hidden:"quantum-subnets"};
+                  customize_operation_data(data_state);
+                   callback(null, data_state);
+               },
+              list_servers:function (data_state, callback){
+                  data_state.data_operation= {item:{service_type:"nova", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"};
+                  customize_operation_data(data_state);
+                   callback(null, data_state);
                }
+
 
 
            };

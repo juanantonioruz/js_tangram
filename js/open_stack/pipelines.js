@@ -61,7 +61,10 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    return new Mapper_Pipeline(this.name, 
                                               {
                                                   "listing_images": function(){return get_load_operation("list_images", operations.list_images);},
-                                                  "listing_flavors": function(){return get_load_operation("list_flavors", operations.list_flavors);}
+                                                  "listing_flavors": function(){return get_load_operation("list_flavors", operations.list_flavors);},
+                                                  "listing_networks": function(){return get_load_operation("list_networks", operations.list_networks);},
+                                                  "listing_subnets": function(){return get_load_operation("list_subnets", operations.list_subnets);},
+                                                  "listing_servers": function(){return get_load_operation("list_servers", operations.list_servers);}
                                               }, 
                                               "action_selected");
                },
@@ -115,6 +118,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
 
                },
+
+               load_images_flavors_networks_from_tenant:function(){
+                   return new Pipeline(this.name)
+                   .addTransformation(get_load_operation("list_images", operations.list_images))
+                   .addTransformation(get_load_operation("list_flavors", operations.list_flavors))
+                   .addTransformation(get_load_operation("list_networks", operations.list_networks))
+                   ;
+},
 
                run_action:function(){
                    return new Pipeline(this.name)

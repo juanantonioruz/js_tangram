@@ -144,8 +144,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                    [
                                                                        {visible:"listing_images", hidden:"listing_images"},
                                                                        {visible:"listing_flavors", hidden:"listing_flavors"},
+                                                                       {visible:"listing_networks", hidden:"listing_networks"},
+                                                                       {visible:"listing_subnets", hidden:"listing_subnets"},
+                                                                       {visible:"listing_servers", hidden:"listing_servers"},
                                                                        {visible:"create server", hidden:"create_server"}
-                                                                       ,{visible:"listing resources", hidden:"listing_resources"}
+
                                                                    ], 
                                                                                
                                                                    function(select_dom_id){ 

@@ -16,11 +16,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                        if(!msg.error ){
                            dao_object.result=msg;
-                           console.dir(dao_object.result);
+                          // console.dir(dao_object.result);
                            callback(null, data_state);   
                        }else{
                            dao_object.error=msg.error;                           
-                           console.dir(msg.error);
+                          // console.dir(msg.error);
 
                            callback(msg.error[dao_object.error_property], data_state);
                        }
