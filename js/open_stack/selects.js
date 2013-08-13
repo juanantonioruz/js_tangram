@@ -30,6 +30,44 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
            var result= {
                
+               actions:function(data_state, callback){
+                   var target_pipeline=this.pipeline;
+                   show_fn_result_to_the_user_and_wait("please select an action: ", 
+                                                       function(){
+                                                           $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div><div id='suboperations'></div>").fadeIn(100, function(){
+                                                               
+                                                               show_dom_select(
+                                                                   "#init_filter", 
+                                                                               
+                                                                   "#actions_available",
+                                                                               
+                                                                   [
+                                                                       {visible:"listing_images", hidden:"listing_images"},
+                                                                       {visible:"listing_flavors", hidden:"listing_flavors"},
+                                                                       {visible:"listing_networks", hidden:"listing_networks"},
+                                                                       {visible:"listing_subnets", hidden:"listing_subnets"},
+                                                                       {visible:"listing_servers", hidden:"listing_servers"},
+                                                                       {visible:"create server", hidden:"create_server"}
+
+                                                                   ], 
+                                                                               
+                                                                   function(select_dom_id){ 
+                                                                       return function(){
+                                                                           var selected=$(select_dom_id+" option:selected").first().val();
+                                                                           data_state.action_selected=selected;
+                                                                           show_message_to_the_user("action selected: "+selected);
+                                                                           $('#suboperations').fadeOut().html("").fadeIn();
+
+                                                                           dispatcher.dispatch("action_selected", target_pipeline,data_state,  function(res,pipeline){console.log("action_selected!");} );
+                                                                       };
+                                                                   })();
+                                                               
+                                                               callback(null, data_state);
+                                                           });
+
+                                                       });
+               },
+
                available_service_operations:function (data_state, callback){
                    
 
@@ -128,45 +166,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                        show_tenant_select);
 
 
-               },
-
-               actions:function(data_state, callback){
-                   var target_pipeline=this.pipeline;
-                   show_fn_result_to_the_user_and_wait("please select an action: ", 
-                                                       function(){
-                                                           $('#register_form').append("<div id='actions_available'><h2> actions available</h2></div><div id='suboperations'></div>").fadeIn(100, function(){
-                                                               
-                                                               show_dom_select(
-                                                                   "#init_filter", 
-                                                                               
-                                                                   "#actions_available",
-                                                                               
-                                                                   [
-                                                                       {visible:"listing_images", hidden:"listing_images"},
-                                                                       {visible:"listing_flavors", hidden:"listing_flavors"},
-                                                                       {visible:"listing_networks", hidden:"listing_networks"},
-                                                                       {visible:"listing_subnets", hidden:"listing_subnets"},
-                                                                       {visible:"listing_servers", hidden:"listing_servers"},
-                                                                       {visible:"create server", hidden:"create_server"}
-
-                                                                   ], 
-                                                                               
-                                                                   function(select_dom_id){ 
-                                                                       return function(){
-                                                                           var selected=$(select_dom_id+" option:selected").first().val();
-                                                                           data_state.action_selected=selected;
-                                                                           show_message_to_the_user("action selected: "+selected);
-                                                                           $('#suboperations').fadeOut().html("").fadeIn();
-
-                                                                           dispatcher.dispatch("action_selected", target_pipeline,data_state,  function(res,pipeline){console.log("action_selected!");} );
-                                                                       };
-                                                                   })();
-                                                               
-                                                               callback(null, data_state);
-                                                           });
-
-                                                       });
                }
+
+
                
            };
            return common.naming_fns(result, "select_");

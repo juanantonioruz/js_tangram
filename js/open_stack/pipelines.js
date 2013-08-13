@@ -1,5 +1,5 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js"],
-       function(common, dao, selects, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js","js/pipelines/dispatcher.js"],
+       function(common, dao, selects, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep, dispatcher) {
 
            function get_select_tenant_for_current_user(pipe_ns){
                return new Pipeline(pipe_ns)
@@ -19,42 +19,24 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
            function add_load(pipe, fn){
            }
            var result={
+               //Public
                register:function(){
                    return new Pipeline(this.name)
                        .addTransformation( html_helper.register_form  );
                },
-               load_tokens_and_select_tenants:function(){
+               load_tokens_and_load_tenants:function(){
                    return new Pipeline(this.name)
                        .addTransformation(loadings.prepare_tokens)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.store_token_id)
                        .addTransformation( get_select_tenant_for_current_user("load_and_show_select_tenants"));
                },
-               select_actions:function(){
+               show_select_actions:function(){
                    return new Pipeline(this.name)
+                       .addTransformation(result.load_endpoints_for_current_tenant)
                        .addTransformation(selects.actions);
 
-               },
-               
-               load_action_selected:function(){
-                   return new Mapper_Pipeline(this.name, 
-                                              {"listing_resources": result.select_tenant_to_list_resources,
-                                               "create_server":result.select_tenant_to_create_server}, "action_selected");
-               },
-
-               select_tenant_to_list_resources:function(){
-                   return get_select_tenant_for_current_user(this.name);
-               },
-               select_tenant_to_create_server:function(){
-                   return get_select_tenant_for_current_user(this.name);
-               },
-               
-               load_endpoints_for_current_tenant:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation( loadings.prepare_endpoints)
-                       .addTransformation( dao.dao)
-                       .addTransformation( loadings.store_endpoints);
-                   //                       .addTransformation(  selects.endpoints);
+                   
                },
                run_action_selected:function(){
                    
@@ -66,70 +48,55 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                                                   "listing_subnets": function(){return get_load_operation("list_subnets", operations.list_subnets);},
                                                   "listing_servers": function(){return get_load_operation("list_servers", operations.list_servers);},
                                                   "create_server":function(){
-                                                      return new Pipeline("create_server")
-                       .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
-                           //                    $('#tenants').fadeOut();
-                           
-                           $('#suboperations').append("<div id='server_name_form'><input type='text' id='server_name' value='test_server'></div>");
+                                                      return new Pipeline("creating_server")
+                                                          .addTransformation(result.load_images_flavors_networks_from_tenant)
+                                                          .addTransformation(new StateStep("insert_server_name", function(data_state, callback){
+                                                              //                    $('#tenants').fadeOut();
+                                                              var me=this;
+                                                              $('#suboperations').append("<div id='server_name_form'><input type='text' id='server_name' value='test_server'></div>");
 
-                           
-                           $('#server_name').keypress( function(e){
-                               if(e.which==13){
-                                   data_state.server_name=$('#server_name').val();
-                                   if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected)
-                                       callback(null, data_state);
-                                   else
-                                       alert("select first and image and flavor to create this server");
-                               }else{
+                                                              
+                                                              $('#server_name').keypress( function(e){
+                                                                  if(e.which==13){
+                                                                      data_state.server_name=$('#server_name').val();
+                                                                      if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected){
+//                                                                          dispatcher.dispatch("send_create_server", me, data_state);
+                                                                          dispatcher.dispatch("send_create_server", me.pipeline, data_state);
 
-                                   
-                               }
-                           });
-                       }))
-                       .addTransformation( loadings.create_server)
-                       .set_on_success(function(results, pipeline){
-                           alert("server_name: "+results.server_name+"\n------>CREATED");
-                           
-                       });
+                                                                      }else
+                                                                          alert("select first and image and flavor to create this server");
+                                                                  }else{
+
+                                                                      
+                                                                  }
+                                                              });
+                                                              callback(null, data_state);
+                                                          }));
 
                                                       
                                                   }
                                                   
                                               }, 
                                               "action_selected");
+               },               
+               create_server:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation( loadings.create_server)
+                       .set_on_success(function(results, pipeline){
+                           alert("created server_name: "+results.server_name);
+
+                           
+                       });
+
                },
-               load_endpoint_selected:function(){
-                   
-                   return new Mapper_Pipeline(this.name, 
-                                              {
-                                                  "glance":
-                                                  function(){
-                                                      return new Pipeline("glance_operations")
-                                                          .addTransformation( loadings.glance_operations)
-                                                          .addTransformation( selects.available_service_operations);
-                                                  }, 
-                                                  "quantum":
-                                                  function(){
-                                                      return new Pipeline("quantum_operations")
-                                                          .addTransformation( loadings.quantum_operations)
-                                                          .addTransformation( selects.available_service_operations);
-                                                  }, 
 
-
-                                                  "nova":function(){
-                                                      return new Pipeline("nova_operations")
-                                                          .addTransformation( loadings.nova_operations)
-                                                          .addTransformation( selects.available_service_operations);
-                                                  },
-                                                  "cinder":function(){
-                                                      return new Pipeline("cinder_operations")
-                                                          .addTransformation( loadings.cinder_operations)
-                                                          .addTransformation( selects.available_service_operations);
-                                                  }
-
-
-                                              }, 
-                                              "option_service_selected_name");
+               //hide this layer
+               load_endpoints_for_current_tenant:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation( loadings.prepare_endpoints)
+                       .addTransformation( dao.dao)
+                       .addTransformation( loadings.store_endpoints);
+                   //                       .addTransformation(  selects.endpoints);
                },
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
@@ -138,6 +105,21 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },
+               load_images_flavors_networks_from_tenant:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(get_load_operation("list_images", operations.list_images))
+                       .addTransformation(get_load_operation("list_flavors", operations.list_flavors))
+                       .addTransformation(get_load_operation("list_networks", operations.list_networks))
+                       .addTransformation(new StateStep("end_resouces_loaded", function(data_state, callback){
+                           dispatcher.dispatch("server_resources_loaded", this, data_state);
+                           callback(null, data_state);
+                       }))
+
+                   ;
+               },
+               
+
+               //helpers with a bit of  nosense
                alerta:function(){
 
                    return new Pipeline(this.name)
@@ -147,89 +129,11 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        }));
 
 
-               },
-
-               load_images_flavors_networks_from_tenant:function(){
-                   return new Pipeline(this.name)
-                   .addTransformation(get_load_operation("list_images", operations.list_images))
-                   .addTransformation(get_load_operation("list_flavors", operations.list_flavors))
-                   .addTransformation(get_load_operation("list_networks", operations.list_networks))
-                   ;
-},
-
-               
-
-               
-               run_action:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(new StateStep("alerta", function(data_state, callback){
-                           $('#content').prepend( "<h2>action_selected:</h2><pre><code class='json'>"+common.toJson(data_state.action_selected)+"</code></pre>" );                                                  
-                           common.toJson(data_state.action_selected);
-                           callback(null, data_state);
-                       }));
-               },
-               create_server_for_selected_tenant:function(){
-
-
-                   function get_load_pipe(name, data_operation){
-                       return new Pipeline(name)
-                           .addTransformation(new StateStep("create_server_"+name, function(data_state, callback){
-                               data_state.data_operation={title:data_operation.title, url:data_operation.url, host:data_state[data_operation.host]};
-                               loadings.prepare_operation.transform_fn(data_state, callback);
-                           }))
-                           .addTransformation(dao.dao)
-                           .addTransformation(loadings.show_operation_result);
-                   }
-
-
-                   return new Pipeline(this.name)
-                       .addTransformation( loadings.prepare_endpoints)
-                       .addTransformation( dao.dao)
-                       .addTransformation( loadings.store_endpoints)
-                   //   .addTransformation( loadings.prepare_select_endpoints)
-                       .addTransformation(new StateStep("create_server_select_nova_endpoint", function(data_state, callback){
-
-                           var concordances=data_state.serviceCatalog.filter(function (element, index, array) {
-                               return (element.type == "compute");
-                           });
-
-                           if(data_state.ip.indexOf(common.local_ip)!=-1)
-                               concordances[0].endpoints[0].publicURL=concordances[0].endpoints[0].publicURL.replace(common.local_ip,data_state.ip );
-
-
-                           data_state.nova_endpoint_url=concordances[0].endpoints[0].publicURL;
-                           
-                           callback(null, data_state);
-                       }))
-                       .addPipe(get_load_pipe("load_nova_images",{title:"nova_images", url:"/images", host:"nova_endpoint_url"}))
-                       .addPipe(get_load_pipe("load_nova_flavors",{title:"nova_flavors", url:"/flavors", host:"nova_endpoint_url"}))
-                       .addTransformation(new StateStep("create_server_wait_for_the_name", function(data_state, callback){
-                           //                    $('#tenants').fadeOut();
-                           
-                           $('#suboperations').append("<div id='server_name_form'><input type='text' id='server_name' value='test_server'></div>");
-
-                           
-                           $('#server_name').keypress( function(e){
-                               if(e.which==13){
-                                   data_state.server_name=$('#server_name').val();
-                                   if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected)
-                                       callback(null, data_state);
-                                   else
-                                       alert("select first and image and flavor to create this server");
-                               }else{
-
-                                   
-                               }
-                           });
-                       }))
-                       .addTransformation( loadings.create_server)
-                       .set_on_success(function(results, pipeline){
-                           alert("server_name: "+results.server_name+"\n------>endpoint: "+results.nova_endpoint_url+"\n---> first_image: "+results.nova_images.images[0].links[0].href+"\n--->first_flavor: "+
-                                 results.nova_flavors.flavors[0].links[0].href);
-                           
-                       })
-                   ;
                }
+
+
+
+
 
            };
            

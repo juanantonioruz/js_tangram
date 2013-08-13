@@ -36,34 +36,29 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                // EOP
                dispatcher.reset();
 
-               dispatcher.listen_event("try_to_log", os_pipelines.load_tokens_and_select_tenants, false);
+               dispatcher.listen_event("try_to_log", os_pipelines.load_tokens_and_load_tenants, false);
 
-               dispatcher.listen_pipe("ON_END", "load_tokens_and_select_tenants", d3_pipelines.d3_show_tenants,true);   
+               //D3 openStack client UI
+               dispatcher.listen_event("tenants_stored", d3_pipelines.d3_show_tenants,true);   
 
-               dispatcher.listen_event("tenant_selected", os_pipelines.select_actions, false);
 
-               dispatcher.listen_pipe("ON_END", "select_actions", os_pipelines.load_images_flavors_networks_from_tenant, false);   
-               dispatcher.listen_pipe("ON_END", "load_images_flavors_networks_from_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
+               dispatcher.listen_event("tenant_selected", os_pipelines.show_select_actions, false);
 
-               
-               dispatcher.listen_pipe("ON_INIT", "select_actions",  os_pipelines.load_endpoints_for_current_tenant, false);   
+
+
+
                dispatcher.listen_event("action_selected", os_pipelines.run_action_selected, false);
+
+
+               //D3 openStack client UI
+               dispatcher.listen_event("server_resources_loaded", d3_pipelines.d3_show_images_and_flavors,false);                   
+
+
+               dispatcher.listen_event("send_create_server", os_pipelines.create_server, false);
                
-               // dispatcher.listen_state_step_in_pipe("acttttenant_selected","select_tenants","select_tenant_to_list_resources", 
-               //                                      os_pipelines.load_endpoints_and_select_for_current_tenant, false);
 
-               // dispatcher.listen_event("service_selected", os_pipelines.load_endpoint_selected, false);
 
-               // dispatcher.listen_event("operation_selected", os_pipelines.load_operation_selected, false);
-
-               // dispatcher.listen_state_step_in_pipe("tenant_selected","select_tenants","select_tenant_to_create_server",  os_pipelines.create_server_for_selected_tenant, false);
-               // dispatcher.listen_state_step("tenant_selected","d3_show_tenants",  os_pipelines.create_server_for_selected_tenant, false);
-
-               // d3js hooks, running in parallel! last parameter:true!
-               //       dispatcher.listen_state_step_in_pipe("ON_INIT", "select_tenants", "select_tenant_to_create_server", d3_pipelines.d3_show_tenants,true);   
-               //       dispatcher.listen_state_step_in_pipe("ON_INIT", "create_server_wait_for_the_name","create_server_for_selected_tenant", d3_pipelines.d3_show_images_and_flavors,true);                   
-
-               // Filtering all tansformations ::: AOP 
+               // Filtering all transformations ::: AOP 
                dispatcher.reset_filters();
                //               dispatcher.filter( filters.logging(true));
 
@@ -75,7 +70,27 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                //      dispatcher.filter( filters.show_profiling);
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",
-                                                            {"mouse_event_name":"click",fn:function(){console.log(this.ns);}}));
+                                                            {"mouse_event_name":"contextmenu", fn:function(){
+                    console.log("NS: "+this.d.ns);
+                    console.log("PATH: "+this.d.path);
+                    if(this.d.ns.indexOf("pipeline_")!=-1){
+                        this.d.path+="/"+this.d.ns.replace("pipeline_", "").toLowerCase();
+                       // alert(this.d.path);
+                    }
+                    if(this.path_array)                                            
+                    if(this.path_array.indexOf(this.d.path)==-1){
+                        
+                        this.path_array.push(this.d.path);
+                    }else{
+                        this.path_array=this.path_array.splice(this.path_array.indexOf(this.d.path),1);
+                    }
+                    //console.log(this.path_array);
+                    this.rerender=true;
+                    d3.event.preventDefault();
+
+                }}));
+
+
                os_pipelines.register().apply_transformations(data_state);
 
 

@@ -72,6 +72,7 @@ define( function() {
                 console.log(">--------------------------debug d3 pipelines");
             var ns=this.target.ns;
             var event_type=this.transformation_event_type;
+            console.log(">--------------------------debug d3 pipelines"+event_type);
             if(is_pipeline(ns)){
                 if(is_on_init(event_type)){
 
@@ -97,11 +98,17 @@ define( function() {
                         render(data_state,window_id_ref, div_id,item_fn, path);
 
                 }else{
+                   // console.log("it is not init or end: "+event_type+"\n we have to process it too, aren't we?");
+
+
+
+                    
+
                     //active_pipelines.push(this.target);
                 }
             }else{
                 if(is_on_init(event_type)){
-
+                    
                 }else{
                     this.target.pipeline.children.push(this.target);
                 }

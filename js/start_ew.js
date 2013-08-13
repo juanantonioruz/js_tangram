@@ -41,7 +41,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                
  //              dispatcher.filter( filters.show_profiling(true));
 
-                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, "#pipelines",{"mouse_event_name":"contextmenu", fn:function(){
+                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",{"mouse_event_name":"contextmenu", fn:function(){
                     console.log("NS: "+this.d.ns);
                     console.log("PATH: "+this.d.path);
                     if(this.d.ns.indexOf("pipeline_")!=-1){

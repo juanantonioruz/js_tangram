@@ -129,10 +129,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                        $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
 
-
+                       dispatcher.dispatch("tenants_stored", this,data_state );
                        callback(null, data_state);
                    } else{
                           $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
+
                    callback(data_state.dao.error, data_state);
                    }
                    
