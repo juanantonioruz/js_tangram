@@ -38,9 +38,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                
                                                                show_dom_select(
                                                                    "#init_filter", 
-                                                                               
                                                                    "#actions_available",
-                                                                               
                                                                    [
                                                                        {visible:"listing_images", hidden:"listing_images"},
                                                                        {visible:"listing_flavors", hidden:"listing_flavors"},
@@ -50,7 +48,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                        {visible:"create server", hidden:"create_server"},
                                                                        {visible:"create network", hidden:"create_network"},
                                                                        {visible:"create subnet", hidden:"create_subnet"}
-
                                                                    ], 
                                                                                
                                                                    function(select_dom_id){ 
@@ -59,7 +56,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                                                            data_state.action_selected=selected;
                                                                            show_message_to_the_user("action selected: "+selected);
                                                                            $('#suboperations').fadeOut().html("").fadeIn();
-
                                                                            dispatcher.dispatch("action_selected", target_pipeline,data_state,  function(res,pipeline){console.log("action_selected!");} );
                                                                        };
                                                                    })();

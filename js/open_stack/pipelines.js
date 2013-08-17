@@ -1,5 +1,5 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
-       function(common, dao, selects, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","js/open_stack/query.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
+       function(common, dao, selects, query, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
 
            // function get_select_tenant_for_current_user(pipe_ns){
            //     return new Pipeline(pipe_ns)
@@ -12,7 +12,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                return new Pipeline(pipe_ns+ "_load_operation")
                    .addTransformation(operations.show_operation_value_selected)
                    .addTransformation(operation_fn)
-                   .addTransformation(loadings.prepare_operation)
+                   .addTransformation(query.query_operation)
                    .addTransformation(dao.dao)
                    .addTransformation(loadings.show_operation_result);
            }
@@ -27,14 +27,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                show_tenants:function(){
                    return new Pipeline(this.name)
                    .addTransformation(result.load_tokens)
-                   .addTransformation(result.load_tenants)
-                   .addTransformation(selects.tenants);
+                    .addTransformation(result.load_tenants)
+                    .addTransformation(selects.select_tenants)
                    ;
                },
                show_actions:function(){
                    return new Pipeline(this.name)
                        .addTransformation(result.load_endpoints)
-                       .addTransformation(selects.actions);
+                       .addTransformation(selects.select_actions);
                },
                run_action:function(){
                    
@@ -54,7 +54,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },               
                create_server:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.prepare_create_server)
+                       .addTransformation( query.query_create_server)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_create_result)
                    ;
@@ -62,7 +62,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                create_network:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.prepare_create_network)
+                       .addTransformation( query.query_create_network)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_create_result)
                    ;
@@ -70,7 +70,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                create_subnet:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.prepare_create_subnet)
+                       .addTransformation( query.query_create_subnet)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_create_result)
                    ;
@@ -81,14 +81,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                load_tokens:function(){
                    return new Pipeline(this.name)
                        
-                       .addTransformation(loadings.prepare_tokens)
-                       .addTransformation(dao.dao)
-                       .addTransformation(loadings.store_token_id)
+                       .addTransformation(query.query_tokens)
+                        .addTransformation(dao.dao)
+                        .addTransformation(loadings.store_token_id)
                    ;
                },
                load_tenants:function(){
                    return new Pipeline(this.name)
-                   .addTransformation(loadings.prepare_tenants)
+                   .addTransformation(query.query_tenants)
                    .addTransformation(dao.dao)
                    .addTransformation(loadings.store_tenants)
 
@@ -97,13 +97,13 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
                load_endpoints:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.prepare_endpoints)
+                       .addTransformation( query.query_endpoints)
                        .addTransformation( dao.dao)
                        .addTransformation( loadings.store_endpoints);
                },
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
-                       .addTransformation(loadings.prepare_operation)
+                       .addTransformation(query.query_operation)
                        .addTransformation(dao.dao)
                        .addTransformation(loadings.show_operation_result)               
                    ;

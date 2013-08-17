@@ -2,59 +2,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result= {
 
-               prepare_tokens:function (data_state, callback){
-                   data_state.dao={
-                       method:'POST',
-                       action:"http://"+data_state.host+"/tokens", 
-                       data:{s_user:data_state.user, s_pw:data_state.password, s_ip:data_state.ip},
-                       error_property:"message"
-                   };
-                   
 
-                   $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
-                   
-                   callback(null, data_state);
-                   
-               },
-               prepare_operation:function (data_state, callback){
 
-                   var data_operation=data_state.data_operation;
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "").replace(common.local_ip,data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
-                   data_state.dao=dao_object;
-                   console.dir(data_state.dao);
-                   $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");
-//                   console.dir(dao_object);
-                   callback(null, data_state);
-
-               },
-               prepare_endpoints:function (data_state, callback){
-                   var dao_object={
-                       method:'POST',
-                       action:"http://"+data_state.host+"/endpoints",
-                       data:{
-                           s_user:data_state.user,
-                           s_pw:data_state.password, 
-                           s_ip:data_state.ip, 
-                           tenant_name:data_state.tenant_name}};
-                   data_state.dao=dao_object;
-                   $('#right').prepend("<h3 class='left_message'>Loading endpoints, please wait ...</h3>");
-
-                   callback(null, data_state);
-                   
-               },
-               prepare_tenants:function(data_state, callback){
-                   data_state.dao={
-                       method:'POST',
-                       action:"http://"+data_state.host+"/tenants", 
-                       data:{token:data_state.token_id, s_ip:data_state.ip},
-                       error_property:"message"
-                   };
-
-                   $('#right').prepend("<h3 class='left_message'>Loading tenants/projects, please wait ...</h3>");
-                   
-                   callback(null, data_state);
-
-               },
 
                store_token_id:function (data_state, callback){
                    if(data_state.dao.result){
@@ -70,19 +19,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                    
                },
-
-               show_operation_result:function(data_state, callback){
-                   var data_operation=data_state.data_operation;
-                   var msg=data_state.dao.result;
-                   $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
-                   data_state[data_operation.title]=msg;
-//                   alert(data_operation.title);
-                   callback(null, data_state);
-
-               },
-
-
-
                store_endpoints:function (data_state, callback){
                    //TODO : use error case if(dao.error)
 
@@ -120,7 +56,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            
                },
 
-
                store_tenants:function (data_state, callback){
                    if(data_state.dao.result){
 
@@ -142,74 +77,17 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                },
 
-
-
-               glance_operations:function(data_state, callback){
-                   data_state.suboptions_select=[];
-                   data_state.suboptions_select.push({item:{service_type:"image", url:"/v2.0/images"}, visible:"LIST IMAGES", hidden:'images'});
-                   callback(null, data_state);
-               },
-               quantum_operations:function(data_state, callback){
-                   data_state.suboptions_select=[];
-                   data_state.suboptions_select.push({item:{service_type:"network", url:"/v2.0/networks"}, visible:"LIST NETWORKS", hidden:'networks'});
-                   callback(null, data_state);
-               },
-               cinder_operations:function(data_state, callback){
-                   data_state.suboptions_select=[];
-                   data_state.suboptions_select.push({item:{service_type:"volume", url:"/volumes"}, visible:"LIST VOLUMES", hidden:'cinder-volumes'});
-                   data_state.suboptions_select.push({item:{service_type:"volume", url:"/types"}, visible:"LIST VOLUME TYPES", hidden:'cinder-volumes-types'});
-                   data_state.suboptions_select.push({item:{service_type:"volume", url:"/snapshots"}, visible:"LIST SNAPSHOTS", hidden:'cinder-snapshots'});
-                   
+               show_operation_result:function(data_state, callback){
+                   var data_operation=data_state.data_operation;
+                   var msg=data_state.dao.result;
+                   $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
+                   data_state[data_operation.title]=msg;
+//                   alert(data_operation.title);
                    callback(null, data_state);
 
                },
 
-               nova_operations:function(data_state, callback){
-                   data_state.suboptions_select=[];
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/images"}, visible:"LIST IMAGES", hidden:'nova-images'});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/flavors"}, visible:"LIST FLAVORS", hidden:"nova-flavors"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/servers"}, visible:"LIST SERVERS", hidden:"nova-servers"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/extensions"}, visible:"LIST EXTENSIONS", hidden:"nova-extensions"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/limits"}, visible:"LIST LIMITS", hidden:"nova-limits"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-agents"}, visible:"OS AGENTS", hidden:"os-agents"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-aggregates"}, visible:"OS AGGREGATES", hidden:"os-aggregates"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-hosts"}, visible:"OS HOSTS", hidden:"os-hosts"});
-                   data_state.suboptions_select.push({item:{service_type:"compute", url:"/os-services"}, visible:"OS SERVICES", hidden:"os-services"});
 
-
-                   
-                   callback(null, data_state);
-
-               },
-               
-
-
-               prepare_create_server:function (data_state, callback){
-                   
-
-                   $('#left').append("<h1 class='left_message'>Finally , we are creating the server,   please wait ...</h1>");
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/create_server", data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.endpoints.nova.replace(common.local_ip,data_state.ip ), imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected, network_id:data_state.network_selected}};
-                   data_state.dao=dao_object;
-                   callback(null,data_state);
-
-                   
-
-
-               },
-               prepare_create_subnet:function (data_state, callback){
-                   
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/create_subnet", data:{token:data_state.token_id, network_id:data_state.network_selected, cidr:data_state.subnet_cidr,start:data_state.subnet_start, end:data_state.subnet_end, endpoint:data_state.endpoints.quantum.replace(common.local_ip,data_state.ip )  }};
-                   data_state.dao=dao_object;
-                   callback(null,data_state);
-               },
-               prepare_create_network:function (data_state, callback){
-
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/create_network", data:{token:data_state.token_id, network_name:data_state.network_name,  endpoint:data_state.endpoints.quantum.replace(common.local_ip,data_state.ip )  }};
-                   data_state.dao=dao_object;
-                   callback(null,data_state);
-                   
-                   
-               },
                show_create_result:function(data_state, callback){
                            $('#content').prepend( "<h2>Create  response: </h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );                                                  
                    callback(null, data_state);

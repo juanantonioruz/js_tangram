@@ -3,8 +3,10 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
         naming_fns:function(result, prefix){
             var new_map={};
             for (var key in result){
+                
                 var data={ name:((prefix)?prefix:"")+key, fn:result[key] };
-                new_map[key]=new State_step(data.name, data.fn);
+                console.log(data.name);
+                new_map[data.name]=new State_step(data.name, data.fn);
             }
             return new_map;
         },
