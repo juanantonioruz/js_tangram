@@ -54,25 +54,25 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },               
                create_server:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.create_server)
-                       .set_on_success(function(results, pipeline){
-                           alert("created server_name: "+results.server_name);
-
-                           
-                       });
+                       .addTransformation( loadings.prepare_create_server)
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_create_result)
+                   ;
 
                },
                create_network:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.create_network)
-
+                       .addTransformation( loadings.prepare_create_network)
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_create_result)
                    ;
 
                },
                create_subnet:function(){
                    return new Pipeline(this.name)
-                       .addTransformation( loadings.create_subnet)
-
+                       .addTransformation( loadings.prepare_create_subnet)
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.show_create_result)
                    ;
 
                },

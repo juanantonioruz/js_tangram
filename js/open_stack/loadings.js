@@ -181,64 +181,39 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
+               
 
-               create_server:function (data_state, callback){
+
+               prepare_create_server:function (data_state, callback){
                    
 
                    $('#left').append("<h1 class='left_message'>Finally , we are creating the server,   please wait ...</h1>");
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/create_server",
-                       data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.endpoints.nova.replace(common.local_ip,data_state.ip ), imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected, network_id:data_state.network_selected}
-                   }).done(function( msg ) {
-                       if(!msg.error){
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/create_server", data:{token:data_state.token_id, server_name:data_state.server_name,  endpoint:data_state.endpoints.nova.replace(common.local_ip,data_state.ip ), imageRef:data_state.image_selected, flavorRef:data_state.flavor_selected, network_id:data_state.network_selected}};
+                   data_state.dao=dao_object;
+                   callback(null,data_state);
 
-                           $('#content').prepend( "<h2>Create server response: </h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
-
-                           callback(null, data_state);
-                       }else{
-                           callback(msg.error, data_state);
-                       }
-                   });
-               },
-               create_subnet:function (data_state, callback){
                    
 
-                   $('#left').append("<h1 class='left_message'>Finally , we are creating the subnet,   please wait ...</h1>");
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/create_subnet",
-                       data:{token:data_state.token_id, network_id:data_state.network_selected, cidr:data_state.subnet_cidr,start:data_state.subnet_start, end:data_state.subnet_end, endpoint:data_state.endpoints.quantum.replace(common.local_ip,data_state.ip )  }
-                   }).done(function( msg ) {
-                       if(!msg.error){
 
-                           $('#content').prepend( "<h2>Create subnet response: </h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
-
-                           callback(null, data_state);
-                       }else{
-                           callback(msg.error, data_state);
-                       }
-                   });
                },
-               create_network:function (data_state, callback){
+               prepare_create_subnet:function (data_state, callback){
                    
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/create_subnet", data:{token:data_state.token_id, network_id:data_state.network_selected, cidr:data_state.subnet_cidr,start:data_state.subnet_start, end:data_state.subnet_end, endpoint:data_state.endpoints.quantum.replace(common.local_ip,data_state.ip )  }};
+                   data_state.dao=dao_object;
+                   callback(null,data_state);
+               },
+               prepare_create_network:function (data_state, callback){
 
-                   $('#left').append("<h1 class='left_message'>Finally , we are creating the network,   please wait ...</h1>");
-                   $.ajax({
-                       type: "POST",
-                       url: "http://"+data_state.host+"/create_network",
-                       data:{token:data_state.token_id, network_name:data_state.network_name,  endpoint:data_state.endpoints.quantum.replace(common.local_ip,data_state.ip )  }
-                   }).done(function( msg ) {
-                       if(!msg.error){
-
-                           $('#content').prepend( "<h2>Create network response: </h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
-
-                           callback(null, data_state);
-                       }else{
-                           callback(msg.error, data_state);
-                       }
-                   });
-               }
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/create_network", data:{token:data_state.token_id, network_name:data_state.network_name,  endpoint:data_state.endpoints.quantum.replace(common.local_ip,data_state.ip )  }};
+                   data_state.dao=dao_object;
+                   callback(null,data_state);
+                   
+                   
+               },
+               show_create_result:function(data_state, callback){
+                           $('#content').prepend( "<h2>Create  response: </h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );                                                  
+                   callback(null, data_state);
+}
            };
 
            return common.naming_fns(result);

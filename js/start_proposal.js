@@ -52,19 +52,19 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                //D3 openStack client UI
                dispatcher.listen_state_step("ON_END","store_tenants", d3_pipelines.d3_show_tenants,true);   
                dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
-               dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+             //  dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+               
 
 
                // Filtering all transformations ::: AOP 
                dispatcher.reset_filters();
-               //               dispatcher.filter( filters.logging(true));
-
+               // dispatcher.filter( filters.logging(true));
                
-               //          dispatcher.filter( filters.clone_data);
+               // dispatcher.filter( filters.clone_data);
 
-               //      dispatcher.filter( filters.profiling);
+               // dispatcher.filter( filters.profiling);
 
-               //      dispatcher.filter( filters.show_profiling);
+               // dispatcher.filter( filters.show_profiling);
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",
                                                             {"mouse_event_name":"contextmenu", fn:function(){
