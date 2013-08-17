@@ -8,6 +8,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                    .addTransformation(operation_fn)
                    .addTransformation(query.query_operation)
                    .addTransformation(dao.dao)
+               .addTransformation(model.model_store_operation)
                    .addTransformation(dao.show_result);
            }
            function add_load(pipe, fn){
