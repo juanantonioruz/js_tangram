@@ -36,28 +36,23 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                // EOP
                dispatcher.reset();
 
-               dispatcher.listen_event("try_to_log", os_pipelines.load_tokens_and_load_tenants, false);
+               dispatcher.listen_event("try_to_log", os_pipelines.show_tenants, false);
 
-               //D3 openStack client UI
-               dispatcher.listen_event("tenants_stored", d3_pipelines.d3_show_tenants,true);   
+               dispatcher.listen_event("tenant_selected", os_pipelines.show_actions, false);
 
-
-               dispatcher.listen_event("tenant_selected", os_pipelines.show_select_actions, false);
-
-
-
-
-               dispatcher.listen_event("action_selected", os_pipelines.run_action_selected, false);
-
-
-               //D3 openStack client UI
-               dispatcher.listen_event("server_resources_loaded", d3_pipelines.d3_show_images_and_flavors,true);                   
-
+               dispatcher.listen_event("action_selected", os_pipelines.run_action, false);
 
                dispatcher.listen_event("send_create_server", os_pipelines.create_server, false);
+
                dispatcher.listen_event("send_create_network", os_pipelines.create_network, false);
+
                dispatcher.listen_event("send_create_subnet", os_pipelines.create_subnet, false);
                
+
+               //D3 openStack client UI
+               dispatcher.listen_state_step("ON_END","store_tenants", d3_pipelines.d3_show_tenants,true);   
+               dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+               dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
 
 
                // Filtering all transformations ::: AOP 

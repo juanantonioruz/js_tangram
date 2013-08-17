@@ -11,26 +11,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    };
                    
 
-
                    $('#right').prepend("<h3 class='left_message'>Loading token, please wait ...</h3>");
                    
                    callback(null, data_state);
                    
                },
-
-               store_token_id:function (data_state, callback){
-                   if(data_state.dao.result){
-                       data_state.token_id=data_state.dao.result.access.token.id;
-
-                       $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
-                       $('#register_form').fadeOut(500).empty().fadeIn();
-                       callback(null, data_state);
-                   } else
-                   callback(data_state.dao.error, data_state);
-                   
-                   
-               },
-
                prepare_operation:function (data_state, callback){
 
                    var data_operation=data_state.data_operation;
@@ -42,17 +27,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
 
                },
-
-               show_operation_result:function(data_state, callback){
-                   var data_operation=data_state.data_operation;
-                   var msg=data_state.dao.result;
-                   $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
-                   data_state[data_operation.title]=msg;
-//                   alert(data_operation.title);
-                   callback(null, data_state);
-
-               },
-
                prepare_endpoints:function (data_state, callback){
                    var dao_object={
                        method:'POST',
@@ -68,6 +42,46 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    callback(null, data_state);
                    
                },
+               prepare_tenants:function(data_state, callback){
+                   data_state.dao={
+                       method:'POST',
+                       action:"http://"+data_state.host+"/tenants", 
+                       data:{token:data_state.token_id, s_ip:data_state.ip},
+                       error_property:"message"
+                   };
+
+                   $('#right').prepend("<h3 class='left_message'>Loading tenants/projects, please wait ...</h3>");
+                   
+                   callback(null, data_state);
+
+               },
+
+               store_token_id:function (data_state, callback){
+                   if(data_state.dao.result){
+                       data_state.token_id=data_state.dao.result.access.token.id;
+
+                       $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
+                       $('#register_form').fadeOut(500).empty().fadeIn();
+
+                       callback(null, data_state);
+
+                   } else
+                   callback(data_state.dao.error, data_state);
+                   
+                   
+               },
+
+               show_operation_result:function(data_state, callback){
+                   var data_operation=data_state.data_operation;
+                   var msg=data_state.dao.result;
+                   $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
+                   data_state[data_operation.title]=msg;
+//                   alert(data_operation.title);
+                   callback(null, data_state);
+
+               },
+
+
 
                store_endpoints:function (data_state, callback){
                    //TODO : use error case if(dao.error)
@@ -106,19 +120,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            
                },
 
-               prepare_tenants:function(data_state, callback){
-                   data_state.dao={
-                       method:'POST',
-                       action:"http://"+data_state.host+"/tenants", 
-                       data:{token:data_state.token_id, s_ip:data_state.ip},
-                       error_property:"message"
-                   };
 
-                   $('#right').prepend("<h3 class='left_message'>Loading tenants/projects, please wait ...</h3>");
-                   
-                   callback(null, data_state);
-
-               },
                store_tenants:function (data_state, callback){
                    if(data_state.dao.result){
 
@@ -129,8 +131,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
 
                        $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
 
-                       dispatcher.dispatch("tenants_stored", this,data_state );
+
                        callback(null, data_state);
+
                    } else{
                           $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
 

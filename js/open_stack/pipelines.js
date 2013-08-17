@@ -1,13 +1,13 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/state_step_type.js","js/pipelines/dispatcher.js"],
-       function(common, dao, selects, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep, dispatcher) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
+       function(common, dao, selects, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
 
-           function get_select_tenant_for_current_user(pipe_ns){
-               return new Pipeline(pipe_ns)
-                   .addTransformation(loadings.prepare_tenants)
-                   .addTransformation(dao.dao)
-                   .addTransformation(loadings.store_tenants)
-                   .addTransformation(selects.tenants);
-           }
+           // function get_select_tenant_for_current_user(pipe_ns){
+           //     return new Pipeline(pipe_ns)
+           //         .addTransformation(loadings.prepare_tenants)
+           //         .addTransformation(dao.dao)
+           //         .addTransformation(loadings.store_tenants)
+           //         .addTransformation(selects.tenants);
+           // }
            function get_load_operation(pipe_ns, operation_fn){
                return new Pipeline(pipe_ns+ "_load_operation")
                    .addTransformation(operations.show_operation_value_selected)
@@ -19,26 +19,24 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
            function add_load(pipe, fn){
            }
            var result={
-               //Public
+               //Public API
                register:function(){
                    return new Pipeline(this.name)
                        .addTransformation( html_helper.register_form  );
                },
-               load_tokens_and_load_tenants:function(){
+               show_tenants:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(loadings.prepare_tokens)
-                       .addTransformation(dao.dao)
-                       .addTransformation(loadings.store_token_id)
-                       .addTransformation( get_select_tenant_for_current_user("load_and_show_select_tenants"));
+                   .addTransformation(result.load_tokens)
+                   .addTransformation(result.load_tenants)
+                   .addTransformation(selects.tenants);
+                   ;
                },
-               show_select_actions:function(){
+               show_actions:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(result.load_endpoints_for_current_tenant)
+                       .addTransformation(result.load_endpoints)
                        .addTransformation(selects.actions);
-
-                   
                },
-               run_action_selected:function(){
+               run_action:function(){
                    
                    return new Mapper_Pipeline(this.name, 
                                               {
@@ -80,12 +78,28 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
 
                //hide this layer
-               load_endpoints_for_current_tenant:function(){
+               load_tokens:function(){
+                   return new Pipeline(this.name)
+                       
+                       .addTransformation(loadings.prepare_tokens)
+                       .addTransformation(dao.dao)
+                       .addTransformation(loadings.store_token_id)
+                   ;
+               },
+               load_tenants:function(){
+                   return new Pipeline(this.name)
+                   .addTransformation(loadings.prepare_tenants)
+                   .addTransformation(dao.dao)
+                   .addTransformation(loadings.store_tenants)
+
+                   ;
+               },
+
+               load_endpoints:function(){
                    return new Pipeline(this.name)
                        .addTransformation( loadings.prepare_endpoints)
                        .addTransformation( dao.dao)
                        .addTransformation( loadings.store_endpoints);
-                   //                       .addTransformation(  selects.endpoints);
                },
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
@@ -94,16 +108,11 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                        .addTransformation(loadings.show_operation_result)               
                    ;
                },
-               load_images_flavors_networks_from_tenant:function(){
+               load_images_flavors_networks:function(){
                    return new Pipeline(this.name)
                        .addTransformation(get_load_operation("list_images", operations.list_images))
                        .addTransformation(get_load_operation("list_flavors", operations.list_flavors))
                        .addTransformation(get_load_operation("list_networks", operations.list_networks))
-                       .addTransformation(new StateStep("end_resouces_loaded", function(data_state, callback){
-                           dispatcher.dispatch("server_resources_loaded", this, data_state);
-                           callback(null, data_state);
-                       }))
-
                    ;
                },
                create_network_options:function(){
@@ -135,10 +144,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                    return new Pipeline(this.name)
                        .addTransformation(new Pipeline("load_networks")
                                           .addTransformation(get_load_operation("list_networks", operations.list_networks))
-                                          .addTransformation(new StateStep("end_resouces_loaded", function(data_state, callback){
-                                              dispatcher.dispatch("server_resources_loaded", this, data_state);
-                                              callback(null, data_state);
-                                          }))
+                                          
 
                                          )
                        .addTransformation(new StateStep("insert_subnet_name", function(data_state, callback){
@@ -170,7 +176,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
                },
                create_server_options:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(result.load_images_flavors_networks_from_tenant)
+                       .addTransformation(result.load_images_flavors_networks)
                        .addTransformation(new StateStep("insert_server_name", function(data_state, callback){
                            //                    $('#tenants').fadeOut();
                            var me=this;
@@ -199,16 +205,12 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js", "
 
                    return new Pipeline(this.name)
                        .addTransformation(new StateStep("alerta", function(data_state, callback){
-                           alert("here");
+                           alert("here"+data_state.token_id);
                            callback(null, data_state);
                        }));
 
 
                }
-
-
-
-
 
            };
            
