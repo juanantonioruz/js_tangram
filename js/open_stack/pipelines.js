@@ -31,7 +31,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                     .addTransformation(selects.select_tenants)
                    ;
                },
-               show_actions:function(){
+               show_tenant_actions:function(){
                    return new Pipeline(this.name)
                        .addTransformation(result.load_endpoints)
                        .addTransformation(selects.select_actions);

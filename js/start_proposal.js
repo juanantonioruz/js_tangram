@@ -38,7 +38,7 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
 
                dispatcher.listen_event("try_to_log", os_pipelines.show_tenants, false);
 
-               dispatcher.listen_event("tenant_selected", os_pipelines.show_actions, false);
+               dispatcher.listen_event("tenant_selected", os_pipelines.show_tenant_actions, false);
 
                dispatcher.listen_event("action_selected", os_pipelines.run_action, false);
 
