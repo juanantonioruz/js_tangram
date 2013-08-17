@@ -1,20 +1,14 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","js/open_stack/query.js", "js/open_stack/loadings.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
-       function(common, dao, selects, query, loadings,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","js/open_stack/query.js","js/open_stack/model.js", "js/open_stack/operations.js",  "js/open_stack/html_helper.js", "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
+       function(common, dao, selects, query, model,operations, html_helper,  d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
 
-           // function get_select_tenant_for_current_user(pipe_ns){
-           //     return new Pipeline(pipe_ns)
-           //         .addTransformation(loadings.prepare_tenants)
-           //         .addTransformation(dao.dao)
-           //         .addTransformation(loadings.store_tenants)
-           //         .addTransformation(selects.tenants);
-           // }
+
            function get_load_operation(pipe_ns, operation_fn){
                return new Pipeline(pipe_ns+ "_load_operation")
                    .addTransformation(operations.show_operation_value_selected)
                    .addTransformation(operation_fn)
                    .addTransformation(query.query_operation)
                    .addTransformation(dao.dao)
-                   .addTransformation(loadings.show_operation_result);
+                   .addTransformation(dao.show_result);
            }
            function add_load(pipe, fn){
            }
@@ -56,7 +50,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                    return new Pipeline(this.name)
                        .addTransformation( query.query_create_server)
                        .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_create_result)
+                       .addTransformation(dao.show_result)
                    ;
 
                },
@@ -64,7 +58,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                    return new Pipeline(this.name)
                        .addTransformation( query.query_create_network)
                        .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_create_result)
+                       .addTransformation(dao.show_result)
                    ;
 
                },
@@ -72,7 +66,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                    return new Pipeline(this.name)
                        .addTransformation( query.query_create_subnet)
                        .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_create_result)
+                       .addTransformation(dao.show_result)
                    ;
 
                },
@@ -83,14 +77,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                        
                        .addTransformation(query.query_tokens)
                         .addTransformation(dao.dao)
-                        .addTransformation(loadings.store_token_id)
+                        .addTransformation(model.model_store_token_id)
                    ;
                },
                load_tenants:function(){
                    return new Pipeline(this.name)
                    .addTransformation(query.query_tenants)
                    .addTransformation(dao.dao)
-                   .addTransformation(loadings.store_tenants)
+                   .addTransformation(model.model_store_tenants)
 
                    ;
                },
@@ -99,13 +93,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                    return new Pipeline(this.name)
                        .addTransformation( query.query_endpoints)
                        .addTransformation( dao.dao)
-                       .addTransformation( loadings.store_endpoints);
+                       .addTransformation( model.model_store_endpoints);
                },
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
                        .addTransformation(query.query_operation)
                        .addTransformation(dao.dao)
-                       .addTransformation(loadings.show_operation_result)               
+                       .addTransformation( model.model_store_operation)
+                       .addTransformation(dao.show_result)               
                    ;
                },
                load_images_flavors_networks:function(){

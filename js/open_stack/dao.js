@@ -25,7 +25,11 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            callback(msg.error[dao_object.error_property], data_state);
                        }
                    });
+               },
+               show_result:function(data_state, callback){
+                   $('#content').prepend( "<h2>DAO  response: </h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );                                  callback(null, data_state);
                }
+
            };
            return common.naming_fns(result);
 

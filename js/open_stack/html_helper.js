@@ -1,7 +1,7 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result={
-                  register_form:function (data_state, callback){
+               register_form:function (data_state, callback){
                var target_pipeline=this.pipeline;
                $('#right').prepend("<h3 class='left_message'>show_register_form,  ...</h3>");
 //

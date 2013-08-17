@@ -2,9 +2,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
            var result= {
 
-
-
-
                store_token_id:function (data_state, callback){
                    if(data_state.dao.result){
                        data_state.token_id=data_state.dao.result.access.token.id;
@@ -75,25 +72,22 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    }
                    
                },
-
-
-               show_operation_result:function(data_state, callback){
+               store_operation:function(data_state, callback){
+                   if(data_state.dao.result){
                    var data_operation=data_state.data_operation;
                    var msg=data_state.dao.result;
-                   $('#content').prepend( "<h2>"+data_operation.title+" loaded</h2><pre><code class='json'>"+common.toJson(msg)+"</code></pre>" );                                                  
                    data_state[data_operation.title]=msg;
-                   //                   alert(data_operation.title);
                    callback(null, data_state);
+                   }else{
+                       callback(data_state.dao.error, data_state);
+                   }
 
-               },
-
-
-               show_create_result:function(data_state, callback){
-                   $('#content').prepend( "<h2>Create  response: </h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );                                  callback(null, data_state);
                }
+
+
            };
 
-           return common.naming_fns(result);
+           return common.naming_fns(result, "model_");
 
 
 
