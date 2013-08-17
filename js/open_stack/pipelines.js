@@ -195,7 +195,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/selects.js","j
                        })); 
                },
 
-               //helpers with a bit of  nosense
+               //helpers try to get out of this file
                alerta:function(){
 
                    return new Pipeline(this.name)

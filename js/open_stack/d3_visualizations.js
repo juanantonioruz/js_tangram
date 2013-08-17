@@ -1,7 +1,7 @@
-define([  "js/common.js","js/open_stack/loadings.js", 
+define([  "js/common.js", 
           "js/pipelines/dispatcher.js", 
           "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/state_step_type.js"],
-       function(common, loadings, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
+       function(common, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
            var d3_show_images_and_flavors_pipeline=function(){
                return new Pipeline("d3_show_resources_from_tenant")
                    .addTransformation(d3_show_tenants())
@@ -142,13 +142,9 @@ define([  "js/common.js","js/open_stack/loadings.js",
                    }));
                };
 
-           var show_tenant_data_pipe=function(){
-               return new Pipeline("selected_d3_tenant")
-           .addTransformation( loadings.endpoints);
-               };
 
           
 
-           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline, d3_show_tenant_data:show_tenant_data_pipe};
+           return {d3_show_tenants:d3_show_tenants, d3_show_images_and_flavors:d3_show_images_and_flavors_pipeline};
 
        });

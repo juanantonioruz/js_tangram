@@ -4,7 +4,7 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
             var new_map={};
             for (var key in result){
                 var data={ name:((prefix)?prefix:"")+key, fn:result[key] };
-                console.log(data.name);
+//                console.log(data.name);
                 new_map[data.name]=new State_step(data.name, data.fn);
             }
             return new_map;
