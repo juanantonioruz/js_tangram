@@ -51,7 +51,7 @@ define( function() {
 
                 
                 var selection=d3.select(this);
-                show_message_to_the_user(d.data_displayed.type);
+
                 d.selected = !d.selected;
 
 //                console.dir(d);
@@ -59,7 +59,7 @@ define( function() {
                      data_state.tenant_name=d.data_displayed.data.item.name;
                      data_state.tenant_id=d.data_displayed.data.item.id;
 
-                     dispatcher.dispatch("tenant_selected", target, data_state,  function(res,pipeline){console.log("tenant_selected!");} );
+                     dispatcher.dispatch("tenant_selected", target, data_state );
 }
                 if(d.selected)
                 data_state[d.data_displayed.type+"_selected"]=d.data_displayed.data.href;

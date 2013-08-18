@@ -1,7 +1,8 @@
 define([  "js/common.js", 
           "js/pipelines/dispatcher.js", 
-          "js/d3/cluster.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/state_step_type.js"],
-       function(common, dispatcher, d3_cluster, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
+          "js/open_stack/d3_ui.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js","js/pipelines/state_step_type.js"],
+       function(common, dispatcher, d3_ui, Foreach_Pipeline,Pipeline, Mapper_Pipeline, StateStep) {
+
            var d3_show_images_and_flavors_pipeline=function(){
                return new Pipeline("d3_show_resources_from_tenant")
                    .addTransformation(d3_show_tenants())
@@ -36,7 +37,7 @@ define([  "js/common.js",
                           // callback(null, data_state);
                        }
 
-                       d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+                       d3_ui($.extend(true, {}, data_state.d3_open_stack),
                                   data_state,this, dispatcher, on_success_callback);
                        //TODO remove if we need selection
                        }
@@ -70,7 +71,7 @@ define([  "js/common.js",
                      //      callback(null, data_state);
                        }
 
-                       d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+                       d3_ui($.extend(true, {}, data_state.d3_open_stack),
                                   data_state,this, dispatcher, on_success_callback);
                        //TODO remove if we need selection
                          }
@@ -107,7 +108,7 @@ define([  "js/common.js",
                      //      callback(null, data_state);
                        }
 
-                       d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+                       d3_ui($.extend(true, {}, data_state.d3_open_stack),
                                   data_state,this, dispatcher, on_success_callback);
                        //TODO remove if we need selection
                          }
@@ -134,7 +135,7 @@ define([  "js/common.js",
                   //         callback(null, data_state);
                        }
 
-                       d3_cluster($.extend(true, {}, data_state.d3_open_stack),
+                       d3_ui($.extend(true, {}, data_state.d3_open_stack),
                                   data_state, this, dispatcher, on_success_callback);
                        // this line uncommented means that the user is using the select dropmenu to select the tenant, otherwise we have to useon_success_callback and wait to be called from d3 interface
                        callback(null, data_state);

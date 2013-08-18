@@ -1,5 +1,17 @@
 define(["js/common.js", "js/pipelines/dispatcher.js"],
        function(common, dispatcher) {
+function clean_interface(){
+    $('#content').empty();
+};
+function show_message_to_the_user(the_message){
+
+    $('#loading_results').html(the_message).css('background-color', 'aquamarine').fadeIn(500, function(){
+        $('#loading_results')
+            .fadeOut(2000);
+    }
+                                                                                        );
+}
+
            function show_dom_select(select_dom_id, the_dom_place_to_append_the_select, the_collection, the_on_change_select_fn, store_model_in_option){
 
                return function(){
@@ -28,19 +40,12 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            var result={
                register_form:function (data_state, callback){
                    var target_pipeline=this.pipeline;
+
                    $('#right').prepend("<h3 class='left_message'>show_register_form,  ...</h3>");
                    //
 
 
-                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:192.168.1.26,  external_ip: 85.136.107.32): <input type='text' id='stack_ip' value='192.168.1.26'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
-                   // $('#openWin').on('click', function(){
-                   //           childWin = window.open('child.html','child', "width=1500, height=500, location=no, menubar=no, scrollbars=no, status=no, toolbar=no");
-                   //           if (window.focus) {childWin.focus();};
-                   // //$(childWin.document).find("#pipelines")
-                   //         childWin.moveBy(250, 250);
-
-
-                   // });
+                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.remote_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
                    
                    $('#stack_logging').on('click', function(){
 
@@ -167,8 +172,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    var state_step=this;
                    function show_tenant_select(){
 
-
-                       //                                          var select_dom_id=;
                        var the_dom_place_to_append_the_select='#register_form';
                        var the_on_change_select_fn=function(select_dom_id){
                            return function(){
@@ -178,19 +181,16 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                                data_state.tenant_name=selected.val();
                                data_state.tenant_id=selected.data('item').id;
 
-
-                               // clean interface is a function declared in start_proposal
                                clean_interface();
-                               //                                               show_tenant_endpoints_pipeline_fn();
+
                                show_message_to_the_user("you have selected tenant: "+data_state.tenant_name);
-                               dispatcher.dispatch("tenant_selected", state_step, data_state,  function(res,pipeline){console.log("tenant_selected!");} );
+                               dispatcher.dispatch("tenant_selected", state_step, data_state );
                            };
                        };
-                       //TODO: fn in start proposal, with global scope
                        show_dom_select("#tenants", the_dom_place_to_append_the_select,data_state.tenants_select,  the_on_change_select_fn, true)();
                        callback(null, data_state);
                    }
-                   //TODO fn in start proposal, with global scope
+
                    show_fn_result_to_the_user_and_wait('Please select a tenant to view its services available', 
                                                        show_tenant_select);
 

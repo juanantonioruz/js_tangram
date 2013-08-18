@@ -9,11 +9,26 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            }
 
            var result= {
+               name:"tenants",
+               dao_requirements:["ip", "token_id"],
+               data_state_key:"tenants_select",
+               instanciate_container:function(data_state){
+                   data_state[result.data_state_key]=[];
+                   return result.get_model(data_state);
+               },
+               populate_container:function(container, dao_result){
+                   dao_result.tenants.map(function(item){
+                       container.push({hidden:item.name, visible:item.name, item:item});
+                   });
+               },
+               get_model:function(data_state){
+                   return data_state[result.data_state_key];
+               }
               
 
            };
 
-           return common.naming_fns(result, "tenant_");
+           return result;
 
 
 

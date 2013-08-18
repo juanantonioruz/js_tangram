@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js"],
-       function(common, dispatcher) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
+       function(common, dispatcher, tenant) {
            var result= {
 
                store_token_id:function (data_state, callback){
@@ -53,21 +53,17 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    
                },
                store_tenants:function (data_state, callback){
-                   if(data_state.dao.result){
-
-                       data_state.tenants_select=[];
-                       data_state.dao.result.tenants.map(function(item){
-                           data_state.tenants_select.push({hidden:item.name, visible:item.name, item:item});
-                       });
-
-                       $('#content').prepend( "<h2>Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
-
+                   var dao_result=data_state.dao.result;
+                   var data_model=tenant;
+                   if(dao_result){
+                       var container=data_model.instanciate_container(data_state);
+                      data_model.populate_container(container, dao_result);
+                       $('#content').prepend( "<h2>"+data_model.name+" Loaded</h2><pre><code class='json'>"+common.toJson(container)+"</code></pre>" );
 
                        callback(null, data_state);
 
                    } else{
-                       $('#content').prepend( "<h2>Error while Tenants Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
-
+                       $('#content').prepend( "<h2>Error while "+data_model.name+" Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
                        callback(data_state.dao.error, data_state);
                    }
                    

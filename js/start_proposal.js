@@ -1,9 +1,6 @@
 require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
-function clean_interface(){
-    $('#content').empty();
-};
 
 function clean_left_status_messages(){
     $('.left_message').remove();
@@ -15,14 +12,6 @@ function clean_history(){
 }
 
 
-function show_message_to_the_user(the_message){
-
-    $('#loading_results').html(the_message).css('background-color', 'aquamarine').fadeIn(500, function(){
-        $('#loading_results')
-            .fadeOut(2000);
-    }
-                                                                                        );
-}
 
 
 define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
