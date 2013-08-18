@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
-       function(common, dispatcher, tenant) {
+define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
+       function(common, events, dispatcher, tenant) {
 function clean_interface(){
     $('#content').empty();
 };
@@ -53,7 +53,7 @@ function show_message_to_the_user(the_message){
                        data_state.password=$('#stack_password').val();
                        data_state.ip=$('#stack_ip').val();
 
-                       dispatcher.dispatch("try_to_log", target_pipeline,data_state );
+                       dispatcher.dispatch(events.try_to_log, target_pipeline,data_state );
                    });
                    callback(null, data_state);
                },
@@ -68,7 +68,7 @@ function show_message_to_the_user(the_message){
                        if(e.which==13){
                            data_state.server_name=$('#server_name').val();
                            if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected){
-                               dispatcher.dispatch("send_create_server", me.pipeline, data_state);
+                               dispatcher.dispatch(events.send_create_server, me.pipeline, data_state);
                            }else
                            alert("select first and image and flavor to create this server");
                        }else{
@@ -96,7 +96,7 @@ function show_message_to_the_user(the_message){
                        data_state.subnet_start=$('#start').val();
                        data_state.subnet_end=$('#end').val();
                        if(data_state.subnet_cidr.length>8 && data_state.network_selected){
-                           dispatcher.dispatch("send_create_subnet", me.pipeline, data_state);
+                           dispatcher.dispatch(events.send_create_subnet, me.pipeline, data_state);
 
                        }else
                        alert("too short cidr or select the network circle!, try again please");
@@ -115,7 +115,7 @@ function show_message_to_the_user(the_message){
                        if(e.which==13){
                            data_state.network_name=$('#network_name').val();
                            if(data_state.network_name.length>2){
-                               dispatcher.dispatch("send_create_network", me.pipeline, data_state);
+                               dispatcher.dispatch(events.send_create_network, me.pipeline, data_state);
 
                            }else
                            alert("too short name, try again please");
@@ -159,7 +159,7 @@ function show_message_to_the_user(the_message){
                                                                            data_state.operation_selected=selected;
                                                                            show_message_to_the_user("operation selected: "+selected);
                                                                            $('#suboperations').fadeOut().html("").fadeIn();
-                                                                           dispatcher.dispatch("operation_selected", target_pipeline,data_state,  function(res,pipeline){console.log("operation_selected!");} );
+                                                                           dispatcher.dispatch(events.operation_selected, target_pipeline,data_state );
                                                                        };
                                                                    })();
                                                                
@@ -179,7 +179,7 @@ function show_message_to_the_user(the_message){
                                tenant.set_selected(data_state, selected.data('item'));
                                clean_interface();
                                show_message_to_the_user("you have selected tenant: "+tenant.get_selected_name(data_state));
-                               dispatcher.dispatch("tenant_selected", state_step, data_state );
+                               dispatcher.dispatch(events.tenant_selected, state_step, data_state );
                            };
                        };
                        show_dom_select("#tenants", the_dom_place_to_append_the_select,tenant.get_model(data_state),  the_on_change_select_fn, true)();

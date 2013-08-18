@@ -14,8 +14,8 @@ function clean_history(){
 
 
 
-define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
-       function(filters,  dispatcher,  State, os_pipelines, d3_pipelines,  Pipeline, history_cluster) {
+define(["js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
+       function(events, filters,  dispatcher,  State, os_pipelines, d3_pipelines,  Pipeline, history_cluster) {
 
            var data_state=State();
 
@@ -26,19 +26,19 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                dispatcher.reset();
 
 
-               dispatcher.listen_event("try_to_log", os_pipelines.load_tokens, false);
+               dispatcher.listen_event(events.try_to_log, os_pipelines.load_tokens, false);
 
                dispatcher.listen_pipe("ON_END","load_tokens", os_pipelines.show_tenants, false);
 
-               dispatcher.listen_event("tenant_selected", os_pipelines.show_tenant_operations, false);
+               dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, false);
 
-               dispatcher.listen_event("operation_selected", os_pipelines.run_operation, false);
+               dispatcher.listen_event(events.operation_selected, os_pipelines.run_operation, false);
 
-               dispatcher.listen_event("send_create_server", os_pipelines.create_server, false);
+               dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
 
-               dispatcher.listen_event("send_create_network", os_pipelines.create_network, false);
+               dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
 
-               dispatcher.listen_event("send_create_subnet", os_pipelines.create_subnet, false);
+               dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
                
 
                //D3 openStack client UI
