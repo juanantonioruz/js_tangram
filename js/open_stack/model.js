@@ -1,21 +1,27 @@
-define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
-       function(common, dispatcher, tenant) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js"],
+       function(common, dispatcher, tenant_model, token_model) {
+
+           function get_store_model(data_model){
+               return function (data_state, callback){
+
+                   var dao_result=data_state.dao.result;
+                   if(dao_result){
+                       var container=data_model.instanciate_container(data_state);
+
+                       data_model.populate_container(data_state, dao_result);
+//                       console.dir(data_model.get_model(data_state));
+                       $('#content').prepend( "<h2>"+data_model.name+" Loaded</h2><pre><code class='json'>"+common.toJson(data_model.get_model(data_state))+"</code></pre>" );
+                       callback(null, data_state);
+                   } else{
+                       $('#content').prepend( "<h2>Error while "+data_model.name+" Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
+                       callback(data_state.dao.error, data_state);
+                   }
+               };
+           };
+
            var result= {
 
-               store_token_id:function (data_state, callback){
-                   if(data_state.dao.result){
-                       data_state.token_id=data_state.dao.result.access.token.id;
-
-                       $('#content').prepend( "<h2>Token Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.result)+"</code></pre>" );
-                       $('#register_form').fadeOut(500).empty().fadeIn();
-
-                       callback(null, data_state);
-
-                   } else
-                   callback(data_state.dao.error, data_state);
-                   
-                   
-               },
+               store_token_id:get_store_model(token_model),
                store_endpoints:function (data_state, callback){
                    //TODO : use error case if(dao.error)
 
@@ -52,22 +58,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"]
 
                    
                },
-               store_tenants:function (data_state, callback){
-                   var dao_result=data_state.dao.result;
-                   var data_model=tenant;
-                   if(dao_result){
-                       var container=data_model.instanciate_container(data_state);
-                      data_model.populate_container(container, dao_result);
-                       $('#content').prepend( "<h2>"+data_model.name+" Loaded</h2><pre><code class='json'>"+common.toJson(container)+"</code></pre>" );
-
-                       callback(null, data_state);
-
-                   } else{
-                       $('#content').prepend( "<h2>Error while "+data_model.name+" Loaded</h2><pre><code class='json'>"+common.toJson(data_state.dao.error)+"</code></pre>" );
-                       callback(data_state.dao.error, data_state);
-                   }
-                   
-               },
+               store_tenants:get_store_model(tenant_model),
                store_operation:function(data_state, callback){
                    if(data_state.dao.result){
                    var data_operation=data_state.data_operation;

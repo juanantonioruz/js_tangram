@@ -25,13 +25,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                        .addTransformation(query.query_tokens)
                        .addTransformation(dao.dao)
-                       .addTransformation(model.model_store_token_id);
+                       .addTransformation(model.model_store_token_id)
+                       .addTransformation(ui.ui_empty_register_form);
+                   
                },
 
 
                show_tenants:function(){
                    return new Pipeline(this.name)
-               
                        .addTransformation(query.query_tenants)
                        .addTransformation(dao.dao)
                        .addTransformation(model.model_store_tenants)

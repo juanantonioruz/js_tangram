@@ -1,5 +1,5 @@
-define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
-       function(common, events, dispatcher, tenant) {
+define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js"],
+       function(common, events, dispatcher, tenant_model) {
 function clean_interface(){
     $('#content').empty();
 };
@@ -38,6 +38,10 @@ function show_message_to_the_user(the_message){
                                     );
            };
            var result={
+               empty_register_form:function(data_state, callback){
+                    $('#register_form').fadeOut(500).empty().fadeIn();
+                   callback(null, data_state);
+               },
                register_form:function (data_state, callback){
                    var target_pipeline=this.pipeline;
 
@@ -176,13 +180,13 @@ function show_message_to_the_user(the_message){
                            return function(){
                                $("#suboptions").remove();
                                var selected=$(select_dom_id+" option:selected").first();
-                               tenant.set_selected(data_state, selected.data('item'));
+                               tenant_model.set_selected(data_state, selected.data('item'));
                                clean_interface();
-                               show_message_to_the_user("you have selected tenant: "+tenant.get_selected_name(data_state));
+                               show_message_to_the_user("you have selected tenant: "+tenant_model.get_selected_name(data_state));
                                dispatcher.dispatch(events.tenant_selected, state_step, data_state );
                            };
                        };
-                       show_dom_select("#tenants", the_dom_place_to_append_the_select,tenant.get_model(data_state),  the_on_change_select_fn, true)();
+                       show_dom_select("#tenants", the_dom_place_to_append_the_select,tenant_model.get_model(data_state),  the_on_change_select_fn, true)();
                        callback(null, data_state);
                    }
 
