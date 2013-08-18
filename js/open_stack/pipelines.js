@@ -40,7 +40,11 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                },
                show_tenant_operations:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(result.load_endpoints)
+
+                       .addTransformation( query.query_endpoints)
+                       .addTransformation( dao.dao)
+                       .addTransformation( model.model_store_endpoints)
+
                        .addTransformation(ui.ui_select_operations);
                },
                run_operation:function(){
@@ -96,12 +100,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                
 
-               load_endpoints:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation( query.query_endpoints)
-                       .addTransformation( dao.dao)
-                       .addTransformation( model.model_store_endpoints);
-               },
+
                load_operation_selected:function(){ 
                    return new Pipeline(this.name)
                        .addTransformation(query.query_operation)

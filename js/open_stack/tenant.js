@@ -23,8 +23,23 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                },
                get_model:function(data_state){
                    return data_state[result.data_state_key];
+               },
+               example_single_tenant_ajax_response:{
+                   "hidden": "demo",
+                   "visible": "demo",
+                   "item": {
+                       "description": null,
+                       "enabled": true,
+                       "id": "e456641efca44f989f3fe8158757c788",
+                       "name": "demo"
+                   }
+               },
+              get_selected_name:function(data_state){return data_state.tenant_name;},
+               set_selected:function(data_state, item){
+                   data_state.tenant_name=item.name;
+                   data_state.tenant_id=item.id;
+
                }
-              
 
            };
 

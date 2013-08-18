@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js"],
-       function(common, dispatcher) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
+       function(common, dispatcher, tenant) {
            var result= {
 
                tokens:function (data_state, callback){
@@ -38,7 +38,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            s_user:data_state.user,
                            s_pw:data_state.password, 
                            s_ip:data_state.ip, 
-                           tenant_name:data_state.tenant_name}};
+                           tenant_name:tenant.get_selected_name(data_state)}};
                    data_state.dao=dao_object;
                    $('#right').prepend("<h3 class='left_message'>Loading endpoints, please wait ...</h3>");
 

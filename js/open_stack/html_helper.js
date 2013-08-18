@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js"],
-       function(common, dispatcher) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/tenant.js"],
+       function(common, dispatcher, tenant) {
 function clean_interface(){
     $('#content').empty();
 };
@@ -171,30 +171,23 @@ function show_message_to_the_user(the_message){
                select_tenants:function (data_state, callback){
                    var state_step=this;
                    function show_tenant_select(){
-
                        var the_dom_place_to_append_the_select='#register_form';
                        var the_on_change_select_fn=function(select_dom_id){
                            return function(){
                                $("#suboptions").remove();
-
                                var selected=$(select_dom_id+" option:selected").first();
-                               data_state.tenant_name=selected.val();
-                               data_state.tenant_id=selected.data('item').id;
-
+                               tenant.set_selected(data_state, selected.data('item'));
                                clean_interface();
-
-                               show_message_to_the_user("you have selected tenant: "+data_state.tenant_name);
+                               show_message_to_the_user("you have selected tenant: "+tenant.get_selected_name(data_state));
                                dispatcher.dispatch("tenant_selected", state_step, data_state );
                            };
                        };
-                       show_dom_select("#tenants", the_dom_place_to_append_the_select,data_state.tenants_select,  the_on_change_select_fn, true)();
+                       show_dom_select("#tenants", the_dom_place_to_append_the_select,tenant.get_model(data_state),  the_on_change_select_fn, true)();
                        callback(null, data_state);
                    }
 
                    show_fn_result_to_the_user_and_wait('Please select a tenant to view its services available', 
                                                        show_tenant_select);
-
-
                }
            };
            return common.naming_fns(result, "ui_");
