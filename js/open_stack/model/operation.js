@@ -4,7 +4,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/model/token
 
 
            var result= {
-               name:"endpoints",
+               name:"operation",
                dao_requirements:["tenant_name", "user", "password"],
                data_state_key:"endpoints",
                instanciate_container:function(data_state){

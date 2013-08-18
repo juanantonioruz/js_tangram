@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js","js/open_stack/model/endpoint.js"],
-       function(common, dispatcher, tenant_model, token_model, endpoint_model) {
+define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js","js/open_stack/model/endpoint.js","js/open_stack/model/operation.js"],
+       function(common, dispatcher, tenant_model, token_model, endpoint_model, operation_model) {
 
            function get_store_model(data_model){
                return function (data_state, callback){

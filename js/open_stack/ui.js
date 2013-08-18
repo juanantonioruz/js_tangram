@@ -147,25 +147,35 @@ function show_message_to_the_user(the_message){
                                                                    "#init_filter", 
                                                                    "#operations_available",
                                                                    [
-                                                                       {visible:"listing_images", hidden:"listing_images"},
-                                                                       {visible:"listing_flavors", hidden:"listing_flavors"},
-                                                                       {visible:"listing_networks", hidden:"listing_networks"},
-                                                                       {visible:"listing_subnets", hidden:"listing_subnets"},
-                                                                       {visible:"listing_servers", hidden:"listing_servers"},
+                      //                                                  {
+                      // item:{}, 
+                      // visible:"", 
+                      // hidden:'images'}
+                                                                       {visible:"LIST IMAGES", hidden:"listing_images", item:{service_type:"nova", url:"/images"}},
+                                                                       {visible:"listing_flavors", hidden:"listing_flavors",item:{service_type:"nova", url:"/flavors"}},
+                                                                       {visible:"listing_networks", hidden:"listing_networks",item:{service_type:"quantum", url:"/v2.0/networks"}},
+                                                                       {visible:"listing_subnets", hidden:"listing_subnets",item:{service_type:"quantum", url:"/v2.0/subnets"}},
+                                                                       {visible:"listing_servers", hidden:"listing_servers",item:{service_type:"nova", url:"/servers"}},
                                                                        {visible:"create server", hidden:"create_server"},
                                                                        {visible:"create network", hidden:"create_network"},
                                                                        {visible:"create subnet", hidden:"create_subnet"}
                                                                    ], 
-                                                                   
                                                                    function(select_dom_id){ 
                                                                        return function(){
-                                                                           var selected=$(select_dom_id+" option:selected").first().val();
-                                                                           data_state.operation_selected=selected;
-                                                                           show_message_to_the_user("operation selected: "+selected);
+                                                                           var jquery_obj=$(select_dom_id+" option:selected").first();
+
+                                                                           data_state.operation_selected=jquery_obj.data("item");
+                                                                           data_state.operation_selected.hidden=jquery_obj.val();
+
+                                                                           var value_selected=jquery_obj.text();
+                                                                           show_message_to_the_user("operation selected: "+value_selected);
+                                                                           $('#right').prepend("<h3 class='left_message'>Loading "+value_selected+", please wait ...</h3>");
                                                                            $('#suboperations').fadeOut().html("").fadeIn();
+
                                                                            dispatcher.dispatch(events.operation_selected, target_pipeline,data_state );
                                                                        };
-                                                                   })();
+                                                                   },
+                                                                   true)();
                                                                
                                                                callback(null, data_state);
                                                            });
