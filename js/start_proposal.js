@@ -36,11 +36,14 @@ define(["js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/
                // EOP
                dispatcher.reset();
 
-               dispatcher.listen_event("try_to_log", os_pipelines.show_tenants, false);
 
-               dispatcher.listen_event("tenant_selected", os_pipelines.show_tenant_actions, false);
+               dispatcher.listen_event("try_to_log", os_pipelines.load_tokens, false);
 
-               dispatcher.listen_event("action_selected", os_pipelines.run_action, false);
+               dispatcher.listen_pipe("ON_END","load_tokens", os_pipelines.show_tenants, false);
+
+               dispatcher.listen_event("tenant_selected", os_pipelines.show_tenant_operations, false);
+
+               dispatcher.listen_event("operation_selected", os_pipelines.run_operation, false);
 
                dispatcher.listen_event("send_create_server", os_pipelines.create_server, false);
 

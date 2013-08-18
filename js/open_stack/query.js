@@ -19,7 +19,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                operation:function (data_state, callback){
 
                    var data_operation=data_state.data_operation;
-                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", data:{token:data_state.token_id,  s_url: data_operation.url, s_host:data_operation.host.replace("http://", "").replace(common.local_ip,data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
+                   var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", 
+                                   data:{token:data_state.token_id,  
+                                         s_url: data_operation.url, 
+                                         s_host:data_operation.host.replace("http://", "").replace(common.local_ip,data_state.ip ) /**tenant_name:data_state.tenant_name**/}};
                    data_state.dao=dao_object;
                    console.dir(data_state.dao);
                    $('#right').prepend("<h3 class='left_message'>Loading "+data_operation.title+", please wait ...</h3>");

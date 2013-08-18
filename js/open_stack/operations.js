@@ -9,12 +9,6 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
            }
 
            var result= {
-               show_operation_value_selected:function (data_state, callback){
-
-                   show_message_to_the_user("loading....  "+data_state.action_selected);
-                   callback(null, data_state);
-                   
-               },
               list_images:function (data_state, callback){
                   data_state.data_operation= {item:{service_type:"nova", url:"/images"}, visible:"LIST IMAGES", hidden:'images'};
                   customize_operation_data(data_state);
