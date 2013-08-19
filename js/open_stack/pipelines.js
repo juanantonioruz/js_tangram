@@ -1,9 +1,19 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/open_stack/model.js",   "js/open_stack/ui.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js", "js/open_stack/operations.js"],
-       function(common, dao, query, model,ui,  Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events, operations) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/open_stack/model.js",   "js/open_stack/ui.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
+       function(common, dao, query, model,ui,  Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
 
            function select_load_operation(){};
            function add_load(pipe, fn){
            }
+           function load_operation(){
+               return new Pipeline("load_operation")
+                   .addTransformation(query.query_operation)
+                   .addTransformation(dao.dao)
+                   .addTransformation(model.model_store_operation);
+               //TODO in each implementation
+               // defined outside in a layer of more specification
+
+               };
+
            var result={
                //Public API
                register:function(){
@@ -21,12 +31,13 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                    
                },
 
-               load_operation:function (){
+               provisional_alert_display:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(query.query_operation)
-                       .addTransformation(dao.dao)
-                       .addTransformation(model.model_store_operation);
-                   //TODO in each implementation                    .addTransformation(dao.show_result);
+                       .addTransformation(new StateStep("now", function(data_state, callback){
+                       alert(common.toJson(data_state[data_state.operation_selected.hidden]));
+                           callback(null, data_state);
+                   }));
+
                },
 
                show_tenants:function(){
@@ -49,11 +60,15 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                run_operation:function(){
                    return new Mapper_Pipeline(this.name, 
                                               {
-                                                  "listing_images": operations.listing_images,
-                                                  "listing_flavors": result.load_operation,
-                                                  "listing_networks": result.load_operation,
-                                                  "listing_subnets": result.load_operation,
-                                                  "listing_servers": result.load_operation,
+                                                  "listing_images": new Pipeline("listing_images")
+                                                  // here not but in other occasions it will be good to select 'manually' the option_selected .. next lines create server will be one of them
+                                                      .addTransformation(load_operation())
+                                                      .addTransformation(result.provisional_alert_display)
+                                                                        ,
+//                                                  "listing_flavors": operations.listing_flavors,
+                                                  // "listing_networks": result.load_operation,
+                                                  // "listing_subnets": result.load_operation,
+                                                  // "listing_servers": result.load_operation,
                                                   
                                                   "create_server":new Pipeline(this.name) 
                                                       .addTransformation(select_load_operation("list_images" ))
