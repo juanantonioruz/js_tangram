@@ -130,12 +130,6 @@ function show_message_to_the_user(the_message){
                    });
                    callback(null, data_state);
                },
-               show_operation_value_selected:function (data_state, callback){
-
-                   show_message_to_the_user("loading....  "+data_state.operation_selected);
-                   callback(null, data_state);
-                   
-               },
 
                select_operations:function(data_state, callback){
                    var target_pipeline=this.pipeline;
@@ -166,6 +160,7 @@ function show_message_to_the_user(the_message){
 
                                                                            data_state.operation_selected=jquery_obj.data("item");
                                                                            data_state.operation_selected.hidden=jquery_obj.val();
+
 
                                                                            var value_selected=jquery_obj.text();
                                                                            show_message_to_the_user("operation selected: "+value_selected);

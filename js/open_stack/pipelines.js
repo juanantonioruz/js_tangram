@@ -1,21 +1,7 @@
-define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/open_stack/model.js",   "js/open_stack/ui.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js"],
-       function(common, dao, query, model,ui,  Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events) {
+define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/open_stack/model.js",   "js/open_stack/ui.js","js/pipelines/foreach_pipeline_type.js", "js/pipelines/pipeline_type.js","js/pipelines/mapper_pipeline_type.js", "js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js","js/pipelines/dispatcher.js","js/open_stack/events.js", "js/open_stack/operations.js"],
+       function(common, dao, query, model,ui,  Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events, operations) {
 
-
-           function get_load_operation(pipe_ns){
-               return new Pipeline(pipe_ns+ "_load_operation")
-                   .addTransformation(ui.ui_show_operation_value_selected)
-           //     .addTransformation(new StateStep("customize_operation_data", function (data_state, callback){
-           //                                                    data_state.data_operation.title=data_state.data_operation.visible;
-           //                                                    data_state.data_operation.url=data_state.data_operation.item.url;
-           //                                                    data_state.data_operation.host=data_state.endpoints[data_state.data_operation.item.service_type];
-           //         callback(null, data_state);
-           // }))
-                   .addTransformation(query.query_operation)
-                   .addTransformation(dao.dao)
-                   .addTransformation(model.model_store_operation)
-                   .addTransformation(dao.show_result);
-           }
+           function select_load_operation(){};
            function add_load(pipe, fn){
            }
            var result={
@@ -35,6 +21,13 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                    
                },
 
+               load_operation:function (){
+                   return new Pipeline(this.name)
+                       .addTransformation(query.query_operation)
+                       .addTransformation(dao.dao)
+                       .addTransformation(model.model_store_operation);
+                   //TODO in each implementation                    .addTransformation(dao.show_result);
+               },
 
                show_tenants:function(){
                    return new Pipeline(this.name)
@@ -56,16 +49,16 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                run_operation:function(){
                    return new Mapper_Pipeline(this.name, 
                                               {
-                                                  "listing_images": function(){return get_load_operation("list_images");},
-                                                  "listing_flavors": function(){return get_load_operation("list_flavors");},
-                                                  "listing_networks": function(){return get_load_operation("list_networks");},
-                                                  "listing_subnets": function(){return get_load_operation("list_subnets");},
-                                                  "listing_servers": function(){return get_load_operation("list_servers");},
+                                                  "listing_images": operations.listing_images,
+                                                  "listing_flavors": result.load_operation,
+                                                  "listing_networks": result.load_operation,
+                                                  "listing_subnets": result.load_operation,
+                                                  "listing_servers": result.load_operation,
                                                   
                                                   "create_server":new Pipeline(this.name) 
-                                                      .addTransformation(get_load_operation("list_images" ))
-                                                      .addTransformation(get_load_operation("list_flavors"))
-                                                      .addTransformation(get_load_operation("list_networks"))
+                                                      .addTransformation(select_load_operation("list_images" ))
+                                                      .addTransformation(select_load_operation("list_flavors"))
+                                                      .addTransformation(select_load_operation("list_networks"))
                                                       .addTransformation(ui.ui_create_server_options)
                                                   ,
                                                   
@@ -73,7 +66,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                                                       .addTransformation(ui.ui_create_network_options) 
                                                   ,
                                                   "create_subnet":new Pipeline(this.name)
-                                                      .addTransformation(get_load_operation("list_networks"))
+                                                      .addTransformation(select_load_operation("list_networks"))
                                                       .addTransformation(ui.ui_create_subnet_options)
                                                   
                                               }, 

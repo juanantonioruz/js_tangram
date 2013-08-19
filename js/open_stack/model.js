@@ -26,9 +26,9 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenan
                store_tenants:get_store_model(tenant_model),
                store_operation:function(data_state, callback){
                    if(data_state.dao.result){
-                   var data_operation=data_state.data_operation;
+                   var data_operation=data_state.operation_selected;
                    var msg=data_state.dao.result;
-                   data_state[data_operation.title]=msg;
+                   data_state[data_operation.hidden]=msg;
                    callback(null, data_state);
                    }else{
                        callback(data_state.dao.error, data_state);
