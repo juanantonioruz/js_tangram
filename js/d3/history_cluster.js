@@ -100,11 +100,19 @@ define(["js/common.js"], function(common) {
 
         if(colector.ns.indexOf("ON_END")!=-1){
             //is ON_END
-            console.log("!!!"+colector.ns);
-        colector.children.map(function(item){
-//            new_root.children[new_root.children.length-1].relation="ON_END";
+            console.log("!!!ON_END"+colector.ns);
+            colector.children.map(function(item){
             determine_recursive(item, container, new_root.children[new_root.children.length-1], "ON_END");
         });
+
+        }else if(colector.ns.indexOf("ON_INIT")!=-1){
+            //is ON_INIT
+            console.log("!!!ON_INIT"+colector.ns);
+            colector.children.map(function(item_i){
+
+                determine_recursive(item_i, container, new_root, "ON_INIT");
+            });
+
 
         }else{
            var  x={ns:colector.ns, relation:relationship};
@@ -170,11 +178,14 @@ define(["js/common.js"], function(common) {
                 .data(links)
                 .enter().append("path")
                 .attr("class", function(d){
-                    console.info(d.source.ns);
-                    console.dir(d);                   
+                    // console.info(d.source.ns);
+                    // console.dir(d);                   
                     if( d.target && d.target.relation=="ON_END" ){
-                         console.dir(d);                   
-                        return "link_event";
+//                         console.dir(d);                   
+                        return "link_on_end";
+                    }else if( d.target && d.target.relation=="ON_INIT" ){
+//                         console.dir(d);                   
+                        return "link_on_init";
                     }else{ 
 
                         return "link";
