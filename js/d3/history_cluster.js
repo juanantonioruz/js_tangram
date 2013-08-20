@@ -1,4 +1,4 @@
-define( function() {
+define(["js/common.js"], function(common) {
 
     
     var
@@ -15,26 +15,26 @@ define( function() {
         return  (c.indexOf(s)!=-1);
     }
 
-function is_event(d){
-  return contains(d.item.ns, "EVENT");
-};
-function is_mapper(d){
-  return contains(d.item.ns, "?");
-};
-function is_model(d){
-  return contains(d.item.ns, "$");
-};
-function colorize(d){
-    if(is_event(d))
-        return "red";
-    else if(is_mapper(d))
-        return "green";
-    else if(is_model(d))
-        return "violet";
+    function is_event(d){
+        return contains(d.item.ns, "EVENT");
+    };
+    function is_mapper(d){
+        return contains(d.item.ns, "?");
+    };
+    function is_model(d){
+        return contains(d.item.ns, "$");
+    };
+    function colorize(d){
+        if(is_event(d))
+            return "red";
+        else if(is_mapper(d))
+            return "green";
+        else if(is_model(d))
+            return "violet";
 
-    else
-       return "#999";
-}
+        else
+            return "#999";
+    }
 
     var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
@@ -46,9 +46,9 @@ function colorize(d){
 
     function check_path(colector,  container, path_array){
 
-                var is_in_path=false;
-                if(colector.ns=="root") is_in_path=true;
-//            console.log(colector.ns+"........"+container.path+":::::"+path_array);
+        var is_in_path=false;
+        if(colector.ns=="root") is_in_path=true;
+        //            console.log(colector.ns+"........"+container.path+":::::"+path_array);
         // only check if is pipeline
 
         if( path_array && path_array.length>0){
@@ -58,16 +58,16 @@ function colorize(d){
             for(var j=0; j<path_array.length; j++){
                 var path=path_array[j];
                 var path_compared=container.path;
-//                console.log("** "+path+"=="+path_compared);
+                //                console.log("** "+path+"=="+path_compared);
                 if(path.toLowerCase().indexOf(path_compared)!=-1){
                     is_in_path=true;
                     break;
                 }
             }
-   
+            
 
         }else{
-//        console.log(container.ns);
+            //        console.log(container.ns);
             return true;}
 
         return is_in_path;
@@ -88,21 +88,21 @@ function colorize(d){
                 var element=_create_node(child, int_path);
                 
                 if(check_path(child, element, path_array)){
-                container.children.push(element);
-                
-                if(!child.closed ){
-                    recursive(child, element, path_array);
-                }else{
-                    contador++;
-                }
+                    container.children.push(element);
+                    
+                    if(!child.closed ){
+                        recursive(child, element, path_array);
+                    }else{
+                        contador++;
+                    }
                 }
             }
         }else{
-                contador++;
-            }
-    }
+            contador++;
+        }
+    };
 
-   
+
 
     function render(root,window_id_ref,  div_id, item_fn, path_array){
         if(arguments.length!=5) alert("you have to adapt to the changes of this function arguments.. in history_cluster.js/render"+arguments.length);
@@ -135,8 +135,19 @@ function colorize(d){
         var link = svg.selectAll(".link")
                 .data(links)
                 .enter().append("path")
-                .attr("class", "link")
+                .attr("class", function(d){
+                    console.dir(d);
+//                    return "link";
+                    if(d.source.item.ns.indexOf("EVENT..ON_END")!=-1){
+                        return "link_event";
+                    }else{ 
+                        return "link";
+                    }
+                
+                     })
                 .attr("d", diagonal);
+
+
 
         var node = svg.selectAll(".node")
                 .data(nodes)
@@ -288,7 +299,7 @@ function colorize(d){
 
         d3.select(self.frameElement).style("height", contador*space_item + "px");        
 
-       
+        
         $(window_id_ref.document).find(div_id).fadeIn(100, function(){
             var selection=d3.select("#folder");
             if(!selection.empty()){
@@ -302,7 +313,7 @@ function colorize(d){
             
             $(window_id_ref).scrollTop($(window_id_ref.document).height());
         });
-            
+        
 
         
 

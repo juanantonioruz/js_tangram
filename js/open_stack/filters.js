@@ -100,10 +100,6 @@ define( function() {
                 }else{
                    // console.log("it is not init or end: "+event_type+"\n we have to process it too, aren't we?");
 
-
-
-                    
-
                     //active_pipelines.push(this.target);
                 }
             }else{

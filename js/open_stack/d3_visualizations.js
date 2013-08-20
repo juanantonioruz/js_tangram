@@ -8,7 +8,7 @@ define([  "js/common.js",
                    .addTransformation(d3_show_tenants())
                    .addTransformation(new StateStep("d3_show_images", function(data_state, callback){
                        if(data_state["LIST IMAGES"]){
-                       var images_node=create_node("images", create_data("folder", {name:"images"}));
+                       var images_node=common.create_node("images", common.create_data("folder", {name:"images"}));
                        
                        data_state["LIST IMAGES"].images.map(function(item){
                            var href=item.links[0].href;
@@ -18,7 +18,7 @@ define([  "js/common.js",
                                // end change
 
                            images_node.children.push(
-                               create_node(item.name, create_data("image", {"href":href}
+                               common.create_node(item.name, common.create_data("image", {"href":href}
                                                                  )));
                        });
                        function get_tenant(collection, key, searching){
@@ -46,13 +46,13 @@ define([  "js/common.js",
                    }))
                    .addTransformation(new StateStep("d3_show_networks", function(data_state, callback){
                        if(data_state["LIST NETWORKS"]){
-                       var networks_node=create_node("networks", create_data("folder", {name:"networks"}));
+                       var networks_node=common.create_node("networks", common.create_data("folder", {name:"networks"}));
                        
                        data_state["LIST NETWORKS"].networks.map(function(item){
                            var href=item.id;
 
                            networks_node.children.push(
-                               create_node(item.name, create_data("network", 
+                               common.create_node(item.name, common.create_data("network", 
                                                                   {href:href})));
                        });
                        function get_tenant(collection, key, searching){
@@ -80,7 +80,7 @@ define([  "js/common.js",
                    }))
                    .addTransformation(new StateStep("d3_show_flavors", function(data_state, callback){
                           if(data_state["LIST FLAVORS"]){
-                       var flavors_node=create_node("flavors", create_data("folder", {name:"flavors"}));
+                       var flavors_node=common.create_node("flavors", common.create_data("folder", {name:"flavors"}));
                        
                        data_state["LIST FLAVORS"].flavors.map(function(item){
                            var href=item.links[0].href;
@@ -89,7 +89,7 @@ define([  "js/common.js",
                                href=href.replace(common.local_ip,data_state.host );
                                // end change
                            flavors_node.children.push(
-                               create_node(item.name, create_data("flavor", 
+                               common.create_node(item.name, common.create_data("flavor", 
                                                                   {href:href})));
                        });
                        function get_tenant(collection, key, searching){
@@ -121,10 +121,10 @@ define([  "js/common.js",
               return  new Pipeline("d3_show_tenants")
                    .addTransformation(new StateStep("d3_show_tenants",function(data_state, callback){
                        console.log("d3_show_tenants");
-                       data_state.d3_open_stack=create_node("open stack",create_data("root", {}) );
-                       var tenants=create_node("tenants", create_data("folder", {name:"tenants"}));
+                       data_state.d3_open_stack=common.create_node("open stack",common.create_data("root", {}) );
+                       var tenants=common.create_node("tenants", common.create_data("folder", {name:"tenants"}));
                        data_state.tenants_select.map(function(item){
-                           tenants.children.push(create_node(item.visible, create_data("tenant", item)));
+                           tenants.children.push(common.create_node(item.visible, common.create_data("tenant", item)));
                        } );
                        
 

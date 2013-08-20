@@ -23,5 +23,14 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
         },
         local_ip:"192.168.1.26",
         remote_ip:"85.136.107.32"
+            // d3 related functions
+, create_node:function(the_name, _data){
+    return {name:the_name,ns:the_name, children:[], data_displayed:_data};
+}
+
+, create_data:function(_type, _data){
+    return {type:_type, data:_data};
+}
+
     };
 });

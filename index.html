@@ -21,17 +21,9 @@ var childWin;
           childWin = window.open('child.html','child', "width=1900, height=1150, location=no, menubar=no, scrollbars=no, status=no, toolbar=no");
           if (window.focus) {childWin.focus();};
 //$(childWin.document).find("#pipelines")
-        childWin.moveBy(250, 250);
+        childWin.focus();
 
    
-// d3 related functions
-function create_node(the_name, _data){
-    return {name:the_name,ns:the_name, children:[], data_displayed:_data};
-};
-
-function create_data(_type, _data){
-    return {type:_type, data:_data};
-}
 
       function toJson(o){
       return JSON.stringify(o, null, 4);
