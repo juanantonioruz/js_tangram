@@ -40,7 +40,7 @@ define(["js/common.js"], function(common) {
             .projection(function(d) { return [d.y, d.x]; });
 
     function _create_node(item, path){
-        return {ns:item.ns,item:item, children:[], path:path,relation:""};
+        return {ns:item.ns,item:item, children:[], path:path, relation:item.relation};
     };
 
 
@@ -76,8 +76,6 @@ define(["js/common.js"], function(common) {
                 
                 var int_path=(container.path+"/"+colector.ns).replace("pipeline_", "").replace("state_step_", "").toLowerCase();
                 var element=_create_node(child, int_path);
-                if(element.ns.indexOf("EVENT..ON_END")!=-1)
-                    element.relation="ON_END";
 
                 
                 if(check_path(child, element, path_array)){
@@ -96,8 +94,45 @@ define(["js/common.js"], function(common) {
         }
     };
 
+    function determine_recursive(colector, container, new_root, relationship){
+        
+        console.log("}}}}"+colector.ns);
+
+        if(colector.ns.indexOf("ON_END")!=-1){
+            //is ON_END
+            console.log("!!!"+colector.ns);
+        colector.children.map(function(item){
+//            new_root.children[new_root.children.length-1].relation="ON_END";
+            determine_recursive(item, container, new_root.children[new_root.children.length-1], "ON_END");
+        });
+
+        }else{
+           var  x={ns:colector.ns, relation:relationship};
+            if(!new_root.children)new_root.children=[];
+            new_root.children.push(x);
+
+
+        if(colector.children)
+            colector.children.map(function(item){
+                
+                
+            determine_recursive(item, colector,x, "CHILD");
+        });
+        }        
+
+    }
+
     function determine_relation_childs(root){
+
         //TODO :: recursive function and return new data hierarchical collection
+        var new_root={ns:root.ns, children:[], relation:"CHILD"};
+
+        root.children.map(function(item){
+            determine_recursive(item, root, new_root);
+        });
+      //  console.dir(new_root);
+        return new_root;
+        
     };
 
     function render(root,window_id_ref,  div_id, item_fn, path_array){
@@ -110,7 +145,7 @@ define(["js/common.js"], function(common) {
 
         contador=2;
 
-        determine_relation_childs(root);
+        root=determine_relation_childs(root);
         
         var int_root=_create_node(root, "");
 
@@ -135,9 +170,13 @@ define(["js/common.js"], function(common) {
                 .data(links)
                 .enter().append("path")
                 .attr("class", function(d){
-                    if(d.source.item.ns.indexOf("EVENT..ON_END")!=-1){
+                    console.info(d.source.ns);
+                    console.dir(d);                   
+                    if( d.target && d.target.relation=="ON_END" ){
+                         console.dir(d);                   
                         return "link_event";
                     }else{ 
+
                         return "link";
                     }
                 
