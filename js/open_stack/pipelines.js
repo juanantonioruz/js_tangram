@@ -21,6 +21,15 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                        .addTransformation( ui.ui_register_form  );
                },
 
+               ttry_to_log:function(){
+                   return new Pipeline(this.name)
+
+                       .addTransformation(query.query_tokens)
+                       .addTransformation(dao.dao)
+                       .addTransformation(model.model_store_token_id);
+
+               },
+
                load_tokens:function(){
                    return new Pipeline(this.name)
 

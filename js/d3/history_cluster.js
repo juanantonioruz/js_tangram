@@ -79,7 +79,7 @@ define(["js/common.js"], function(common) {
 
                 
                 if(check_path(child, element, path_array)){
-                    
+                    if(container.children.indexOf(element)==-1)
                     container.children.push(element);
                     
                     if(!child.closed ){
@@ -96,7 +96,7 @@ define(["js/common.js"], function(common) {
 
     function determine_recursive(colector, container, new_root, relationship){
         
-        console.log("}}}}"+colector.ns);
+        //console.log("}}}}"+colector.ns);
 
         if(colector.ns.indexOf("ON_END")!=-1){
             //is ON_END
@@ -117,6 +117,7 @@ define(["js/common.js"], function(common) {
         }else{
            var  x={ns:colector.ns, relation:relationship};
             if(!new_root.children)new_root.children=[];
+            if(new_root.children.indexOf(x)==-1)
             new_root.children.push(x);
 
 
@@ -131,7 +132,7 @@ define(["js/common.js"], function(common) {
     }
 
     function determine_relation_childs(root){
-
+        
         //TODO :: recursive function and return new data hierarchical collection
         var new_root={ns:root.ns, children:[], relation:"CHILD"};
 
@@ -154,7 +155,7 @@ define(["js/common.js"], function(common) {
         contador=2;
 
         root=determine_relation_childs(root);
-        
+        console.dir(root);
         var int_root=_create_node(root, "");
 
         recursive(root, int_root, path_array);

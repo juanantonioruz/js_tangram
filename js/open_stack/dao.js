@@ -18,13 +18,16 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            dao_object.result=msg;
                            if(common.logging.dao.dir)
                                console.dir(dao_object.result);
-                           callback(null, data_state);   
+                           
                        }else{
-                           dao_object.error=msg.error;                           
+                           
+                           dao_object.result={error:msg.error};                
                           // console.dir(msg.error);
 
-                           callback(msg.error[dao_object.error_property], data_state);
-                       }
+                          // callback(msg.error[dao_object.error_property], data_state);
+                       };
+                           callback(null, data_state);   
+                           
                    });
                },
                show_result:function(data_state, callback){

@@ -27,7 +27,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                    return result.get_model(data_state);
                },
                populate_container:function(data_state, dao_result){
-
+                   if(dao_result.access )
                    data_state[result.data_state_key]=dao_result.access.token;
 
                },

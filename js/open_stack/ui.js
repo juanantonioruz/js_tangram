@@ -56,7 +56,7 @@ function show_message_to_the_user(the_message){
                        data_state.user=$('#stack_user').val();
                        data_state.password=$('#stack_password').val();
                        data_state.ip=$('#stack_ip').val();
-
+                      
                        dispatcher.dispatch(events.try_to_log, target_pipeline,data_state );
                    });
                    callback(null, data_state);

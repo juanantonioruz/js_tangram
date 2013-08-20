@@ -14,8 +14,9 @@ function clean_history(){
 
 
 
-define(["js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js","js/pipelines/pipeline_type.js", "js/d3/history_cluster.js"],
-       function(events, filters,  dispatcher,  State, os_pipelines, d3_pipelines,  Pipeline, history_cluster) {
+define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js"
+,"js/pipelines/pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ],
+       function(common, events, filters,  dispatcher,  State, os_pipelines, d3_pipelines,  Pipeline,StateStep, history_cluster,tenant_model, token_model) {
 
            var data_state=State();
 
@@ -26,12 +27,19 @@ define(["js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dis
                dispatcher.reset();
 
 
-               dispatcher.listen_event(events.try_to_log, os_pipelines.load_tokens, false);
-
+//               dispatcher.listen_event(events.try_to_log, os_pipelines.load_tokens, false);
+               dispatcher.listen_event(events.try_to_log, 
+                                       function(){ return new Pipeline("her")
+                                       .addPipe(os_pipelines.ttry_to_log)
+                                       .addTransformation(new StateStep("ey", function(data_state, callback){
+                                           console.log(common.toJson(token_model.get_model(data_state)));
+                                           callback(null, data_state);
+                                       }));}
+                                       , false);
 
                dispatcher.listen_pipe("ON_END","load_tokens", os_pipelines.show_tenants, false);
 
-               dispatcher.listen_pipe("ON_INIT","show_tenants", os_pipelines.alerta, false);
+//               dispatcher.listen_pipe("ON_INIT","show_tenants", os_pipelines.alerta, false);
 
                dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, false);
 

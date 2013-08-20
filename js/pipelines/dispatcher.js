@@ -76,7 +76,8 @@ define(["js/async.js"], function(async) {
 
                 function continue_listeners(){
                     //this line  is related with the  foreach pipelines name that have the index included
-                    var searched=target.ns.split("*")[0];
+
+                    var searched= target.ns.split("*")[0] ;
                     if(logging.dispatcher.searching)
                         console.log(".......SEARCHING:::::"+searched+" EVENT_TYPE: "+transformation_event_type);
                    // console.log("??????????"+transformation_event_type+"---"+searched);

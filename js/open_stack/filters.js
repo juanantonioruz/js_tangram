@@ -73,7 +73,7 @@ function toJson(o){
             if(debug_filters)
                 console.log(">--------------------------debug d3 pipelines");
             
-            
+
             var ns=this.target.ns;
             var event_type=this.transformation_event_type;
           //  console.log(">--------------------------debug d3 pipelines"+event_type);
@@ -88,6 +88,7 @@ function toJson(o){
                         this.target.active_parent=data_state;
                     }
                     if(!this.target.parallel){
+                    if(active_pipelines.indexOf(this.target)==-1)
                         active_pipelines.push(this.target);
                     }
 
@@ -98,6 +99,7 @@ function toJson(o){
                         var index=active_pipelines.indexOf(this.target);
                         active_pipelines.splice(index, 1);
                     }
+                    if(this.target.active_parent.children.indexOf(this.target)==-1)
                     this.target.active_parent.children.push(this.target);
 
                     //only we visualize the result if there aren't active_pipelines on "ON_END" event
@@ -106,13 +108,14 @@ function toJson(o){
 
                 }else{
                    //alert("it is not init or end: "+event_type+"\n we have to process it too, aren't we?");
-
+                    console.dir(active_pipelines);
                     //active_pipelines.push(this.target);
                 }
             }else{
                 if(is_on_init(event_type)){
                     
                 }else{
+                    if(this.target.pipeline.children.indexOf(this.target)==-1)
                     this.target.pipeline.children.push(this.target);
                 }
             }
