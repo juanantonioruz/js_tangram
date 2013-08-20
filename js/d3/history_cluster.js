@@ -215,7 +215,7 @@ define(["js/common.js"], function(common) {
             .attr("height", 8)
             .attr("fill",function(d,i){
                 if(contains(d.ns, "dao")) 
-                    return "red";
+                    return "pink";
                 else if(contains(d.ns, "load_tmpl"))
                     return "YellowGreen";
                 else if(contains(d.ns, "render"))

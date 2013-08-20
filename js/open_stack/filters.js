@@ -1,9 +1,11 @@
-define( function() {
+define(  function() {
     function contains(context, search){
         return (context.indexOf(search) !== -1);
     }
 
-
+function toJson(o){
+            return JSON.stringify(o, null, 4);
+}
     function getStart(){return (new Date).getTime();};
     function getDiff(start){return (new Date).getTime() - start;};
     function recordStart(o) {o['start']= getStart();};
@@ -70,17 +72,21 @@ define( function() {
 
             if(debug_filters)
                 console.log(">--------------------------debug d3 pipelines");
+            
+            
             var ns=this.target.ns;
             var event_type=this.transformation_event_type;
           //  console.log(">--------------------------debug d3 pipelines"+event_type);
             if(is_pipeline(ns)){
                 if(is_on_init(event_type)){
 
-                    if(active_pipelines.length>0)
+                    if(active_pipelines.length>0){
                         this.target.active_parent=active_pipelines[active_pipelines.length-1];
-                    else
+                    }else{
+                        //search for the pipeline where is produced the event
+                        
                         this.target.active_parent=data_state;
-                    
+                    }
                     if(!this.target.parallel){
                         active_pipelines.push(this.target);
                     }
@@ -99,7 +105,7 @@ define( function() {
                         render(data_state,window_id_ref, div_id,item_fn, path);
 
                 }else{
-                   // console.log("it is not init or end: "+event_type+"\n we have to process it too, aren't we?");
+                   //alert("it is not init or end: "+event_type+"\n we have to process it too, aren't we?");
 
                     //active_pipelines.push(this.target);
                 }
