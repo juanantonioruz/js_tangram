@@ -30,7 +30,18 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
 
 , create_data:function(_type, _data){
     return {type:_type, data:_data};
-}
+},
+        logging:{
+            dao:{
+                dir:false
+            },
+            dispatcher:{
+                searching:false,
+                listeners:true,
+                listeners_detail:true
+            }
+            
+        }
 
     };
 });

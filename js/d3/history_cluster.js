@@ -136,8 +136,6 @@ define(["js/common.js"], function(common) {
                 .data(links)
                 .enter().append("path")
                 .attr("class", function(d){
-                    console.dir(d);
-//                    return "link";
                     if(d.source.item.ns.indexOf("EVENT..ON_END")!=-1){
                         return "link_event";
                     }else{ 

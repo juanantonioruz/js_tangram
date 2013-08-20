@@ -72,7 +72,7 @@ define( function() {
                 console.log(">--------------------------debug d3 pipelines");
             var ns=this.target.ns;
             var event_type=this.transformation_event_type;
-            console.log(">--------------------------debug d3 pipelines"+event_type);
+          //  console.log(">--------------------------debug d3 pipelines"+event_type);
             if(is_pipeline(ns)){
                 if(is_on_init(event_type)){
 
@@ -94,6 +94,7 @@ define( function() {
                     }
                     this.target.active_parent.children.push(this.target);
 
+                    //only we visualize the result if there aren't active_pipelines on "ON_END" event
                     if(active_pipelines.length==0)
                         render(data_state,window_id_ref, div_id,item_fn, path);
 

@@ -6,6 +6,15 @@ define(["js/async.js"], function(async) {
         var domain_tree={};
         var filters=[];
 
+        var logging={
+
+            dispatcher:{
+                searching:false,
+                listeners:true,
+                listeners_detail:true
+            }
+            
+        };
 
         var api= {
 
@@ -48,7 +57,10 @@ define(["js/async.js"], function(async) {
 
 
                 function continue_listeners(){
+                    //this line  is related with the  foreach pipelines name that have the index included
                     var searched=target.ns.split("*")[0];
+                    if(logging.dispatcher.searching)
+                        console.log(".......SEARCHING:::::"+searched+" EVENT_TYPE: "+transformation_event_type);
                    // console.log("??????????"+transformation_event_type+"---"+searched);
                 // if(transformation_event_type=="ON_END"  || transformation_event_type=="ON_INIT"){
                 //     callback();
@@ -80,11 +92,17 @@ define(["js/async.js"], function(async) {
 
 
 
-                    if(pipeline_listeners){
+                    if(pipeline_listeners && pipeline_listeners.length>0){
 
 
-                        
-                          console.log(target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
+
+                    if(logging.dispatcher.listeners)
+                        console.log("\nPIPELINE_LISTENERS: "+target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
+                        pipeline_listeners.map(function(item){
+                    if(logging.dispatcher.listeners)
+                            console.log("___listener stored: "+item.pipeline().ns);
+                        });
+                        console.log("\n");
 
                         var paralels=pipeline_listeners.filter(function(element, index, array){return (element.parallel)?true:false;});
                         var syncq=pipeline_listeners.filter(function(element, index, array){return (!element.parallel)?true:false;});
