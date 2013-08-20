@@ -20,7 +20,10 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                    return new Pipeline(this.name)
                        .addTransformation( ui.ui_register_form  );
                },
-
+               clean_register:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation( ui.ui_empty_register_form  );
+               },
                ttry_to_log:function(){
                    return new Pipeline(this.name)
 

@@ -112,6 +112,15 @@ define(["js/common.js"], function(common) {
 
                 determine_recursive(item_i, container, new_root, "ON_INIT");
             });
+        }else if(colector.ns.indexOf("?")!=-1){
+            //is SWITCH
+            console.log("!!!SWICTH"+colector.ns);
+
+            colector.children.map(function(item){
+            determine_recursive(item, container, new_root.children[new_root.children.length-1], "SWITCH");
+        });
+
+
 
 
         }else{
@@ -187,6 +196,9 @@ define(["js/common.js"], function(common) {
                     }else if( d.target && d.target.relation=="ON_INIT" ){
 //                         console.dir(d);                   
                         return "link_on_init";
+                    }else if( d.target && d.target.relation=="SWITCH" ){
+//                         console.dir(d);                   
+                        return "link_switch";
                     }else{ 
 
                         return "link";

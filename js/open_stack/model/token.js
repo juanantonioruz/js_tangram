@@ -22,7 +22,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                dao_requirements:["ip", "user", "password"], // register form fields
                data_state_key:"token_id",
                instanciate_container:function(data_state){
-                   data_state[result.data_state_key]={start:true};
+                   data_state[result.data_state_key]=null;
 
                    return result.get_model(data_state);
                },
