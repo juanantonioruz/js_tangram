@@ -40,21 +40,19 @@ define(["js/common.js"], function(common) {
             .projection(function(d) { return [d.y, d.x]; });
 
     function _create_node(item, path){
-        return {ns:item.ns,item:item, children:[], path:path};
+        return {ns:item.ns,item:item, children:[], path:path,relation:""};
     };
 
 
+// function to filter the visualization... secondary 
     function check_path(colector,  container, path_array){
 
         var is_in_path=false;
         if(colector.ns=="root") is_in_path=true;
-        //            console.log(colector.ns+"........"+container.path+":::::"+path_array);
+        // console.log(colector.ns+"........"+container.path+":::::"+path_array);
         // only check if is pipeline
-
         if( path_array && path_array.length>0){
-
             is_in_path=false;
-
             for(var j=0; j<path_array.length; j++){
                 var path=path_array[j];
                 var path_compared=container.path;
@@ -64,30 +62,26 @@ define(["js/common.js"], function(common) {
                     break;
                 }
             }
-            
-
         }else{
             //        console.log(container.ns);
-            return true;}
-
+            is_in_path=true;            
+        }
         return is_in_path;
-
     }
 
-
-
     function recursive(colector, container, path_array){
-
-
         if(colector.children && check_path(colector, container, path_array)){
             for(var i=0; i<colector.children.length; i++){
-
                 var child=colector.children[i];
-                //console.log(child);
+                
                 var int_path=(container.path+"/"+colector.ns).replace("pipeline_", "").replace("state_step_", "").toLowerCase();
                 var element=_create_node(child, int_path);
+                if(element.ns.indexOf("EVENT..ON_END")!=-1)
+                    element.relation="ON_END";
+
                 
                 if(check_path(child, element, path_array)){
+                    
                     container.children.push(element);
                     
                     if(!child.closed ){
@@ -102,7 +96,9 @@ define(["js/common.js"], function(common) {
         }
     };
 
-
+    function determine_relation_childs(root){
+        //TODO :: recursive function and return new data hierarchical collection
+    };
 
     function render(root,window_id_ref,  div_id, item_fn, path_array){
         if(arguments.length!=5) alert("you have to adapt to the changes of this function arguments.. in history_cluster.js/render"+arguments.length);
@@ -113,6 +109,9 @@ define(["js/common.js"], function(common) {
         console.log("RENDERING VISUALIZATION!!");
 
         contador=2;
+
+        determine_relation_childs(root);
+        
         var int_root=_create_node(root, "");
 
         recursive(root, int_root, path_array);

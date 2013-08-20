@@ -11,10 +11,28 @@ define(["js/async.js"], function(async) {
             dispatcher:{
                 searching:false,
                 listeners:true,
-                listeners_detail:true
+                listeners_detail:true,
+                parallel:true,
+                parallel_detail:true,
+                syncq:true,
+                syncq_detail:true
             }
             
         };
+
+        function log_listeners(collection, general_log, specific_log, title, target, transformation_event_type){
+            if(collection.length==0)return;
+            if(general_log)
+                console.log("\n"+title+": "+target.ns+"/"+transformation_event_type+":: listeners size: "+collection.length);
+            collection.map(function(item){
+                if(specific_log)
+                    console.log("___listener stored: "+item.pipeline().ns);
+            });
+            if(general_log)
+                console.log("\n");
+
+        }
+
 
         var api= {
 
@@ -94,18 +112,18 @@ define(["js/async.js"], function(async) {
 
                     if(pipeline_listeners && pipeline_listeners.length>0){
 
-
-
-                    if(logging.dispatcher.listeners)
-                        console.log("\nPIPELINE_LISTENERS: "+target.ns+"/"+transformation_event_type+":: listeners size: "+pipeline_listeners.length);
-                        pipeline_listeners.map(function(item){
-                    if(logging.dispatcher.listeners)
-                            console.log("___listener stored: "+item.pipeline().ns);
-                        });
-                        console.log("\n");
-
                         var paralels=pipeline_listeners.filter(function(element, index, array){return (element.parallel)?true:false;});
                         var syncq=pipeline_listeners.filter(function(element, index, array){return (!element.parallel)?true:false;});
+
+
+
+                        log_listeners(pipeline_listeners, logging.dispatcher.listeners, logging.dispatcher.listeners_detail, "PIPELINE_LISTENERS" , target, transformation_event_type);
+                        
+                        log_listeners(paralels, logging.dispatcher.parallel, logging.dispatcher.parallel_detail, "PARALLEL_LISTENERS" , target, transformation_event_type);
+
+                        log_listeners(syncq, logging.dispatcher.syncq, logging.dispatcher.syncq_detail, "SYNCQ_LISTENERS" , target, transformation_event_type);
+                        
+
 
                         paralels.map(function(o){
                             //running in parallel
@@ -130,12 +148,12 @@ define(["js/async.js"], function(async) {
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
                                             callback();
-                                    })
-                                    .set_on_error(function(err, pipeline){alert("TODO: throwing an error: "+toJson(err));});
+                                    });
+
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
                               //  console.dir(o);
-                                //                                alert("invoking");
+                              //  alert("invoking");
 
                                 compose.addPipe(o.pipeline());
                             });
