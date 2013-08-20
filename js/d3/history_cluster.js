@@ -155,7 +155,7 @@ define(["js/common.js"], function(common) {
         contador=2;
 
         root=determine_relation_childs(root);
-        console.dir(root);
+
         var int_root=_create_node(root, "");
 
         recursive(root, int_root, path_array);
