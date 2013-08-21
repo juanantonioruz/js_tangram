@@ -159,7 +159,10 @@ define(["js/common.js"], function(common) {
                 if(!new_root.children)new_root.children=[];
                 if(new_root.children.indexOf(x)==-1)
                     new_root.children.push(x);
-
+                if(new_root.ns.indexOf("&")!=-1){
+                    new_root.relation="MAPPER";
+                    new_root.ns=new_root.ns.replace("&"," == ");
+                }
                 if(colector.children)
                     colector.children.map(function(item){
                         determine_recursive(item, colector,x, "CHILD");

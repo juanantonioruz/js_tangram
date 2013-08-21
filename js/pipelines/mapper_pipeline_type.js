@@ -25,7 +25,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        var value=data_state.get_value(this.model_key);
                       
                        var pipe=this.map[value];
-                       pipe.ns="pipeline_"+value+"$";
+                       pipe.ns="pipeline_"+this.model_key+"&"+value;
                        // this conditional add flexibility to mapper_pipeline definition, in this case we can use statesteps also besides pipelines
                      //  alert(pipe().class_name);
                        if(pipe.class_name=="StateStep")
