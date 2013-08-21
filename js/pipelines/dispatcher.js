@@ -131,8 +131,9 @@ define(["js/async.js"], function(async) {
                             // here we can have problems with mutable data_state in async
                             //TODO fix that with the new changes
                             //                             console.dir(bo);
-                            var ext=new Pipeline("EVENT.."+transformation_event_type+"");
-                            var pipi=o.pipeline();
+                            var ext=new Pipeline(transformation_event_type+"");
+                            var pipi=o.pipeline.bind({name:"EVENT_"+transformation_event_type})();
+//                            var pipi=o.pipeline();
                             pipi.ns=pipi.ns;
                             // this is not necesary the parallel is related to method apply_transformations call, if it is nested or not
                             //pipi.parallel=true;
@@ -145,7 +146,7 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
                             contador++;
-                            var compose= new Pipeline("EVENT.."+transformation_event_type+"/"+target.ns)
+                            var compose= new Pipeline(transformation_event_type+"/"+target.ns)
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
                                             callback();
@@ -156,7 +157,7 @@ define(["js/async.js"], function(async) {
                               //  console.dir(o);
                               //  alert("invoking");
 
-                                compose.addPipe(o.pipeline());
+                                compose.addPipe(o.pipeline.bind({name:"EVENT_"+transformation_event_type})());
                             });
                             
                             compose.apply_transformations(data_state);
@@ -175,11 +176,12 @@ define(["js/async.js"], function(async) {
             },
             listen_event:function(transformation_event_type, _pipeline, parallel_or_sync){
                 if((typeof _pipeline) != "function"){
-                    //alert("adapting "+ns_listened+":: ");
+                    alert("dispatcher listen_event have to adapt the pipeline, encapsulating in a function: ");
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
+                }else{
                 }
-
+                
                 api.listen(transformation_event_type, null, _pipeline, parallel_or_sync);
             },
             // dont need to write "pipeline_"

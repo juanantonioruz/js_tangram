@@ -98,45 +98,57 @@ define(["js/common.js"], function(common) {
         
         //console.log("}}}}"+colector.ns);
 
-        if(colector.ns.indexOf("ON_END")!=-1){
-            //is ON_END
-            console.log("!!!ON_END"+colector.ns);
-            colector.children.map(function(item){
-            determine_recursive(item, container, new_root.children[new_root.children.length-1], "ON_END");
-        });
+        if(colector.ns.indexOf("EVENT")!=-1){
+            //  its an event
+            if(colector.ns.indexOf("ON_END")!=-1){
+                //is ON_END
+                console.log("!!!ON_END"+colector.ns);
+                colector.children.map(function(item){
+                    determine_recursive(item, container, new_root.children[new_root.children.length-1], "ON_END");
+                });
 
-        }else if(colector.ns.indexOf("ON_INIT")!=-1){
-            //is ON_INIT
-            console.log("!!!ON_INIT"+colector.ns);
-            colector.children.map(function(item_i){
+            }else if(colector.ns.indexOf("ON_INIT")!=-1){
+                //is ON_INIT
+                console.log("!!!ON_INIT"+colector.ns);
+                colector.children.map(function(item_i){
+                    determine_recursive(item_i, container, new_root, "ON_INIT");
+                });
+            }else{
+                // others events
 
-                determine_recursive(item_i, container, new_root, "ON_INIT");
-            });
-        }else if(colector.ns.indexOf("?")!=-1){
-            //is SWITCH
-            console.log("!!!SWICTH"+colector.ns);
-
-            colector.children.map(function(item){
-            determine_recursive(item, container, new_root.children[new_root.children.length-1], "SWITCH");
-        });
-
-
+                console.log("!!!ON_USER_EVENT"+colector.ns);
+                new_root.relation="ON_USER";
+                colector.children.map(function(item_i){
+                    determine_recursive(item_i, container, new_root, "CHILD");
+                });
 
 
+            }
         }else{
-           var  x={ns:colector.ns, relation:relationship};
-            if(!new_root.children)new_root.children=[];
-            if(new_root.children.indexOf(x)==-1)
-            new_root.children.push(x);
+            // it's not an event, is a pipeline or a state_step
+            if(colector.ns.indexOf("?")!=-1){
+                //is SWITCH
+                console.log("!!!SWICTH"+colector.ns);
 
+                colector.children.map(function(item){
+                    determine_recursive(item, container, new_root.children[new_root.children.length-1], "SWITCH");
+                });
 
-        if(colector.children)
-            colector.children.map(function(item){
-                
-                
-            determine_recursive(item, colector,x, "CHILD");
-        });
-        }        
+            }else{
+                var  x={ns:colector.ns, relation:relationship};
+                if(!new_root.children)new_root.children=[];
+                if(new_root.children.indexOf(x)==-1)
+                    new_root.children.push(x);
+
+                if(colector.children)
+                    colector.children.map(function(item){
+                        determine_recursive(item, colector,x, "CHILD");
+                    });
+            }
+
+        }
+
+                 
 
     }
 
@@ -196,6 +208,9 @@ define(["js/common.js"], function(common) {
                     }else if( d.target && d.target.relation=="ON_INIT" ){
 //                         console.dir(d);                   
                         return "link_on_init";
+                    }else if( d.target && d.target.relation=="ON_USER" ){
+                         console.dir(d);                   
+                        return "link_on_user";
                     }else if( d.target && d.target.relation=="SWITCH" ){
 //                         console.dir(d);                   
                         return "link_switch";

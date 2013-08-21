@@ -23,7 +23,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        var value=data_state.get_value(this.model_key);                      
                        var pipe=this.function_switch_expression(value);
                        var message_value= (this.expression)? this.expression(value): value;
-                       this.ns+="..?"+message_value;
+                       this.ns+="_?"+message_value;
 
                       
 

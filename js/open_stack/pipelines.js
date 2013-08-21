@@ -24,7 +24,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                    return new Pipeline(this.name)
                        .addTransformation( ui.ui_empty_register_form  );
                },
-               ttry_to_log:function(){
+               load_tokens:function(){
                    return new Pipeline(this.name)
 
                        .addTransformation(query.query_tokens)
@@ -33,7 +33,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                },
 
-               load_tokens:function(){
+               load_tokens_trash:function(){
                    return new Pipeline(this.name)
 
                        .addTransformation(query.query_tokens)

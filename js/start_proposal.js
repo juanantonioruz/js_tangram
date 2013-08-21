@@ -30,9 +30,9 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
 //               dispatcher.listen_event(events.try_to_log, os_pipelines.load_tokens, false);
                dispatcher.listen_event(events.try_to_log, 
                                        function(){
-                                           return new Pipeline("analyse")
-                                           .addTransformation(os_pipelines.ttry_to_log)
-                                           .addTransformation(new SwitcherPipeline("jolin",
+                                           return new Pipeline(this.name)
+                                           .addTransformation(os_pipelines.load_tokens)
+                                           .addTransformation(new SwitcherPipeline("",
                                                                        function(value){
                                                                            if(value){
                                                                                return os_pipelines.clean_register();
@@ -48,25 +48,25 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                        
                                        , true);
 
-               dispatcher.listen_pipe("ON_END","clean_register", os_pipelines.show_tenants, false);
+//               dispatcher.listen_pipe("ON_END","clean_register", os_pipelines.show_tenants, false);
 
 //               dispatcher.listen_pipe("ON_INIT","show_tenants", os_pipelines.alerta, false);
 
-               dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, false);
+               // dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, false);
 
-               dispatcher.listen_event(events.operation_selected, os_pipelines.run_operation, false);
+               // dispatcher.listen_event(events.operation_selected, os_pipelines.run_operation, false);
 
-               dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
+               // dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
 
-               dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
+               // dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
 
-               dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
+               // dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
                
 
                //D3 openStack client UI
-               dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,true);   
-               dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
-              dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+              //  dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,true);   
+              //  dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+              // dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
                
 
 
