@@ -96,10 +96,11 @@ define(["js/common.js"], function(common) {
 
     function determine_recursive(colector, container, new_root, relationship){
         
-        //console.log("}}}}"+colector.ns);
+        console.log("}}}}"+colector.ns);
 
-        if(colector.ns.indexOf("EVENT")!=-1){
+        if(colector.ns.indexOf("EVENT")!=-1 || colector.ns.indexOf("ON_END")!=-1 || colector.ns.indexOf("ON_INIT")!=-1){
             //  its an event
+                console.log("!!!EVENT"+colector.ns);
             if(colector.ns.indexOf("ON_END")!=-1){
                 //is ON_END
                 console.log("!!!ON_END"+colector.ns);
@@ -118,6 +119,7 @@ define(["js/common.js"], function(common) {
 
                 console.log("!!!ON_USER_EVENT"+colector.ns);
                 new_root.relation="ON_USER";
+                
                 colector.children.map(function(item_i){
                     determine_recursive(item_i, container, new_root, "CHILD");
                 });
@@ -129,12 +131,30 @@ define(["js/common.js"], function(common) {
             if(colector.ns.indexOf("?")!=-1){
                 //is SWITCH
                 console.log("!!!SWICTH"+colector.ns);
-
+                var colector_ns=colector.ns;
                 colector.children.map(function(item){
+                    if(!item.changed){
+                    item.ns="IF "+colector_ns.replace("_?", " == ")+" >> "+item.ns.replace("pipeline_", "").replace("state_step_", "");
+                    item.changed=true;
+                    }
                     determine_recursive(item, container, new_root.children[new_root.children.length-1], "SWITCH");
                 });
 
+//            }else if(colector.ns.indexOf("$")!=-1){
+//                 //is MAPPER
+//                 console.log("!!!MAPPER"+colector.ns);
+
+//                 colector.children.map(function(item){
+//                     if(!item.changed){
+// //                    item.ns=colector.ns.replace("$", " == ")+" >> "+item.ns.replace("pipeline_", "").replace("state_step_", "");
+//                     item.changed=true;
+//                     }
+                    
+//                     determine_recursive(item, colector, new_root.children[new_root.children.length-1], "CHILD");
+//                 });
+
             }else{
+                console.log("RESTO: "+colector.ns);
                 var  x={ns:colector.ns, relation:relationship};
                 if(!new_root.children)new_root.children=[];
                 if(new_root.children.indexOf(x)==-1)
@@ -211,7 +231,7 @@ define(["js/common.js"], function(common) {
                     }else if( d.target && d.target.relation=="ON_USER" ){
                          console.dir(d);                   
                         return "link_on_user";
-                    }else if( d.target && d.target.relation=="SWITCH" ){
+                    }else if( d.target &&( d.target.relation=="SWITCH" || d.target.relation=="MAPPER" )){
 //                         console.dir(d);                   
                         return "link_switch";
                     }else{ 

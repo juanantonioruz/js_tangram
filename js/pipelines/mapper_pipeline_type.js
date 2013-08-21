@@ -10,12 +10,12 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    init: function(name,map, model_key) {
                        //TODO improve this init method maybe delegating to other construct...
 
-                       name="pipeline_"+name;//+"?"+model_key;
+                       name="pipeline_"+this.model_key;//+"?"+model_key;
                        //TODO: THIS IS THE ERROR FOUND!!      base.init("mapper_"+model_key+"_"+name+"*"+contador, on_success,on_error);
                        this.map=map;
                        this.model_key=model_key;
                        this.construct( name);
-
+                       this.ns=name;
                        return this;
                    },
                    
@@ -25,15 +25,19 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        var value=data_state.get_value(this.model_key);
                       
                        var pipe=this.map[value];
-                       this.ns+="..?"+value;
+                       pipe.ns="pipeline_"+value+"$";
                        // this conditional add flexibility to mapper_pipeline definition, in this case we can use statesteps also besides pipelines
                      //  alert(pipe().class_name);
                        if(pipe.class_name=="StateStep")
                            this.addTransformation(pipe);
                        else if(pipe.class_name=="Pipeline")    
                            this.addPipe(pipe);
-                        else     
-                           this.addPipe(pipe());
+                        else{     
+                            var pipe_i=pipe();
+                            pipe_i.ns="pipeline_"+value;
+
+                           this.addPipe(pipe_i);
+                        }
                        
                        base.apply_transformations.call(this, data_state);
                    }

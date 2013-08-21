@@ -134,7 +134,7 @@ define(["js/async.js"], function(async) {
                             var ext=new Pipeline(transformation_event_type+"");
                             var pipi=o.pipeline.bind({name:"EVENT_"+transformation_event_type})();
 //                            var pipi=o.pipeline();
-                            pipi.ns=pipi.ns;
+                            pipi.ns="EVENT_"+transformation_event_type;
                             // this is not necesary the parallel is related to method apply_transformations call, if it is nested or not
                             //pipi.parallel=true;
                            ext.addTransformation(pipi);
@@ -156,8 +156,11 @@ define(["js/async.js"], function(async) {
                             syncq.map(function(o){
                               //  console.dir(o);
                               //  alert("invoking");
+                            var pipi=o.pipeline.bind({name:"EVENT_"+transformation_event_type})();
+//                            var pipi=o.pipeline();
+                            pipi.ns="EVENT_"+transformation_event_type;
 
-                                compose.addPipe(o.pipeline.bind({name:"EVENT_"+transformation_event_type})());
+                                compose.addPipe(pipi);
                             });
                             
                             compose.apply_transformations(data_state);
@@ -179,6 +182,7 @@ define(["js/async.js"], function(async) {
                     alert("dispatcher listen_event have to adapt the pipeline, encapsulating in a function: ");
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
+                    _pipeline.bind({name:transformation_event_type});
                 }else{
                 }
                 

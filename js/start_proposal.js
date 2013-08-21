@@ -40,21 +40,20 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                                                                return os_pipelines.alerta();
                                                                            }
                                                                        },
-                                                                      token_model.data_state_key));
+                                                                      token_model.data_state_key,
+                                                                                  function(value){ return (value)? "loaded" : "INVALID";}));
                                            ;
 
                                        }
-                                       
-                                       
                                        , true);
 
-//               dispatcher.listen_pipe("ON_END","clean_register", os_pipelines.show_tenants, false);
+               dispatcher.listen_pipe("ON_END","clean_register", os_pipelines.show_tenants, false);
 
 //               dispatcher.listen_pipe("ON_INIT","show_tenants", os_pipelines.alerta, false);
 
-               // dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, false);
+                dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, true);
 
-               // dispatcher.listen_event(events.operation_selected, os_pipelines.run_operation, false);
+                dispatcher.listen_event(events.operation_selected, os_pipelines.run_operation, true);
 
                // dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
 
