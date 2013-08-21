@@ -78,41 +78,51 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                operation_selected:function(){
                    return new Pipeline(this.name)
-                       .addTransformation(result.load_operation)
-                       .addTransformation(new Mapper_Pipeline(this.name, 
-                                              {
-                                                  "listing_images": new Pipeline("")
-                                                      .addTransformation(result.provisional_alert_display),
+                   .addTransformation(new Switcher_Pipeline("",
+                                                                       function(value){
+                                                                           if(value.indexOf("listing")!=-1){
+                                                                               return new Pipeline("listing")
+                                                                                   .addTransformation(result.load_operation)
+                                                                                   .addTransformation(new Mapper_Pipeline(this.name, 
+                                                                                                                          {
+                                                                                                                              "listing_images": new Pipeline("")
+                                                                                                                                  .addTransformation(result.provisional_alert_display),
 
-                                                  "listing_flavors": new Pipeline("")
-                                                      .addTransformation(result.provisional_alert_display),
+                                                                                                                              "listing_flavors": new Pipeline("")
+                                                                                                                                  .addTransformation(result.provisional_alert_display),
 
-                                                  "listing_networks": new Pipeline("")
-                                                      .addTransformation(result.provisional_alert_display),
+                                                                                                                              "listing_networks": new Pipeline("")
+                                                                                                                                  .addTransformation(result.provisional_alert_display),
 
-                                                  "listing_subnets": new Pipeline("")
-                                                      .addTransformation(result.provisional_alert_display),
+                                                                                                                              "listing_subnets": new Pipeline("")
+                                                                                                                                  .addTransformation(result.provisional_alert_display),
 
-                                                  "listing_servers": new Pipeline("")
-                                                      .addTransformation(result.provisional_alert_display),
-
+                                                                                                                              "listing_servers": new Pipeline("")
+                                                                                                                                  .addTransformation(result.provisional_alert_display)
+                                                                                                                          }, 
+                                                                                                                          "operation_selected.hidden"));
+                                                                           }else{
+                                                                               return new Pipeline("creating")
+                                                                               .addTransformation(result.alerta);
+                                                  // "create_server":new Pipeline(this.name) 
+                                                  //     .addTransformation(select_load_operation("list_images" ))
+                                                  //     .addTransformation(select_load_operation("list_flavors"))
+                                                  //     .addTransformation(select_load_operation("list_networks"))
+                                                  //     .addTransformation(ui.ui_create_server_options)
+                                                  // ,
                                                   
-                                                  "create_server":new Pipeline(this.name) 
-                                                      .addTransformation(select_load_operation("list_images" ))
-                                                      .addTransformation(select_load_operation("list_flavors"))
-                                                      .addTransformation(select_load_operation("list_networks"))
-                                                      .addTransformation(ui.ui_create_server_options)
-                                                  ,
-                                                  
-                                                  "create_network": new Pipeline(this.name)
-                                                      .addTransformation(ui.ui_create_network_options) 
-                                                  ,
-                                                  "create_subnet":new Pipeline(this.name)
-                                                      .addTransformation(select_load_operation("list_networks"))
-                                                      .addTransformation(ui.ui_create_subnet_options)
-                                                  
-                                              }, 
-                                              "operation_selected.hidden"))
+                                                  // "create_network": new Pipeline(this.name)
+                                                  //     .addTransformation(ui.ui_create_network_options) 
+                                                  // ,
+                                                  // "create_subnet":new Pipeline(this.name)
+                                                  //     .addTransformation(select_load_operation("list_networks"))
+                                                  //     .addTransformation(ui.ui_create_subnet_options)
+                                                                               
+
+                                                                           }
+                                                                       },
+                                                                      "operation_selected.hidden"
+                                                           ))
 ;
                },               
                create_server:function(){

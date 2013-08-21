@@ -4,7 +4,7 @@ define(["js/common.js"], function(common) {
     var
     radio=5,
     radio_max=150,
-    width = 1300,
+    width = 1900,
     height = 150;
     var contador;
     var space_item=40;
