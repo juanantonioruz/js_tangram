@@ -135,8 +135,7 @@ define([  "js/common.js",
                   //         callback(null, data_state);
                        }
 
-                       d3_ui($.extend(true, {}, data_state.d3_open_stack),
-                                  data_state, this, dispatcher, on_success_callback);
+                       d3_ui($.extend(true, {}, data_state.d3_open_stack),  data_state, this, dispatcher, on_success_callback);
                        // this line uncommented means that the user is using the select dropmenu to select the tenant, otherwise we have to useon_success_callback and wait to be called from d3 interface
                        callback(null, data_state);
                        

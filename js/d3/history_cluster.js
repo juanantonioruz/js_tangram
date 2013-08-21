@@ -4,7 +4,7 @@ define(["js/common.js"], function(common) {
     var
     radio=5,
     radio_max=150,
-    width = 1800,
+    width = 1300,
     height = 150;
     var contador;
     var space_item=40;
@@ -33,7 +33,7 @@ define(["js/common.js"], function(common) {
             return "violet";
 
         else
-            return "#999";
+            return "#484848";
     }
 
     var diagonal = d3.svg.diagonal()
@@ -94,94 +94,55 @@ define(["js/common.js"], function(common) {
         }
     };
 
-    function determine_recursive(colector, container, new_root, relationship){
+    function insert_in_root_and_continue(new_root, the_ns, relationship, colector ){
+        contador++;
+        var  x={ns:the_ns, relation:relationship, parent:new_root, children:[]};
+
+        new_root.children.push(x);
+
+        if(colector.children)
+            colector.children.map(function(item){
+                determine_recursive(item ,x);
+            });
+
+}
+
+    function clean_ns(item){
+        return item.ns.replace("pipeline_", "").replace("state_step_", "").toUpperCase();
+    }
+
+    function determine_recursive(item,  new_root){
+        var nested_item;
+        console.log("]]]][[[[[[[[[[[[[[ RESTO: "+item.ns);
+        //                alert("third"+colector.ns);
+        var  the_ns=clean_ns(item);
         
-        console.log("}}}}"+colector.ns);
-
-        if(colector.ns.indexOf("EVENT")!=-1 || colector.ns.indexOf("ON_END")!=-1 || colector.ns.indexOf("ON_INIT")!=-1){
-            //  its an event
-                console.log("!!!EVENT"+colector.ns);
-            if(colector.ns.indexOf("ON_END")!=-1){
-                //is ON_END
-                console.log("!!!ON_END"+colector.ns);
-                colector.children.map(function(item){
-                    determine_recursive(item, container, new_root.children[new_root.children.length-1], "ON_END");
-                });
-
-            }else if(colector.ns.indexOf("ON_INIT")!=-1){
-                //is ON_INIT
-                console.log("!!!ON_INIT"+colector.ns);
-                colector.children.map(function(item_i){
-                    determine_recursive(item_i, container, new_root, "ON_INIT");
-                });
-            }else{
-                // others events
-
-                console.log("!!!ON_USER_EVENT"+colector.ns);
-                new_root.relation="ON_USER";
-                
-                colector.children.map(function(item_i){
-                    determine_recursive(item_i, container, new_root, "CHILD");
-                });
-
-
-            }
+        if(the_ns.indexOf("*EVENT*")!=-1){
+            if(the_ns.indexOf("ON_INIT")!=-1)            
+                insert_in_root_and_continue(new_root, clean_ns(item.children[0]), "ON_INIT", item.children[0]);
+            else if(the_ns.indexOf("ON_END")!=-1)            
+                insert_in_root_and_continue(new_root.children[new_root.children.length-1], clean_ns(item.children[0]), "ON_END", item.children[0]);
+            else 
+                insert_in_root_and_continue(new_root, the_ns.replace("*EVENT*", ""), "ON_USER", item.children[0]);
+        }else if(the_ns.indexOf("*SWITCH*")!=-1){
+            insert_in_root_and_continue(new_root, the_ns.replace("_?", " = ").replace("*SWITCH*", ""), "SWITCH", item);            
+        }else if(the_ns.indexOf("*MAPPER*")!=-1){
+            
+            insert_in_root_and_continue(new_root, the_ns.replace("_?", " = ").replace("*MAPPER*", ""), "MAPPER", item);            
         }else{
-            // it's not an event, is a pipeline or a state_step
-            if(colector.ns.indexOf("?")!=-1){
-                //is SWITCH
-                console.log("!!!SWICTH"+colector.ns);
-                var colector_ns=colector.ns;
-                colector.children.map(function(item){
-                    if(!item.changed){
-                    item.ns="IF "+colector_ns.replace("_?", " == ")+" >> "+item.ns.replace("pipeline_", "").replace("state_step_", "");
-                    item.changed=true;
-                    }
-                    determine_recursive(item, container, new_root.children[new_root.children.length-1], "SWITCH");
-                });
-
-//            }else if(colector.ns.indexOf("$")!=-1){
-//                 //is MAPPER
-//                 console.log("!!!MAPPER"+colector.ns);
-
-//                 colector.children.map(function(item){
-//                     if(!item.changed){
-// //                    item.ns=colector.ns.replace("$", " == ")+" >> "+item.ns.replace("pipeline_", "").replace("state_step_", "");
-//                     item.changed=true;
-//                     }
-                    
-//                     determine_recursive(item, colector, new_root.children[new_root.children.length-1], "CHILD");
-//                 });
-
-            }else{
-                console.log("RESTO: "+colector.ns);
-                var  x={ns:colector.ns, relation:relationship};
-                if(!new_root.children)new_root.children=[];
-                if(new_root.children.indexOf(x)==-1)
-                    new_root.children.push(x);
-                if(new_root.ns.indexOf("&")!=-1){
-                    new_root.relation="MAPPER";
-                    new_root.ns=new_root.ns.replace("&"," == ");
-                }
-                if(colector.children)
-                    colector.children.map(function(item){
-                        determine_recursive(item, colector,x, "CHILD");
-                    });
-            }
-
+            insert_in_root_and_continue(new_root, the_ns, "CHILD", item);
         }
-
-                 
+        
 
     }
 
     function determine_relation_childs(root){
         
         //TODO :: recursive function and return new data hierarchical collection
-        var new_root={ns:root.ns, children:[], relation:"CHILD"};
+        var new_root={ns:root.ns, children:[], relation:"ROOT", parent:null};
 
         root.children.map(function(item){
-            determine_recursive(item, root, new_root);
+            determine_recursive(item,  new_root);
         });
       //  console.dir(new_root);
         return new_root;
@@ -232,11 +193,16 @@ define(["js/common.js"], function(common) {
 //                         console.dir(d);                   
                         return "link_on_init";
                     }else if( d.target && d.target.relation=="ON_USER" ){
-                         console.dir(d);                   
+//                         console.dir(d);                   
                         return "link_on_user";
-                    }else if( d.target &&( d.target.relation=="SWITCH" || d.target.relation=="MAPPER" )){
+                    }else if( d.target && d.target.relation=="SWITCH" ){
 //                         console.dir(d);                   
                         return "link_switch";
+                    }else if( d.target &&  d.target.relation=="MAPPER" ){
+//                         console.dir(d);                   
+                        return "link_mapper";
+
+
                     }else{ 
 
                         return "link";
@@ -259,7 +225,7 @@ define(["js/common.js"], function(common) {
             .attr("y",-2) 
 
             .attr("display",function(d){
-                if(!d.item.children){
+                if(!d.item.children.length>0){
 
                     return "visible";}else{ return "none";}})
             .attr("width", 200)
@@ -297,15 +263,13 @@ define(["js/common.js"], function(common) {
         ;
 
         node.append("rect")
-            .attr("display",function(d){ if(d.item.children) return "visible"; return "none";})
+            .attr("display",function(d){ if(d.item.children.length>0) return "visible"; return "none";})
+        .attr("y", -10)
             .attr("width", function(d,i){
                 if(d.item.folder) return radio*7;
                 return radio*3;
             })
-            .attr("height", function(d,i){
-                if(d.item.folder) return radio*7;
-                return radio*3;
-            })
+            .attr("height", 20)
             .attr("id", function(d,i){
 
                 if(d.item.folder){
@@ -314,13 +278,7 @@ define(["js/common.js"], function(common) {
                 return d.ns;
 
             })
-            .attr("fill",function(d,i){
-                if(d.item.folder)  return "#000";
-                else
-                    if(d.item.closed) return "RoyalBlue";
-                return colorize(d);
-
-            })
+            .attr("fill","#CCC")
             .on("mouseover", function(d,i){
                 var actual=d3.select(this);
                 console.log(d.path);
@@ -357,17 +315,17 @@ define(["js/common.js"], function(common) {
         ;
 
         function is_visible(d){
-            return !d.item.children || d.item.closed;
+            return !d.item.children.length>0 || d.item.closed;
         }
 
         node.append("text")
 
             .attr("dx", function(d) { var length=d.ns.replace("pipeline_", "").replace("state_step_", "").length*2; 
-                                      return d.item.children ? length : 80; })
-            .attr("dy",function(d) { return d.item.children ? -5 : -5; }) 
+                                      return d.item.children.length>0 ? length : -50; })
+            .attr("dy",function(d) { return d.item.children.length>0 ? -13 : -8; }) 
             .style("fill", function(d){
                 if(is_visible(d)){
-                    if(d.item.children) {
+                    if(d.item.children.length>0) {
                         return "RoyalBlue";
                     }else{
                         return colorize(d);
@@ -375,7 +333,7 @@ define(["js/common.js"], function(common) {
                 }else{ 
                     return colorize(d);}} )
             .style("font-size", "12px")
-            .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+            .style("text-anchor", function(d) { return d.children.length>0 ? "end" : "start"; })
             .text(function(d) { 
                 var upper=false;
                 if(d.ns.indexOf("pipeline_")!=-1)

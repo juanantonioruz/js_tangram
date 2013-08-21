@@ -10,12 +10,12 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    init: function(name,map, model_key) {
                        //TODO improve this init method maybe delegating to other construct...
 
-                       name="pipeline_"+this.model_key;//+"?"+model_key;
+                       this.ns="*MAPPER*pipeline_";
+                       this.construct(this.ns);
                        //TODO: THIS IS THE ERROR FOUND!!      base.init("mapper_"+model_key+"_"+name+"*"+contador, on_success,on_error);
                        this.map=map;
                        this.model_key=model_key;
-                       this.construct( name);
-                       this.ns=name;
+
                        return this;
                    },
                    
@@ -23,18 +23,22 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    apply_transformations:function(data_state){
 //                       alert("APPLY "+this.ns);
                        var value=data_state.get_value(this.model_key);
-                      
                        var pipe=this.map[value];
-                       pipe.ns="pipeline_"+this.model_key+"&"+value;
+                      this.ns+=this.model_key+"_?"+value;
+
+
                        // this conditional add flexibility to mapper_pipeline definition, in this case we can use statesteps also besides pipelines
                      //  alert(pipe().class_name);
-                       if(pipe.class_name=="StateStep")
+                       if(pipe.class_name=="StateStep"){
+//                           pipe.ns=value;
                            this.addTransformation(pipe);
-                       else if(pipe.class_name=="Pipeline")    
+                       }else if(pipe.class_name=="Pipeline"){    
+//                           pipe.ns=value;
+                           pipe.ns+=value;
                            this.addPipe(pipe);
-                        else{     
+                        }else{     
                             var pipe_i=pipe();
-                            pipe_i.ns="pipeline_"+value;
+
 
                            this.addPipe(pipe_i);
                         }

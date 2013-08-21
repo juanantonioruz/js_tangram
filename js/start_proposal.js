@@ -30,7 +30,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
 //               dispatcher.listen_event(events.try_to_log, os_pipelines.load_tokens, false);
                dispatcher.listen_event(events.try_to_log, 
                                        function(){
-                                           return new Pipeline(this.name)
+                                           return new Pipeline("try_log")
                                            .addTransformation(os_pipelines.load_tokens)
                                            .addTransformation(new SwitcherPipeline("",
                                                                        function(value){
@@ -45,15 +45,18 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                            ;
 
                                        }
-                                       , true);
+                                       , false);
+
+               dispatcher.listen_pipe("ON_INIT","load_tokens", os_pipelines.alerta, false);
+               dispatcher.listen_pipe("ON_END","load_tokens", os_pipelines.alerta, false);
 
                dispatcher.listen_pipe("ON_END","clean_register", os_pipelines.show_tenants, false);
 
-//               dispatcher.listen_pipe("ON_INIT","show_tenants", os_pipelines.alerta, false);
+            
 
-                dispatcher.listen_event(events.tenant_selected, os_pipelines.show_tenant_operations, true);
+                 dispatcher.listen_event(events.tenant_selected, os_pipelines.tenant_selected, false);
 
-                dispatcher.listen_event(events.operation_selected, os_pipelines.run_operation, true);
+                dispatcher.listen_event(events.operation_selected, os_pipelines.operation_selected, false);
 
                // dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
 
@@ -63,15 +66,15 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                
 
                //D3 openStack client UI
-              //  dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,true);   
-              //  dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+ //             dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,true);   
+             //   dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
               // dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
                
 
 
                // Filtering all transformations ::: AOP 
                dispatcher.reset_filters();
-               // dispatcher.filter( filters.logging(true));
+                dispatcher.filter( filters.logging(true));
                
                // dispatcher.filter( filters.clone_data);
 

@@ -49,7 +49,7 @@ function show_message_to_the_user(the_message){
                    //
 
 
-                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.remote_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
+                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.local_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
                    
                    $('#stack_logging').on('click', function(){
 
@@ -146,10 +146,10 @@ function show_message_to_the_user(the_message){
                       // visible:"", 
                       // hidden:'images'}
                                                                        {visible:"LIST IMAGES", hidden:"listing_images", item:{service_type:"nova", url:"/images"}},
-                                                                       {visible:"listing_flavors", hidden:"listing_flavors",item:{service_type:"nova", url:"/flavors"}},
-                                                                       {visible:"listing_networks", hidden:"listing_networks",item:{service_type:"quantum", url:"/v2.0/networks"}},
-                                                                       {visible:"listing_subnets", hidden:"listing_subnets",item:{service_type:"quantum", url:"/v2.0/subnets"}},
-                                                                       {visible:"listing_servers", hidden:"listing_servers",item:{service_type:"nova", url:"/servers"}},
+                                                                       {visible:"LIST FLAVORS", hidden:"listing_flavors",item:{service_type:"nova", url:"/flavors"}},
+                                                                       {visible:"LIST NETWORKS", hidden:"listing_networks",item:{service_type:"quantum", url:"/v2.0/networks"}},
+                                                                       {visible:"LIST SUBNETS", hidden:"listing_subnets",item:{service_type:"quantum", url:"/v2.0/subnets"}},
+                                                                       {visible:"LIST SERVERS", hidden:"listing_servers",item:{service_type:"nova", url:"/servers"}},
                                                                        {visible:"create server", hidden:"create_server"},
                                                                        {visible:"create network", hidden:"create_network"},
                                                                        {visible:"create subnet", hidden:"create_subnet"}

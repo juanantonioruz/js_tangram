@@ -4,15 +4,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
            function select_load_operation(){};
            function add_load(pipe, fn){
            }
-           function load_operation(){
-               return new Pipeline("load_operation")
-                   .addTransformation(query.query_operation)
-                   .addTransformation(dao.dao)
-                   .addTransformation(model.model_store_operation);
-               //TODO in each implementation
-               // defined outside in a layer of more specification
-
-               };
+            
 
            var result={
                //Public API
@@ -46,7 +38,9 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                provisional_alert_display:function(){
                    return new Pipeline(this.name)
                        .addTransformation(new StateStep("now", function(data_state, callback){
-                       alert(common.toJson(data_state[data_state.operation_selected.hidden]));
+                           $('#content').prepend( "<h2>show prov result: </h2><pre><code class='json'>"+common.toJson(data_state[data_state.operation_selected.hidden])+"</code></pre>" );                                 
+
+
                            callback(null, data_state);
                    }));
 
@@ -60,7 +54,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                        .addTransformation(ui.ui_select_tenants)
                    ;
                },
-               show_tenant_operations:function(){
+               tenant_selected:function(){
                    return new Pipeline(this.name)
 
                        .addTransformation( query.query_endpoints)
@@ -69,18 +63,39 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                        .addTransformation(ui.ui_select_operations);
                },
-               run_operation:function(){
-                   return new Mapper_Pipeline(this.name, 
+
+
+
+               load_operation:function (){
+               return new Pipeline(this.name)
+                   .addTransformation(query.query_operation)
+                   .addTransformation(dao.dao)
+                   .addTransformation(model.model_store_operation);
+               //TODO in each implementation
+               // defined outside in a layer of more specification
+
+               },
+
+               operation_selected:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(result.load_operation)
+                       .addTransformation(new Mapper_Pipeline(this.name, 
                                               {
-                                                  "listing_images": new Pipeline("listing_images")
-                                                  // here not but in other occasions it will be good to select 'manually' the option_selected .. next lines create server will be one of them
-                                                      .addTransformation(load_operation())
-                                                      .addTransformation(result.provisional_alert_display)
-                                                                        ,
-//                                                  "listing_flavors": operations.listing_flavors,
-                                                  // "listing_networks": result.load_operation,
-                                                  // "listing_subnets": result.load_operation,
-                                                  // "listing_servers": result.load_operation,
+                                                  "listing_images": new Pipeline("")
+                                                      .addTransformation(result.provisional_alert_display),
+
+                                                  "listing_flavors": new Pipeline("")
+                                                      .addTransformation(result.provisional_alert_display),
+
+                                                  "listing_networks": new Pipeline("")
+                                                      .addTransformation(result.provisional_alert_display),
+
+                                                  "listing_subnets": new Pipeline("")
+                                                      .addTransformation(result.provisional_alert_display),
+
+                                                  "listing_servers": new Pipeline("")
+                                                      .addTransformation(result.provisional_alert_display),
+
                                                   
                                                   "create_server":new Pipeline(this.name) 
                                                       .addTransformation(select_load_operation("list_images" ))
@@ -97,7 +112,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                                                       .addTransformation(ui.ui_create_subnet_options)
                                                   
                                               }, 
-                                              "operation_selected.hidden");
+                                              "operation_selected.hidden"))
+;
                },               
                create_server:function(){
                    return new Pipeline(this.name)
@@ -142,8 +158,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                alerta:function(){
 
                    return new Pipeline(this.name)
-                       .addTransformation(new StateStep("alerta", function(data_state, callback){
-                           alert("here"+data_state.token_id);
+                       .addTransformation(new StateStep("alerta_s", function(data_state, callback){
+                           console.log("\n***************** ALERTA CONSOLE\n\n here"+data_state.token_id+"\n\n\n");
                            callback(null, data_state);
                        }));
 

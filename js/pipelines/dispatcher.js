@@ -100,6 +100,7 @@ define(["js/async.js"], function(async) {
 
 
                         if (target.class_name=="StateStep"){
+
                             var   searched_extended=target.pipeline.ns+"|"+searched;
                             var listeners_extended=base[searched_extended];                        
                             if(listeners_extended){
@@ -127,6 +128,9 @@ define(["js/async.js"], function(async) {
 
 
                         paralels.map(function(o){
+                            
+                            //FIRST ALL SYNC! AFTER FIXED PARALLELS
+
                             //running in parallel
                             // here we can have problems with mutable data_state in async
                             //TODO fix that with the new changes
@@ -146,7 +150,7 @@ define(["js/async.js"], function(async) {
                             // we have to do a pipeline with this pipelines...
                             // at the end we call the callback
                             contador++;
-                            var compose= new Pipeline(transformation_event_type+"/"+target.ns)
+                            var compose= new Pipeline("*EVENT*"+transformation_event_type)
                                     .set_on_success(function(res, pipeline){
                                         if(callback)
                                             callback();
@@ -156,11 +160,11 @@ define(["js/async.js"], function(async) {
                             syncq.map(function(o){
                               //  console.dir(o);
                               //  alert("invoking");
-                            var pipi=o.pipeline.bind({name:"EVENT_"+transformation_event_type})();
+                            var pipi=o.pipeline();
 //                            var pipi=o.pipeline();
-                            pipi.ns="EVENT_"+transformation_event_type;
 
                                 compose.addPipe(pipi);
+                                
                             });
                             
                             compose.apply_transformations(data_state);
@@ -182,8 +186,10 @@ define(["js/async.js"], function(async) {
                     alert("dispatcher listen_event have to adapt the pipeline, encapsulating in a function: ");
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
-                    _pipeline.bind({name:transformation_event_type});
+                    _pipeline=_pipeline.bind({name:"EVENT_"+transformation_event_type});
                 }else{
+
+                    _pipeline=_pipeline.bind({name:"EVENT_"+transformation_event_type});
                 }
                 
                 api.listen(transformation_event_type, null, _pipeline, parallel_or_sync);
@@ -191,9 +197,13 @@ define(["js/async.js"], function(async) {
             // dont need to write "pipeline_"
             listen_pipe:function(transformation_event_type, ns_listened,_pipeline, parallel_or_sync){
                 if((typeof _pipeline) != "function"){
-                    //alert("adapting "+ns_listened+":: ");
+                    
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
+                    
+
+                }else{
+//                    alert("no adapting "+ns_listened+":: ");
                 }
 
                 api.listen(transformation_event_type, "pipeline_"+ns_listened, _pipeline, parallel_or_sync);
@@ -204,6 +214,8 @@ define(["js/async.js"], function(async) {
                     //alert("adapting "+ns_listened+":: ");
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
+
+
                 }
                 api.listen(transformation_event_type, "state_step_"+ns_listened, _pipeline, parallel_or_sync);
             },

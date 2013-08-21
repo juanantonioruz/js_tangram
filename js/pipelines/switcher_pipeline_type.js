@@ -6,8 +6,8 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                    // ATTENTION: THIS METHOD CANT BE OVERWRITE
                    // namely call to base.init(...) it's related to identity in object instance
                    init: function(name,function_switch_expression,  model_key, expression ) {
-                       name="pipeline_"+name;//+"?"+model_key;
-                       this.construct(name);
+                       this.ns="*SWITCH*pipeline_";//+"?"+model_key;
+                       this.construct(this.ns);
                        //TODO: THIS IS THE ERROR FOUND!!      base.init("mapper_"+model_key+"_"+name+"*"+contador, on_success,on_error);
                        this.function_switch_expression=function_switch_expression;
                        this.model_key=model_key;
@@ -32,10 +32,12 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                        if(pipe.class_name=="StateStep"){
                            this.addTransformation(pipe);
                        }else if(pipe.class_name=="Pipeline"){    
+
                            this.addPipe(pipe);
-                        }else     
+                        }else{     
+
                            this.addPipe(pipe());
-                       
+                       }
                        base.apply_transformations.call(this, data_state);
                    }
 
