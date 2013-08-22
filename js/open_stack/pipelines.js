@@ -2,18 +2,18 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
        function(common, dao, query, model,ui,  Foreach_Pipeline,Pipeline, Mapper_Pipeline,Switcher_Pipeline, StateStep, dispatcher,events, operation_model) {
 
            function select_load_operation(key, key2){
-               return new Pipeline("selecting"+key+"_"+key2)
+               return new Pipeline("selecting_"+key+"_"+key2)
                    .addTransformation(new StateStep("manual_selection", 
                                                     function(data_state, callback){
                                                         operation_model.manual_selecting_operation(data_state, key, key2);
                                                         callback(null, data_state);
-                   }))
+                                                    }))
                    .addTransformation(result.load_operation)
                ;
            };
            function add_load(pipe, fn){
            }
-           
+           var contador=0;
 
            var result={
                //Public API
@@ -181,7 +181,9 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                    return new Pipeline(this.name)
                        .addTransformation(new StateStep("alerta_s", function(data_state, callback){
-                           console.log("\n***************** ALERTA CONSOLE\n\n here"+data_state.token_id+"\n\n\n");
+                           console.log("\n***************** ALERTA "+contador+"+ CONSOLE\n\n here"+data_state.token_id+"\n\n\n");
+                           console.dir(data_state);
+                           contador++;
                            callback(null, data_state);
                        }));
 
@@ -194,7 +196,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
 
            
-           return common.naming_pipes(result);
+           return {pipes:common.naming_pipes(result), load_operation:select_load_operation};
        });
 
 

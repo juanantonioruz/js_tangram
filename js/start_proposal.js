@@ -16,11 +16,14 @@ function clean_history(){
 
 define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js"
 ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ],
-       function(common, events, filters,  dispatcher,  State, os_pipelines, d3_pipelines,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model) {
+       function(common, events, filters,  dispatcher,  State, os_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model) {
 
            var data_state=State();
 
            data_state.host=document.location.host;
+
+           var load_operation=os_pipelines.load_operation;
+           os_pipelines=os_pipelines.pipes;
 
            var result=function(){
                // EOP
@@ -35,7 +38,10 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                            .addTransformation(new SwitcherPipeline("",
                                                                        function(value){
                                                                            if(value){
-                                                                               return os_pipelines.clean_register();
+                                                                               return new Pipeline("")
+                                                                               .addTransformation(os_pipelines.clean_register)
+                                                                               .addTransformation(os_pipelines.show_tenants)
+                                                                               ;
                                                                            }else{
                                                                                return os_pipelines.alerta();
                                                                            }
@@ -50,7 +56,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                dispatcher.listen_pipe("ON_INIT","load_tokens", os_pipelines.alerta, false);
                dispatcher.listen_pipe("ON_END","load_tokens", os_pipelines.alerta, false);
 
-               dispatcher.listen_pipe("ON_END","clean_register", os_pipelines.show_tenants, false);
+
 
             
 
@@ -59,14 +65,6 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                 dispatcher.listen_event(events.operation_selected, os_pipelines.operation_selected, false);
 
                dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
-               // dispatcher.listen_event(events.send_create_server, function(){
-               //     return new StateStep("testing", function(data_state, callback){
-               //         console.dir(data_state.flavor_selected);
-               //         console.dir(data_state.image_selected);
-               //         console.dir(data_state.network_selected);
-               //         callback(null, data_state);
-               //     });
-               // }, false);
 
                dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
 
@@ -74,10 +72,38 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                
 
                //D3 openStack client UI
-              dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,false);   
-                dispatcher.listen_pipe("ON_END","create_server", d3_pipelines.d3_show_images_and_flavors,false);                   
-               dispatcher.listen_pipe("ON_END","create_subnet", d3_pipelines.d3_show_images_and_flavors,true);                   
+              dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipes.d3_show_tenants,false);   
                
+               dispatcher.listen_pipe("ON_END","listing_servers", d3_pipes.d3_show_servers,false);   
+               
+              dispatcher.listen_pipe("ON_END","tenant_selected", function(){ 
+                  return new Pipeline("d3_update")
+                      .addPipe(load_operation("list","servers"))
+                      .addPipe(load_operation("list","images"))
+                      .addPipe(load_operation("list","flavors"))
+                      .addPipe(load_operation("list","networks"))
+                      .addTransformation(d3_pipes.d3_show_tenants)
+                      .addTransformation(d3_pipes.d3_show_servers)
+                     .addTransformation(d3_pipes.d3_show_images)
+                      .addTransformation(d3_pipes.d3_show_flavors)
+                      .addTransformation(d3_pipes.d3_show_networks)
+                      .addTransformation(os_pipelines.alerta)
+                  ;
+              },false);   
+
+
+               //  dispatcher.listen_pipe("ON_END","create_server", d3_pipes.d3_show_images_and_flavors,false);                   
+               // dispatcher.listen_pipe("ON_END","create_subnet", d3_pipes.d3_show_images_and_flavors,false);                   
+               
+              dispatcher.listen_pipe("ON_END","create_server", function(){ 
+                  return new Pipeline("d3_create_server")
+                      .addTransformation(d3_pipes.d3_show_tenants)
+                     .addTransformation(d3_pipes.d3_show_images)
+                      .addTransformation(d3_pipes.d3_show_flavors)
+                      .addTransformation(d3_pipes.d3_show_networks)
+
+                  ;
+              },false);   
 
 
                // Filtering all transformations ::: AOP 

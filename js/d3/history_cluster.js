@@ -113,7 +113,7 @@ define(["js/common.js"], function(common) {
 
     function determine_recursive(item,  new_root){
         var nested_item;
-        console.log("]]]][[[[[[[[[[[[[[ RESTO: "+item.ns);
+ //       console.log("]]]][[[[[[[[[[[[[[ RESTO: "+item.ns);
         //                alert("third"+colector.ns);
         var  the_ns=clean_ns(item);
         
@@ -123,7 +123,7 @@ define(["js/common.js"], function(common) {
             else if(the_ns.indexOf("ON_END")!=-1)            
                 insert_in_root_and_continue(new_root.children[new_root.children.length-1], clean_ns(item.children[0]), "ON_END", item.children[0]);
             else 
-                insert_in_root_and_continue(new_root, the_ns.replace("*EVENT*", ""), "ON_USER", item.children[0]);
+                insert_in_root_and_continue(new_root, the_ns.replace("*EVENT*", ""), "ON_USER", item);
         }else if(the_ns.indexOf("*SWITCH*")!=-1){
             insert_in_root_and_continue(new_root, the_ns.replace("_?", " = ").replace("*SWITCH*", ""), "SWITCH", item);            
         }else if(the_ns.indexOf("*MAPPER*")!=-1){
@@ -231,16 +231,16 @@ define(["js/common.js"], function(common) {
             .attr("width", 200)
             .attr("height", 8)
             .attr("fill",function(d,i){
-                if(contains(d.ns, "dao")) 
-                    return "pink";
-                else if(contains(d.ns, "load_tmpl"))
-                    return "YellowGreen";
-                else if(contains(d.ns, "render"))
-                    return "pink";
-                else if(contains(d.ns, "change_state"))
+                if(contains(d.ns, "DAO")) 
+                    return "fuchsia";
+                else if(contains(d.ns, "MODEL_STORE"))
+                    return "crimson";
+                else if(contains(d.ns, "UI"))
+                    return "mediumspringgreen";
+                else if(contains(d.ns, "QUERY"))
+                    return "olive";
+                else if(contains(d.ns, "D3"))
                     return "orange";
-                else if(contains(d.ns, "cache"))
-                    return "violet";
                 else if(contains(d.ns, "template"))
                     return "yellow";
                 else if(contains(d.ns, "modals"))
