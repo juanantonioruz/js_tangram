@@ -183,7 +183,7 @@ define(["js/async.js"], function(async) {
             },
             listen_event:function(transformation_event_type, _pipeline, parallel_or_sync){
                 if((typeof _pipeline) != "function"){
-                    alert("dispatcher listen_event have to adapt the pipeline, encapsulating in a function: ");
+//                    alert("dispatcher listen_event have to adapt the pipeline, encapsulating in a function: ");
                     var _pi=_pipeline;
                    _pipeline=function(){return _pi;};
                     _pipeline=_pipeline.bind({name:"EVENT_"+transformation_event_type});

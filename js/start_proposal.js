@@ -29,54 +29,57 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                // EOP
                dispatcher.reset();
 
-               dispatcher.listen_event(events.try_to_log, 
-                                       function(){
-                                           return new Pipeline("try_log")
-                                               .addTransformation(os_pipelines.load_tokens)
-                                               .addTransformation(new SwitcherPipeline("",
-                                                                                       function(value){
-                                                                                           if(value){
-                                                                                               return new Pipeline("register_ok")
-                                                                                                   .addTransformation(ui.ui_empty_register_form)
-                                                                                                   .addTransformation(os_pipelines.load_tenants)
-                                                                                                   .addTransformation(ui.ui_select_tenants)
-                                                                                               ;
-                                                                                           }else{
-                                                                                               return os_pipelines.alerta();
-                                                                                           }
-                                                                                       },
-                                                                                       token_model.data_state_key,
-                                                                                       function(value){ return (value)? "loaded" : "INVALID";}));
-                                           ;
+               //ON LOAD APP show register_form
+               dispatcher.listen_event(events.on_load_app, ui.ui_register_form, false);
 
-                                       }
+
+               dispatcher.listen_event(events.try_to_log, 
+                                       new Pipeline("try_log")
+                                       .addTransformation(os_pipelines.load_tokens)
+                                       .addTransformation(
+                                           new SwitcherPipeline("switch",
+                                                                function(value){
+                                                                    if(value){
+                                                                        return new Pipeline("register_ok")
+                                                                            .addTransformation(ui.ui_empty_register_form)
+                                                                            .addTransformation(os_pipelines.load_tenants)
+                                                                            .addTransformation(ui.ui_select_tenants)
+                                                                        ;
+                                                                    }else{
+                                                                        return os_pipelines.alerta();
+                                                                    }
+                                                                },
+                                                                token_model.data_state_key,
+                                                                function(value){ return (value)? "loaded" : "INVALID";}))
                                        , false);
 
-               //example on_init and on_load listening events
-               dispatcher.listen_pipe("ON_INIT","load_tokens", os_pipelines.alerta, false);
-               dispatcher.listen_pipe("ON_END","load_tokens", os_pipelines.alerta, false);
-
-
-               dispatcher.listen_event(events.tenant_selected, function(){return new Pipeline("tenant_selected")
-                                                                          .addTransformation(os_pipelines.load_tenant_selected)
-                                                                          .addTransformation(ui.ui_select_operations);
-                                                                         }, false);
+               dispatcher.listen_event(events.tenant_selected, 
+                                       new Pipeline("tenant_selected")
+                                       .addTransformation(os_pipelines.load_tenant_selected)
+                                       .addTransformation(ui.ui_select_operations)
+                                       , false);
 
                dispatcher.listen_event(events.operation_selected, os_pipelines.operation_selected, false);
 
-               dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
+               dispatcher.listen_event(events.send_create_server, os_pipelines.send_create_server, false);
 
                dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
 
                dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
                
 
+
+               //example on_init and on_load listening events
+               dispatcher.listen_pipe(events.on_init,"load_tokens", os_pipelines.alerta, false);
+               dispatcher.listen_pipe(events.on_end,"load_tokens", os_pipelines.alerta, false);
+
+
                //D3 openStack client UI
-               dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipes.d3_show_tenants,false);   
+               dispatcher.listen_state_step(events.on_end,"model_store_tenants", d3_pipes.d3_show_tenants,false);   
                
-               dispatcher.listen_pipe("ON_END","listing_servers", d3_pipes.d3_show_servers,false);   
+               dispatcher.listen_pipe(events.on_end,"listing_servers", d3_pipes.d3_show_servers,false);   
                
-               dispatcher.listen_pipe("ON_END","tenant_selected", function(){ 
+               dispatcher.listen_pipe(events.on_end,"tenant_selected", function(){ 
                    return new Pipeline("d3_update")
                        .addPipe(load_operation("list","servers"))
                        .addPipe(load_operation("list","images"))
@@ -91,7 +94,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    ;
                },false);   
 
-               dispatcher.listen_pipe("ON_END","create_server", function(){ 
+               dispatcher.listen_pipe(events.on_end,"send_create_server", function(){ 
                    return new Pipeline("d3_create_server")
                        .addTransformation(d3_pipes.d3_show_tenants)
                        .addPipe(load_operation("list","servers"))
@@ -100,7 +103,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    ;
                },false);   
 
-               dispatcher.listen_pipe("ON_END","create_subnet", function(){ 
+               dispatcher.listen_pipe(events.on_end,"create_subnet", function(){ 
                    return new Pipeline("d3_create_subnet")
                        .addTransformation(d3_pipes.d3_show_tenants)
                        .addTransformation(d3_pipes.d3_show_networks)
@@ -108,12 +111,12 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    ;
                },false);   
 
-               
+
 
 
                // Filtering all transformations ::: AOP 
                dispatcher.reset_filters();
-//               dispatcher.filter( filters.logging(true));
+               //               dispatcher.filter( filters.logging(true));
                
                // dispatcher.filter( filters.clone_data);
 
@@ -143,8 +146,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                                             }}));
 
 
-               os_pipelines.register().apply_transformations(data_state);
-
+               dispatcher.dispatch(events.on_load_app, new Pipeline("start"), data_state);
 
            };
 

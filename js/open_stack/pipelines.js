@@ -113,7 +113,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                                                                ))
                    ;
                },               
-               create_server:function(){
+               send_create_server:function(){
                    return new Pipeline(this.name)
                        .addTransformation( query.query_create_server)
                        .addTransformation(dao.dao)
