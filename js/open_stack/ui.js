@@ -1,5 +1,5 @@
-define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js"],
-       function(common, events, dispatcher, tenant_model) {
+define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js","js/open_stack/model/operation.js"],
+       function(common, events, dispatcher, tenant_model, operation_model) {
 function clean_interface(){
     $('#content').empty();
 };
@@ -141,15 +141,12 @@ function show_message_to_the_user(the_message){
                                                                    "#init_filter", 
                                                                    "#operations_available",
                                                                    [
-                      //                                                  {
-                      // item:{}, 
-                      // visible:"", 
-                      // hidden:'images'}
-                                                                       {visible:"LIST IMAGES", hidden:"listing_images", item:{service_type:"nova", url:"/images"}},
-                                                                       {visible:"LIST FLAVORS", hidden:"listing_flavors",item:{service_type:"nova", url:"/flavors"}},
-                                                                       {visible:"LIST NETWORKS", hidden:"listing_networks",item:{service_type:"quantum", url:"/v2.0/networks"}},
-                                                                       {visible:"LIST SUBNETS", hidden:"listing_subnets",item:{service_type:"quantum", url:"/v2.0/subnets"}},
-                                                                       {visible:"LIST SERVERS", hidden:"listing_servers",item:{service_type:"nova", url:"/servers"}},
+                                                                       operation_model.operations_available.list.images,
+                                                                       operation_model.operations_available.list.flavors,
+                                                                       operation_model.operations_available.list.subnets,
+                                                                       operation_model.operations_available.list.networks,
+                                                                       operation_model.operations_available.list.servers,
+
                                                                        {visible:"create server", hidden:"create_server",item:{service_type:"nova", url:"/servers"}},
                                                                        {visible:"create network", hidden:"create_network",item:{service_type:"nova", url:"/servers"}},
                                                                        {visible:"create subnet", hidden:"create_subnet",item:{service_type:"nova", url:"/servers"}}
@@ -158,9 +155,9 @@ function show_message_to_the_user(the_message){
                                                                        return function(){
                                                                            var jquery_obj=$(select_dom_id+" option:selected").first();
 
-                                                                           data_state.operation_selected=jquery_obj.data("item");
-                                                                           data_state.operation_selected.hidden=jquery_obj.val();
 
+                                                                           
+                                                                           operation_model.set_selected(data_state,{item:jquery_obj.data("item"), visible:jquery_obj.val()});
 
                                                                            var value_selected=jquery_obj.text();
                                                                            show_message_to_the_user("operation selected: "+value_selected);

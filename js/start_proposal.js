@@ -66,8 +66,8 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                
 
                //D3 openStack client UI
- //             dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,true);   
-             //   dispatcher.listen_pipe("ON_END","load_images_flavors_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+              dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,false);   
+                dispatcher.listen_pipe("ON_END","create_server", d3_pipelines.d3_show_images_and_flavors,false);                   
               // dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
                
 

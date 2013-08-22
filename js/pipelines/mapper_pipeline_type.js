@@ -34,12 +34,12 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                            this.addTransformation(pipe);
                        }else if(pipe.class_name=="Pipeline"){    
 //                           pipe.ns=value;
-                           pipe.ns+=value;
+                           pipe.ns="pipeline_"+value;
                            this.addPipe(pipe);
                         }else{     
                             var pipe_i=pipe();
 
-
+                           pipe_i.ns="pipeline_"+value;
                            this.addPipe(pipe_i);
                         }
                        

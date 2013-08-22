@@ -31,9 +31,25 @@ define(["js/common.js", "js/pipelines/dispatcher.js", "js/open_stack/model/token
                    return data_state.tenant_name;
                },
                set_selected:function(data_state, item){
-                   data_state.tenant_name=item.name;
-                   data_state.tenant_id=item.id;
+//                   var jquery_obj=$(select_dom_id+" option:selected").first();
+                   data_state.operation_selected=item.item;
+                   data_state.operation_selected.hidden=item.visible;
+
                },
+               manual_selecting_operation:function(data_state, key, key2){
+                   var op=result.operations_available[key][key2];
+                   result.set_selected(data_state, {item:op.item, visible:op.visible});
+               },
+               operations_available:{
+                   list:{
+                       images:{visible:"LIST IMAGES", hidden:"listing_images", item:{service_type:"nova", url:"/images"}},
+                       flavors:{visible:"LIST FLAVORS", hidden:"listing_flavors",item:{service_type:"nova", url:"/flavors"}},
+                       networks:{visible:"LIST NETWORKS", hidden:"listing_networks",item:{service_type:"quantum", url:"/v2.0/networks"}},
+                       subnets: {visible:"LIST SUBNETS", hidden:"listing_subnets",item:{service_type:"quantum", url:"/v2.0/subnets"}},
+                       servers:{visible:"LIST SERVERS", hidden:"listing_servers",item:{service_type:"nova", url:"/servers"}}}
+               },
+
+
                example_single_tenant_ajax_response:{
   "access": {
     "token": {
