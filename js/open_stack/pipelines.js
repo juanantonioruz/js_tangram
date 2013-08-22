@@ -117,7 +117,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                                                                                                                        "create_server":new Pipeline(this.name) 
                                                                                                                            .addTransformation(select_load_operation("list","images" ))
                                                                                                                            .addTransformation(select_load_operation("list","flavors"))
-//                                                                                                                           .addTransformation(select_load_operation("list","networks"))
+                                                                                                                           .addTransformation(select_load_operation("list","networks"))
                                                                                                                           .addTransformation(ui.ui_create_server_options)
                                                                                                                        ,
                                                                                                                        
@@ -125,7 +125,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                                                                                                                            .addTransformation(ui.ui_create_network_options) 
                                                                                                                        ,
                                                                                                                        "create_subnet":new Pipeline(this.name)
-                                                                                                                           .addTransformation(select_load_operation("list_networks"))
+                                                                                                                           .addTransformation(select_load_operation("list","networks"))
                                                                                                                            .addTransformation(ui.ui_create_subnet_options)
 
                                                                                                                    }, 

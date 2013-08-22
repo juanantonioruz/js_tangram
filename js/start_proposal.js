@@ -58,17 +58,25 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
 
                 dispatcher.listen_event(events.operation_selected, os_pipelines.operation_selected, false);
 
-               // dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
+               dispatcher.listen_event(events.send_create_server, os_pipelines.create_server, false);
+               // dispatcher.listen_event(events.send_create_server, function(){
+               //     return new StateStep("testing", function(data_state, callback){
+               //         console.dir(data_state.flavor_selected);
+               //         console.dir(data_state.image_selected);
+               //         console.dir(data_state.network_selected);
+               //         callback(null, data_state);
+               //     });
+               // }, false);
 
-               // dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
+               dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
 
-               // dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
+                dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
                
 
                //D3 openStack client UI
               dispatcher.listen_state_step("ON_END","model_store_tenants", d3_pipelines.d3_show_tenants,false);   
                 dispatcher.listen_pipe("ON_END","create_server", d3_pipelines.d3_show_images_and_flavors,false);                   
-              // dispatcher.listen_pipe("ON_END","load_networks", d3_pipelines.d3_show_images_and_flavors,true);                   
+               dispatcher.listen_pipe("ON_END","create_subnet", d3_pipelines.d3_show_images_and_flavors,true);                   
                
 
 

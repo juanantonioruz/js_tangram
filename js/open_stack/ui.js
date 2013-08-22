@@ -74,7 +74,7 @@ function show_message_to_the_user(the_message){
                            if(data_state.flavor_selected && data_state.image_selected && data_state.network_selected){
                                dispatcher.dispatch(events.send_create_server, me.pipeline, data_state);
                            }else
-                           alert("select first and image and flavor to create this server");
+                           alert("select first network, image and flavor to create this server");
                        }else{
 
                            
@@ -147,9 +147,9 @@ function show_message_to_the_user(the_message){
                                                                        operation_model.operations_available.list.networks,
                                                                        operation_model.operations_available.list.servers,
 
-                                                                       {visible:"create server", hidden:"create_server",item:{service_type:"nova", url:"/servers"}},
-                                                                       {visible:"create network", hidden:"create_network",item:{service_type:"nova", url:"/servers"}},
-                                                                       {visible:"create subnet", hidden:"create_subnet",item:{service_type:"nova", url:"/servers"}}
+                                                                       {visible:"create server", hidden:"create_server",item:{}},
+                                                                       {visible:"create network", hidden:"create_network",item:{}},
+                                                                       {visible:"create subnet", hidden:"create_subnet",item:{}}
                                                                    ], 
                                                                    function(select_dom_id){ 
                                                                        return function(){
