@@ -49,7 +49,7 @@ function show_message_to_the_user(the_message){
                    //
 
 
-                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.local_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
+                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.remote_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
                    
                    $('#stack_logging').on('click', function(){
 
