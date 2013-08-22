@@ -148,7 +148,11 @@ define([  "js/common.js",
 
                        console.log("d3_show_tenants");
                        init_d3_tenants(data_state);
+               data_state.d3_open_stack.children[0].children.map(function(item){
+                   item.children=[];
+               });
                        d3_ui($.extend(true, {}, data_state.d3_open_stack),  data_state, this, dispatcher);
+               
                        // this line uncommented means that the user is using the select dropmenu to select the tenant, otherwise we have to useon_success_callback and wait to be called from d3 interface
                        callback(null, data_state);
                        

@@ -21,10 +21,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                    return new Pipeline(this.name)
                        .addTransformation( ui.ui_register_form  );
                },
-               clean_register:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation( ui.ui_empty_register_form  );
-               },
+
                load_tokens:function(){
                    return new Pipeline(this.name)
 
@@ -34,43 +31,22 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
 
                },
 
-               load_tokens_trash:function(){
-                   return new Pipeline(this.name)
-
-                       .addTransformation(query.query_tokens)
-                       .addTransformation(dao.dao)
-                       .addTransformation(model.model_store_token_id)
-                       .addTransformation(ui.ui_empty_register_form);
-                   
-               },
-
-               provisional_alert_display:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(new StateStep("now", function(data_state, callback){
-                           $('#content').prepend( "<h2>show prov result: </h2><pre><code class='json'>"+common.toJson(data_state[data_state.operation_selected.hidden])+"</code></pre>" );                                 
-
-
-                           callback(null, data_state);
-                       }));
-
-               },
-
-               show_tenants:function(){
+               load_tenants:function(){
                    return new Pipeline(this.name)
                        .addTransformation(query.query_tenants)
                        .addTransformation(dao.dao)
                        .addTransformation(model.model_store_tenants)
-                       .addTransformation(ui.ui_select_tenants)
                    ;
                },
-               tenant_selected:function(){
+
+               load_tenant_selected:function(){
                    return new Pipeline(this.name)
 
                        .addTransformation( query.query_endpoints)
                        .addTransformation( dao.dao)
-                       .addTransformation( model.model_store_endpoints)
+                       .addTransformation( model.model_store_endpoints);
 
-                       .addTransformation(ui.ui_select_operations);
+
                },
 
 
@@ -188,8 +164,17 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                        }));
 
 
-               }
+               },
+               provisional_alert_display:function(){
+                   return new Pipeline(this.name)
+                       .addTransformation(new StateStep("now", function(data_state, callback){
+                           $('#content').prepend( "<h2>show prov result: </h2><pre><code class='json'>"+common.toJson(data_state[data_state.operation_selected.hidden])+"</code></pre>" );                                 
 
+
+                           callback(null, data_state);
+                       }));
+
+               }
            };
            
            
