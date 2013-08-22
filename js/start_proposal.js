@@ -108,6 +108,8 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    ;
                },false);   
 
+               
+
 
                // Filtering all transformations ::: AOP 
                dispatcher.reset_filters();

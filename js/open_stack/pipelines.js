@@ -94,7 +94,7 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                                                                                                                            .addTransformation(select_load_operation("list","images" ))
                                                                                                                            .addTransformation(select_load_operation("list","flavors"))
                                                                                                                            .addTransformation(select_load_operation("list","networks"))
-                                                                                                                          .addTransformation(ui.ui_create_server_options)
+                                                                                                                           .addTransformation(ui.ui_create_server_options)
                                                                                                                        ,
                                                                                                                        
                                                                                                                        "create_network": new Pipeline(this.name)
@@ -141,14 +141,6 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                
 
 
-               load_operation_selected:function(){ 
-                   return new Pipeline(this.name)
-                       .addTransformation(query.query_operation)
-                       .addTransformation(dao.dao)
-                       .addTransformation( model.model_store_operation)
-                       .addTransformation(dao.show_result)               
-                   ;
-               },
 
 
 
