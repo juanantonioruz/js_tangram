@@ -5,6 +5,24 @@ var http = require('http');
 // }).listen(1337, '127.0.0.1');
 
 
+
+
+var  base={
+        description:"",
+        method:"",
+        url:"base_url",
+        data_to_send:"", 
+        data_to_recieve:""
+    };
+
+
+var n=Object.create(base);
+n.url=n.url.replace("base", "extending");
+console.log("testing prototype......");
+console.log(toJson(n.url));
+console.log(toJson(base));
+console.log("\nend testing prototype\n");
+
 var auth_token_admin="tokentoken";
 
 
