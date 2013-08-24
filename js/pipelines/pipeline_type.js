@@ -26,7 +26,11 @@ define(["js/common.js", "js/fiber.min.js","js/async.js","js/pipelines/dispatcher
                        this.parallel=false;
            //            console.log("INIT: "+this.ns);
                    },
-                   // this method to add statesteps
+                   bind_value:function(key, value){
+                       if(this[key]) alert("overlapping value!! WARNING");
+                       this[key]=value;
+                   },
+        // this method to add statesteps
                    addTransformation:function(state_step){
                        this.future_state_steps.push(state_step);
                        return this;

@@ -13,23 +13,14 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
            };
            function add_load(pipe, fn){
            }
+
            var contador=0;
 
            var result={
                //Public API
-               register:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation( ui.ui_register_form  );
-               },
 
-               load_tokens:function(){
-                   return new Pipeline(this.name)
+               load_tokens:[{process:query.query_tokens},{process:dao.dao}, {process:model.model_store_token_id}],
 
-                       .addTransformation(query.query_tokens)
-                       .addTransformation(dao.dao)
-                       .addTransformation(model.model_store_token_id);
-
-               },
 
                load_tenants:function(){
                    return new Pipeline(this.name)
@@ -150,7 +141,10 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                    return new Pipeline(this.name)
                        .addTransformation(new StateStep("alerta_s", function(data_state, callback){
                            console.log("\n***************** ALERTA "+contador+"+ CONSOLE\n\n here"+data_state.token_id+"\n\n\n");
+
                            console.dir(data_state);
+                           $('#content').prepend( "<h2>show prov result: "+this.key+"</h2>" );                                 
+                           $('#content').prepend( "<h2>show prov result: </h2><pre><code class='json'>"+ !this.key ? "null" : common.toJson(data_state[this.key])+"</code></pre>" );                                 
                            contador++;
                            callback(null, data_state);
                        }));

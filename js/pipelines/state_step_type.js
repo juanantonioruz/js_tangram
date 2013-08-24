@@ -11,9 +11,13 @@ define(["js/fiber.min.js","js/pipelines/dispatcher.js", "js/pipelines/pipeline_t
                        
                        this.ns="state_step_"+name;
                        this.transform_fn=_fn;
+                       this.state_step_bind={};
     //                   console.log("INIT: "+this.ns);
                    },
-                 
+                   bind_value:function(key, value){
+                       if(this[key]) alert("overlapping value!! WARNING");
+                       this[key]=value;
+                   },
                    on_end:function(data_state, callback){
 //                       console.log("ON_END:/"+this.ns);
                        this.pipeline.step_count++;

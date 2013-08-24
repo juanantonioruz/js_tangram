@@ -1,5 +1,5 @@
-define(["js/common.js", "js/pipelines/dispatcher.js","js/open_stack/model/token.js",  "js/open_stack/model/tenant.js"],
-       function(common, dispatcher, token_model, tenant_model) {
+define(["js/common.js", "js/pipelines/dispatcher.js","js/open_stack/model/token.js",  "js/open_stack/model/tenant.js","js/open_stack/model/operation.js"],
+       function(common, dispatcher, token_model, tenant_model, operation_model) {
            var result= {
 
                tokens:function (data_state, callback){
@@ -17,7 +17,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js","js/open_stack/model/token.
                    
                },
                operation:function (data_state, callback){
-
+                   if(this.key && this.key2)
+                       operation_model.manual_selecting_operation(data_state, this.key, this.key2);
                   var data_operation=data_state.operation_selected;
                    var host=data_state.endpoints[data_operation.service_type];
                    var dao_object={method:'POST', action:"http://"+data_state.host+"/operations", 

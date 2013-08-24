@@ -5,7 +5,8 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
             for (var key in result){
                 var data={ name:((prefix)?prefix:"")+key, fn:result[key] };
                 //                console.log(data.name);
-                new_map[data.name]=new State_step(data.name, data.fn);
+//                new_map[data.name]=new State_step(data.name, data.fn);
+                new_map[data.name]={name:data.name,fn:data.fn};
             }
             return new_map;
         },
@@ -14,9 +15,9 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
         },
         naming_pipes:function(result, prefix){
             for (var key in result){
-                var inter_fn=result[key];
-                inter_fn= inter_fn.bind({name:((prefix)?prefix:"")+key});
-                result[((prefix)?prefix:"")+key]=inter_fn;
+                var inter_arr=result[key];
+//                inter_fn= inter_fn.bind({name:((prefix)?prefix:"")+key});
+                result[((prefix)?prefix:"")+key]={name:((prefix)?prefix:""), arr:inter_arr};
             }
             return result;
 

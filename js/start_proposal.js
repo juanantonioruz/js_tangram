@@ -12,11 +12,47 @@ function clean_history(){
 }
 
 
-
-
 define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js"
         ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/open_stack/ui.js"],
        function(common, events, filters,  dispatcher,  State, os_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui) {
+
+
+function inject_values(i, bound){
+        for(var k in bound)
+        i[k]=bound[k];
+
+
+}
+var contador=0;
+           function define_pipe(arr, named_pipe){
+               if(arr.length==0) alert("problem definition!");
+
+               if(arr.length==1){
+                   //state_step
+                   var item=arr[0];
+                   
+                   var p=new StateStep(item.process.name, item.process.fn);
+                   if(arr[0].bound)inject_values(p, item.bound);
+                   
+                   return p;
+
+               }else{
+                   var the_name=named_pipe;
+                   if(!named_pipe){
+                       the_name ="define_pipe_"+contador;
+                       contador++;
+                   };
+                   var x=new Pipeline(the_name);
+                   arr.map(function(item){
+                       var p=new StateStep(item.process.name, item.process.fn);
+                       if(item.bound)inject_values(p, item.bound);
+                       x.addTransformation(p);
+                   });
+                   return x;
+                   // require a new pipe
+               }
+           };
+
 
            var data_state=State();
 
@@ -30,9 +66,19 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                dispatcher.reset();
 
                //ON LOAD APP show register_form
-               dispatcher.listen_event(events.on_load_app, ui.ui_register_form, false);
+               dispatcher.listen_event(events.on_load_app, 
+                                       define_pipe(
+                                           [
+                                               {process:ui.ui_register_form}
+                                           ]));
+
+               dispatcher.listen_event(events.try_to_log, 
+                                           define_pipe(os_pipelines.load_tokens.arr, os_pipelines.name)
+
+                                       ,false);
 
 
+/*
                dispatcher.listen_event(events.try_to_log, 
                                        new Pipeline("try_log")
                                        .addTransformation(os_pipelines.load_tokens)
@@ -111,7 +157,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    ;
                },true);   
 
-
+*/
 
 
                // Filtering all transformations ::: AOP 

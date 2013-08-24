@@ -194,7 +194,13 @@ function show_message_to_the_user(the_message){
 
                    show_fn_result_to_the_user_and_wait('Please select a tenant to view its services available', 
                                                        show_tenant_select);
-               }
+               },
+               alerta: function(data_state, callback){
+
+                           $('#content').prepend( "<h2>show "+this.show+"  result: "+this[this.show]+"</h2>" );                                 
+
+                           callback(null, data_state);
+                       }
            };
            return common.naming_fns(result, "ui_");
        });
