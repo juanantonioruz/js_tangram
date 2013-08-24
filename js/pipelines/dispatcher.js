@@ -135,10 +135,10 @@ define(["js/async.js"], function(async) {
                             // here we can have problems with mutable data_state in async
                             //TODO fix that with the new changes
                             //                             console.dir(bo);
-                            var ext=new Pipeline(transformation_event_type+"");
-                            var pipi=o.pipeline.bind({name:"EVENT_"+transformation_event_type})();
+                            var ext=new Pipeline("*EVENT*"+transformation_event_type+"");
+                            var pipi=o.pipeline();
 //                            var pipi=o.pipeline();
-                            pipi.ns="EVENT_"+transformation_event_type;
+
                             // this is not necesary the parallel is related to method apply_transformations call, if it is nested or not
                             //pipi.parallel=true;
                            ext.addTransformation(pipi);

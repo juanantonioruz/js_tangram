@@ -75,9 +75,9 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
 
 
                //D3 openStack client UI
-               dispatcher.listen_state_step(events.on_end,"model_store_tenants", d3_pipes.d3_show_tenants,false);   
+               dispatcher.listen_state_step(events.on_end,"model_store_tenants", d3_pipes.d3_show_tenants,true);   
                
-               dispatcher.listen_pipe(events.on_end,"listing_servers", d3_pipes.d3_show_servers,false);   
+               dispatcher.listen_pipe(events.on_end,"listing_servers", d3_pipes.d3_show_servers,true);   
                
                dispatcher.listen_pipe(events.on_end,"tenant_selected", function(){ 
                    return new Pipeline("d3_update")
@@ -92,7 +92,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                        .addTransformation(d3_pipes.d3_show_networks)
                        .addTransformation(os_pipelines.alerta)
                    ;
-               },false);   
+               },true);   
 
                dispatcher.listen_pipe(events.on_end,"send_create_server", function(){ 
                    return new Pipeline("d3_create_server")
@@ -101,7 +101,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                        .addTransformation(d3_pipes.d3_show_servers)
 
                    ;
-               },false);   
+               },true);   
 
                dispatcher.listen_pipe(events.on_end,"create_subnet", function(){ 
                    return new Pipeline("d3_create_subnet")
@@ -109,7 +109,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                        .addTransformation(d3_pipes.d3_show_networks)
 
                    ;
-               },false);   
+               },true);   
 
 
 
