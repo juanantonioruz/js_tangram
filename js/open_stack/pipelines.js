@@ -19,27 +19,23 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
            var result={
                //Public API
 
-               load_tokens:[{process:query.query_tokens},{process:dao.dao}, {process:model.model_store_token_id}],
+               load_tokens:{
+                   arr:
+                   [{item_name_fn:query.query_tokens},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_token_id}], 
+                   spec:
+                   {type:Pipeline, params:[]}},
 
+               load_tenants:{
+                   arr:
+                   [{item_name_fn:query.query_tenants},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_tenants}], 
+                   spec:
+                   {type:Pipeline, params:[]}},
 
-               load_tenants:function(){
-                   return new Pipeline(this.name)
-                       .addTransformation(query.query_tenants)
-                       .addTransformation(dao.dao)
-                       .addTransformation(model.model_store_tenants)
-                   ;
-               },
-
-               load_tenant_selected:function(){
-                   return new Pipeline(this.name)
-
-                       .addTransformation( query.query_endpoints)
-                       .addTransformation( dao.dao)
-                       .addTransformation( model.model_store_endpoints);
-
-
-               },
-
+               load_tenant_selected:{
+                   arr:
+                   [{item_name_fn:query.query_endpoints},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_endpoints}], 
+                   spec:
+                   {type:Pipeline, params:[]}},
 
 
                load_operation:function (){

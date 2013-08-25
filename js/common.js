@@ -15,9 +15,13 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
         },
         naming_pipes:function(result, prefix){
             for (var key in result){
-                var inter_arr=result[key];
+                var inter_spec=result[key];
+                var the_name=((prefix)?prefix:""+key);
 //                inter_fn= inter_fn.bind({name:((prefix)?prefix:"")+key});
-                result[((prefix)?prefix:"")+key]={name:((prefix)?prefix:""), arr:inter_arr};
+                if(inter_spec.spec)
+                    if(inter_spec.spec.params)
+                        inter_spec.spec.params.push(the_name);
+                result[((prefix)?prefix:"")+key]={name:the_name, spec:inter_spec};
             }
             return result;
 
