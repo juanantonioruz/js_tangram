@@ -38,6 +38,10 @@ function show_message_to_the_user(the_message){
                                     );
            };
            var result={
+               set_value:function(data_state, callback){
+                   data_state[this.set_value_key]=this.set_value_value;
+                   callback(null, data_state);
+               },
                empty_register_form:function(data_state, callback){
                     $('#register_form').fadeOut(500).empty().fadeIn();
                    callback(null, data_state);
@@ -49,7 +53,7 @@ function show_message_to_the_user(the_message){
                    //
 
 
-                   $('#left').append("<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.remote_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
+                   $('#left').append(this.runtime+"<div id='register_form'><h3>Login: </h3>Open Stack IP (internal_ip:"+common.local_ip+",  external_ip: "+common.remote_ip+"): <input type='text' id='stack_ip' value='"+common.remote_ip+"'><br> Stack User: <input type='text' id='stack_user' value='admin'><br> Password: <input type='password' id='stack_password' value='password'><br><input type='button' id='stack_logging' value='logging'></div>");
                    
                    $('#stack_logging').on('click', function(){
 
@@ -200,7 +204,14 @@ function show_message_to_the_user(the_message){
                            $('#content').prepend( "<h2>show "+this.show+"  result: "+this[this.show]+"</h2>" );                                 
 
                            callback(null, data_state);
+                       },
+               show_data_state_value: function(data_state, callback){
+
+                           $('#content').prepend( "<h2>show "+this.data_state_key+"  result: "+data_state[this.data_state_key]+"</h2>" );                                 
+
+                           callback(null, data_state);
                        }
+
            };
            return common.naming_fns(result, "ui_");
        });

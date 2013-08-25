@@ -42,35 +42,46 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                return define_pipe(spec, data.name);
            };
 
-           function define_single_step_pipe(state_step_name_fn){
-               
+//it will  work as the beginning of the pipeline so it will let us work with .addTransformation method of the pipeline
+// the state_step doesnt let this behavior
+           function define_single_step_pipe(pipe_name, state_step_name_fn, bound){
+               var the_name=pipe_name;
+               if(!pipe_name){
+                   the_name ="define_pipe_"+contador;
+                   contador++;
+               };
+
+               return define_pipe({
+                   arr:
+                   [{item_name_fn:state_step_name_fn, bound:bound}],
+                   spec:
+                   {type:Pipeline, params:[the_name]}});
+           }
+
+           function define_state_step(state_step_name_fn, bound){
+                              // if is not an  array then  is a state_step.. instanciate and return with {name and fn} properties oe element, the state step has is own name so we haven't to use the second argument named_pipe
+
+                   //state_step
+                   
+                  var p=new StateStep(state_step_name_fn.name, state_step_name_fn.fn);
+
+               if(bound)inject_values(p, bound);
+
+                   return p;
+
+
+
            }
 
            //spec is an array // rename to define_
-           function define_pipe(spec, named_pipe){
+           function define_pipe(pipe_spec){
 
-                   if( Object.prototype.toString.call( spec ) !== '[object Array]' ) {
+                   if( Object.prototype.toString.call( pipe_spec.arr ) !== '[object Array]' ) {
 
-
-               // if is not an  array then  is a state_step.. instanciate and return with {name and fn} properties oe element, the state step has is own name so we haven't to use the second argument named_pipe
-
-                   //state_step
-                   //                   var np=new Pipeline("me"+contador);
-
-
-                   
-                  var p=new StateStep(spec.name, spec.fn);
-                   if(it.bound)inject_values(p, item.bound);
-                   //                  np.addTransformation(p);
-                   return p;
-
-               }else{
+                       alert("donde vas calamer");
+                       return null;
+                   }else{
                    // else we create a pipeline with second parameter 
-                   var the_name=named_pipe;
-                   if(!named_pipe){
-                       the_name ="define_pipe_"+contador;
-                       contador++;
-                   };
 
                    // this function taken from http://stackoverflow.com/questions/3362471/how-can-i-call-a-javascript-constructor-using-call-or-apply
                    function conthunktor(Constructor, args) {
@@ -99,11 +110,11 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    }
 
                    //  instanciate the pipeline with spec.spec object type and params properties
-                   var x=conthunktor(spec.spec.type, spec.spec.params)();
+                   var x=conthunktor(pipe_spec.spec.type, pipe_spec.spec.params)();
 
                    ///----> recursive??? to make it adaptable to a tree data specification?
                    // foreach spec.arr we instanciate 
-                   spec.arr.map(function(item){
+                   pipe_spec.arr.map(function(item){
 
                        // check if the item_name_fn is already instanciate <-- that's related with the data one level item_name_fn nature
                        // so we check if it is built and in this case the object will be a state_step or a pipeline
@@ -122,7 +133,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                    return x;
                    // require a new pipe
                }
-           };
+           }
 
 
            var data_state=State();
@@ -139,11 +150,34 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                //ON LOAD APP show register_form
 //{array_state_step_functions:[], name }
                dispatcher.listen_event(events.on_load_app, 
-                                       define_pipe(ui.ui_register_form));
+                                       define_single_step_pipe(null, ui.ui_register_form, {runtime:"value added in instantiation time binding"}));
 
 
 
-               // var load_tenants= define_pipe(os_pipelines.load_tenants.spec, os_pipelines.load_tenants.name);
+
+//               var load_tenants= define_pipe(os_pipelines.yuhu.spec);
+
+               var evaluation=define_pipe({
+                   arr:  [], 
+                   spec: {
+                       type:SwitcherPipeline, 
+                       params:[
+                           "switch", 
+                           function(value){
+                               if(value) 
+                                   return define_pipe(os_pipelines.yuhu.spec);//define_state_step(ui.ui_alerta, {show:"posotive case"} );
+                               else
+                                   return define_state_step(ui.ui_alerta, {show:"negative case"} );
+                           }, "ey"
+                       ]}},
+                                          "switch");
+
+
+               dispatcher.listen_event(events.try_to_log, 
+                                       define_single_step_pipe("setting",  ui.ui_set_value,{set_value_key:"ey", set_value_value:"hola"})
+                                       .addTransformation(define_state_step(ui.ui_show_data_state_value, {data_state_key:"ey"} ))
+                                       .addTransformation(evaluation)
+                                       ,false);
 
                // var ok_register=define_pipe({arr:
                //                              [

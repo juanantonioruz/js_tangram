@@ -19,8 +19,15 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
                 var the_name=((prefix)?prefix:""+key);
 //                inter_fn= inter_fn.bind({name:((prefix)?prefix:"")+key});
                 if(inter_spec.spec)
-                    if(inter_spec.spec.params)
-                        inter_spec.spec.params.push(the_name);
+                    if(inter_spec.spec.params){
+                        var new_params=[];
+                        new_params.push(the_name);
+                        console.error("aaaaaaaaaaaaaaa--- create new array with this name and push all that already  exists");
+                        inter_spec.spec.params.map(function(it){
+                            new_params.push(it);
+                        });
+                        inter_spec.spec.params=new_params;
+                    };
                 result[((prefix)?prefix:"")+key]={name:the_name, spec:inter_spec};
             }
             return result;

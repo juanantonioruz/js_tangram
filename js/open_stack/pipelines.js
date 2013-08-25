@@ -19,6 +19,16 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
            var result={
                //Public API
 
+               yuhu:{
+                   arr:
+                   [
+                       {item_name_fn:ui.ui_empty_register_form},
+                       {item_name_fn:ui.ui_alerta}
+                   ],
+                   spec:
+                   {type:Pipeline, params:[]}},
+
+
                load_tokens:{
                    arr:
                    [{item_name_fn:query.query_tokens},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_token_id}], 
