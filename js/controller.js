@@ -4,7 +4,6 @@ require.config({
 
 require(["js/start_ew.js", "js/start_proposal.js", "js/start_dev.js"],
         function(ew, proposal, dev) {
-
             function getURLParameter(name) {
                 return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
             }

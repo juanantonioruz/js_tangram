@@ -22,7 +22,7 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
                     if(inter_spec.spec.params){
                         var new_params=[];
                         new_params.push(the_name);
-                        console.error("aaaaaaaaaaaaaaa--- create new array with this name and push all that already  exists");
+                        console.log("TODO--- create new array with this name and push all that already  exists");
                         inter_spec.spec.params.map(function(it){
                             new_params.push(it);
                         });
