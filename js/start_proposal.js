@@ -137,7 +137,8 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
 
 
            var data_state=State();
-
+           this.data_state=data_state;
+           this.dispatcher=dispatcher;
            data_state.host=document.location.host;
 
            var load_operation=os_pipelines.load_operation;
@@ -168,7 +169,8 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                    return define_pipe(os_pipelines.yuhu.spec).addTransformation(define_pipe(os_pipelines.yuhu.spec));//define_state_step(ui.ui_alerta, {show:"posotive case"} );
                                else
                                    return define_state_step(ui.ui_alerta, {show:"negative case"} );
-                           }, "ey"
+                           }, 
+                           "ey"
                        ]}},
                                           "switch");
 
@@ -309,9 +311,9 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                                                                 d3.event.preventDefault();
 
                                                             }}));
-
-
-               dispatcher.dispatch(events.on_load_app, new Pipeline("start"), data_state);
+               var start_pipe=new Pipeline("start");
+               this.start_pipe=start_pipe;
+               dispatcher.dispatch(events.on_load_app, start_pipe, data_state);
 
            };
 
