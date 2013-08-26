@@ -20,13 +20,8 @@ define([   "js/common.js","js/open_stack/dao.js",  "js/open_stack/query.js","js/
                //Public API
 
                yuhu:{
-                   arr:
-                   [
-                       {item_name_fn:ui.ui_empty_register_form},
-                       {item_name_fn:ui.ui_alerta}
-                   ],
-                   spec:
-                   {type:Pipeline, params:[]}},
+                   arr: [{item_name_fn:ui.ui_empty_register_form},{item_name_fn:ui.ui_alerta}],
+                   spec:{type:Pipeline, params:[]}},
 
 
                load_tokens:{

@@ -165,7 +165,7 @@ define(["js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "
                            "switch", 
                            function(value){
                                if(value) 
-                                   return define_pipe(os_pipelines.yuhu.spec);//define_state_step(ui.ui_alerta, {show:"posotive case"} );
+                                   return define_pipe(os_pipelines.yuhu.spec).addTransformation(define_pipe(os_pipelines.yuhu.spec));//define_state_step(ui.ui_alerta, {show:"posotive case"} );
                                else
                                    return define_state_step(ui.ui_alerta, {show:"negative case"} );
                            }, "ey"
