@@ -69,40 +69,56 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
               dispatcher.listen_event(events.tenant_selected, defines.pipeline(
                      {array_state_step_functions:
                       [os_pipelines.load_tenant_selected.spec], 
-                      name:"simple_test"})
+                      name:"tenant_selected"})
 
                                       .addTransformation(ui.ui_select_operations,{show:"juan", juan:"work"})
 
                                        ,false);
 
 
-                 dispatcher.listen_event(events.operation_selected,                                       
-                                       os_pipelines.operation_selected.spec
-                                        , false);
+               dispatcher.listen_event(events.operation_selected, os_pipelines.operation_selected.spec, false);
+               
+               dispatcher.listen_event(events.send_create_server, os_pipelines.send_create_server.spec, false);
 
-               /*
+               dispatcher.listen_event(events.send_create_network, os_pipelines.send_create_network.spec, false);               
+
+               dispatcher.listen_event(events.send_create_subnet, os_pipelines.send_create_subnet.spec, false);
+
+               dispatcher.listen_pipe(events.on_init,"load_tokens", os_pipelines.alerta.spec, false);
+                dispatcher.listen_pipe(events.on_end,"load_tokens", os_pipelines.alerta.spec, false);
 
 
-
-
-                dispatcher.listen_event(events.send_create_server, os_pipelines.send_create_server, false);
-
-                dispatcher.listen_event(events.send_create_network, os_pipelines.create_network, false);
-
-                dispatcher.listen_event(events.send_create_subnet, os_pipelines.create_subnet, false);
                 
 
 
                 //example on_init and on_load listening events
-                dispatcher.listen_pipe(events.on_init,"load_tokens", os_pipelines.alerta, false);
-                dispatcher.listen_pipe(events.on_end,"load_tokens", os_pipelines.alerta, false);
+               
 
 
                 //D3 openStack client UI
-                dispatcher.listen_state_step(events.on_end,"model_store_tenants", d3_pipes.d3_show_tenants,true);   
-                
-                dispatcher.listen_pipe(events.on_end,"listing_servers", d3_pipes.d3_show_servers,true);   
-                
+                dispatcher.listen_state_step(events.on_end,"model_store_tenants", defines.single_step_pipe(null,d3_pipes.d3_show_tenants ) ,true);   
+           
+               dispatcher.listen_pipe(events.on_end,"create_subnet", 
+                                      defines.pipeline(
+                                          {array_state_step_functions:
+                                           [d3_pipes.d3_show_tenants,d3_pipes.d3_show_networks ], 
+                                           name:"d3_vis_create_subnet"}), true);
+
+               dispatcher.listen_pipe(events.on_end,"tenant_selected", 
+                                      defines.pipeline(
+                                          {array_state_step_functions:
+                                           [os_pipelines.load_servers.spec,os_pipelines.load_images.spec,os_pipelines.load_flavors.spec,os_pipelines.load_networks.spec, d3_pipes.d3_show_tenants,d3_pipes.d3_show_servers, d3_pipes.d3_show_images, d3_pipes.d3_show_flavors, d3_pipes.d3_show_networks ], 
+                                           name:"d3_vis_tenant_sel"}), false);
+
+               dispatcher.listen_pipe(events.on_end,"send_create_server", 
+                                      defines.pipeline(
+                                          {array_state_step_functions:
+                                           [os_pipelines.load_servers.spec, d3_pipes.d3_show_tenants,d3_pipes.d3_show_servers ], 
+                                           name:"d3_vis_create_Server"}), true);
+
+
+//TODO                dispatcher.listen_pipe(events.on_end,"listing_servers", defines.single_step_pipe(null,d3_pipes.d3_show_servers ) ,true);   
+        /*        
                 dispatcher.listen_pipe(events.on_end,"tenant_selected", function(){ 
                 return new Pipeline("d3_update")
                 .addPipe(load_operation("list","servers"))
@@ -127,13 +143,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                 ;
                 },true);   
 
-                dispatcher.listen_pipe(events.on_end,"create_subnet", function(){ 
-                return new Pipeline("d3_create_subnet")
-                .addTransformation(d3_pipes.d3_show_tenants)
-                .addTransformation(d3_pipes.d3_show_networks)
-
-                ;
-                },true);   
+              
 
                 */
 

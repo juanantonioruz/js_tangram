@@ -1,4 +1,4 @@
-define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js"],function(StateStep, Pipeline, SwitcherPipeline){
+define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/mapper_pipeline_type.js"],function(StateStep, Pipeline, SwitcherPipeline, MapperPipeline){
            function inject_values(i, bound){
                for(var k in bound)
                    i[k]=bound[k];
@@ -96,5 +96,18 @@ function _createTransformation(state_step_name_fn, bound){
 
     }
 
-    return {pipeline:define_pipeline, single_step_pipe:define_single_step_pipe,  switcher:define_switch, _createTransformation:_createTransformation};
+ function define_mapper(key_model, map){              
+        return {
+                   arr:  [], 
+                   spec: {
+                       type:MapperPipeline, 
+                       params:[
+                           map, key_model
+
+                       ]}};
+
+    }
+
+
+    return {pipeline:define_pipeline, single_step_pipe:define_single_step_pipe,mapper:define_mapper,  switcher:define_switch, _createTransformation:_createTransformation};
 });

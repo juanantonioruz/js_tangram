@@ -212,6 +212,7 @@ function show_message_to_the_user(the_message){
                            callback(null, data_state);
                        },
                manual_selection:function(data_state, callback){
+                   this.ns+="_"+this.key+"_"+this.key2;
                    operation_model.manual_selecting_operation(data_state, this.key, this.key2);
                    callback(null, data_state);
                },

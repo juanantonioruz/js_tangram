@@ -1,5 +1,5 @@
-define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
-       function( Fiber, Pipeline, StateStep,async, dispatcher) {
+define(["js/redefines.js","js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
+       function( redefines, Fiber, Pipeline, StateStep,async, dispatcher) {
            
 
            var Mapper_Pipeline=Pipeline.extend(function(base){
@@ -37,7 +37,7 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
                            pipe.ns="pipeline_"+value;
                            this.addPipe(pipe);
                         }else{     
-                            var pipe_i=pipe();
+                            var pipe_i=redefines.pipe(pipe);
 
                            pipe_i.ns="pipeline_"+value;
                            this.addPipe(pipe_i);
