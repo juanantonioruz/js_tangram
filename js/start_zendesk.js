@@ -47,6 +47,15 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                dispatcher.listen_event("show_tickets", 
                                       z_pipelines.show_tickets.spec, 
                                       false);
+               dispatcher.listen_event("show_groups", 
+                                      z_pipelines.show_groups.spec, 
+                                      false);
+               dispatcher.listen_event("show_topics", 
+                                      z_pipelines.show_topics.spec, 
+                                      false);
+               dispatcher.listen_event("show_users", 
+                                      z_pipelines.show_users.spec, 
+                                      false);
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",
                                                             {"mouse_event_name":"contextmenu", fn:function(){

@@ -10,7 +10,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                this.ns=this.ns.replace("base", this.query);
                $('#right').prepend("<h3 class='left_message'>"+this.query+"</h3>");
                var the_data=init_data(data_state);
-               var operations_map={"profile":"users", organizations:"organizations", tickets:"tickets"};
+               var operations_map={"profile":"users", organizations:"organizations", tickets:"tickets", groups:"groups", topics:"topics", users:"users"};
 
                   the_data.operation=operations_map[this.query];
                

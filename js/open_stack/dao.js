@@ -22,6 +22,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        }else{
                            
                            dao_object.result={error:msg.error};                
+                           console.log("error!!");
                           // console.dir(msg.error);
 
                           // callback(msg.error[dao_object.error_property], data_state);

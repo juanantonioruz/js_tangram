@@ -24,14 +24,26 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
 
            result.show_link_organizations=function (data_state, callback){
                var target_pipeline=this.pipeline;
+               $('#register_form').append("<input type='button' id='users' value='users'>");
                $('#register_form').append("<input type='button' id='organizations' value='organizations'>");
                $('#register_form').append("<input type='button' id='tickets' value='tickets'>");
+               $('#register_form').append("<input type='button' id='groups' value='groups'>");
+               $('#register_form').append("<input type='button' id='topics' value='topics'>");
                
                $('#organizations').on('click', function(){
                    dispatcher.dispatch("show_organizations", target_pipeline,data_state );
                });
+               $('#groups').on('click', function(){
+                   dispatcher.dispatch("show_groups", target_pipeline,data_state );
+               });
                $('#tickets').on('click', function(){
                    dispatcher.dispatch("show_tickets", target_pipeline,data_state );
+               });
+               $('#topics').on('click', function(){
+                   dispatcher.dispatch("show_topics", target_pipeline,data_state );
+               });
+               $('#users').on('click', function(){
+                   dispatcher.dispatch("show_users", target_pipeline,data_state );
                });
 
                callback(null, data_state);
