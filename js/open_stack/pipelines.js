@@ -41,19 +41,19 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/open_sta
                    [{item_name_fn:query.query_endpoints},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_endpoints}], 
                    spec:
                    {type:Pipeline, params:[]}},
+
+
+               load_operation:{
+                   arr:
+                   [{item_name_fn:query.query_operation},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_operation}], 
+                   spec:
+                   {type:Pipeline, params:[]}},
                
 
-               load_operation:function (){
-                   return new Pipeline(this.name)
-                       .addTransformation(query.query_operation)
-                       .addTransformation(dao.dao)
-                       .addTransformation(model.model_store_operation);
-                   //TODO in each implementation
-                   // defined outside in a layer of more specification
+             
+               
 
-               },
-
-               operation_selected:function(){
+               ooperation_selected:function(){
                    return new Pipeline(this.name)
                        .addTransformation(new Switcher_Pipeline("",
                                                                 function(value){
@@ -164,7 +164,29 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/open_sta
                }
            };
            
-           
+           result.operation_selected_list_servers={
+                   arr:
+                   [
+
+                       {item_name_fn:ui.ui_manual_selection, bound:{key:"list", key2:"servers"}},
+                       {item_name_fn:result.load_operation},
+                       {item_name_fn:ui.ui_simple_show_operation_selected}
+                   ], 
+                   spec:
+                   {type:Pipeline, params:[]}};
+
+           result.operation_selected={
+                   arr:
+                   [
+                       {item_name_fn: defines.switcher("operation_selected.hidden",
+                                                      result.operation_selected_list_servers, defines.state_step(ui.ui_alerta, {show:"negative case"} ),
+                                                      function(value){return value.indexOf("listing")!=-1;}
+                                                     )
+                       }
+                   ], 
+                   spec:
+                   {type:Pipeline, params:[]}};
+
                result.ok_register={
                    arr:
                    [

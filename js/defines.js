@@ -13,7 +13,9 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/p
            // }
 
            //data= {array_state_step_functions, name }
+    // simplified version with no bound option!! TODO 
            function define_pipeline(data){
+               console.log("add bound option y update common.namingPipelines!!");
                var array_adapted=[];
                //item_name_fn is the standard in common.js naming_functions
                data.array_state_step_functions.map(function(item_name_fn){array_adapted.push({item_name_fn:item_name_fn});});
@@ -133,10 +135,19 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/p
                            "switch", 
                            function(value){
                                var  r_fn=fn_exp? fn_exp(value): value;
-                               if(r_fn) 
-                                   return on_true;
-                               else
+                               if(r_fn) {
+                                   console.log("TODO: this is a hack!");
+                                   if(on_true.spec) return define_pipe(on_true);
+                                   else
+                                       return on_true;
+
+
+                               }else{
+                                   console.log("TODO: this is a hack!");
+                                   if(on_false.spec) return define_pipe(on_false);
+                                   else
                                    return on_false;
+                               }
                            }, 
 
                            key_model

@@ -41,32 +41,11 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
 //               var load_tenants= define_pipe(os_pipelines.yuhu.spec);
 
-               var evaluation_example_not_in_use=defines.pipe({
-                   arr:  [], 
-                   spec: {
-                       type:SwitcherPipeline, 
-                       params:[
-                           "switch", 
-                           function(value){
-                               if(value) 
-                                   return defines.pipe(os_pipelines.yuhu.spec)
-                                   .addTransformation(defines.pipe(os_pipelines.yuhu.spec));//define_state_step(ui.ui_alerta, {show:"posotive case"} );
-                               else
-                                   return defines.state_step(ui.ui_alerta, {show:"negative case"} );
-                           }, 
 
-                           "ey"
-                       ]}},
-                                          "switch");
+               var ok_register_example_not_in_use=defines.pipeline({array_state_step_functions:
+                                             [ui.ui_empty_register_form], name:"simple_test"});
 
-               var ok_register_example_not_in_use=defines.pipe({arr:
-                                             [
-                                                 {item_name_fn:ui.ui_empty_register_form},
-                                                 {item_name_fn:defines.pipe(os_pipelines.load_tenants.spec)},
-                                                 {item_name_fn:ui.ui_select_tenants}
-                                                
-                                             ], 
-                                             spec:{type:Pipeline, params:[]}});
+
 
                dispatcher.listen_event(events.try_to_log, 
                                        defines.single_step_pipe("setting",  ui.ui_set_value,{set_value_key:"ey", set_value_value:"hola"})
@@ -76,7 +55,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                            defines.switcher(token_model.data_state_key,
                                                             defines.pipe(os_pipelines.ok_register.spec), 
                                                             defines.state_step(ui.ui_alerta, {show:"negative case"} )))
-
+                                       //.addTransformation(ok_register_example_not_in_use)
                                       
                                        ,false);
 
@@ -91,10 +70,15 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
                                       ,false);
 
+
+                dispatcher.listen_event(events.operation_selected,                                       
+                                        defines.pipe(os_pipelines.operation_selected.spec)
+                                        , false);
+
                /*
 
 
-                dispatcher.listen_event(events.operation_selected, os_pipelines.operation_selected, false);
+
 
                 dispatcher.listen_event(events.send_create_server, os_pipelines.send_create_server, false);
 

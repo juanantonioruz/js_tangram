@@ -210,7 +210,18 @@ function show_message_to_the_user(the_message){
                            $('#content').prepend( "<h2>show "+this.data_state_key+"  result: "+data_state[this.data_state_key]+"</h2>" );                                 
 
                            callback(null, data_state);
+                       },
+               manual_selection:function(data_state, callback){
+                   operation_model.manual_selecting_operation(data_state, this.key, this.key2);
+                   callback(null, data_state);
+               },
+               simple_show_operation_selected:function(data_state, callback){
+                           $('#content').prepend( "<h2>show prov result: </h2><pre><code class='json'>"+common.toJson(data_state[data_state.operation_selected.hidden])+"</code></pre>" );                                 
+
+
+                           callback(null, data_state);
                        }
+
 
            };
            return common.naming_fns(result, "ui_");
