@@ -11,6 +11,19 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
            };
            
 
+           result.load_organizations=function (data_state, callback){
+//               console.dir(data_state.dao.result);
+               data_state.organizations=data_state.dao.result.organizations;
+                   callback(null, data_state);
+           };
+
+           result.load_base=function (data_state, callback){
+               this.ns=this.ns.replace("base", this.key);
+//               console.dir(data_state.dao.result);
+               data_state[this.key]=data_state.dao.result[this.dao_key];
+                   callback(null, data_state);
+           };
+
 
            return common.naming_fns(result, "model_");
        }

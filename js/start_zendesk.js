@@ -17,8 +17,6 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
            data_state.host=document.location.host;
 
 
-
-
            var result=function(){
                // EOP
                dispatcher.reset();
@@ -33,12 +31,22 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                        , false);
 
                dispatcher.listen_pipe(events.on_end, "try_to_log",
-                                      defines.single_step_pipe("show_register", ui.ui_simple_show, {key:"profile"}), 
+                                      defines.single_step_pipe("show_register", ui.ui_simple_show, {key:"profile"}).addTransformation(ui.ui_clean_register_form).addTransformation(ui.ui_show_link_organizations), 
                                       false);
 
 
+               dispatcher.listen_event("show_organizations", 
+                                      z_pipelines.show_organizations.spec, 
+                                      false);
+
+               dispatcher.listen_pipe(events.on_end, "show_organizations",
+                                      defines.single_step_pipe("show_orgs", ui.ui_simple_show, {key:"organizations"}), 
+                                      false);
 
 
+               dispatcher.listen_event("show_tickets", 
+                                      z_pipelines.show_tickets.spec, 
+                                      false);
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",
                                                             {"mouse_event_name":"contextmenu", fn:function(){

@@ -99,9 +99,11 @@ app.post('/tokens', function(req, res){
 });
 
 
-app.post('/zendesk_login', function(req, res){
 
-   rest.get('https://'+req.body.ip+'/api/v2/users.json',
+
+app.post('/zendesk', function(req, res){
+
+   rest.get('https://'+req.body.ip+'/api/v2/'+req.body.operation+'.json',
             {username: req.body.user,  password:req.body.password }
            )
              .on('complete', function(result) {
@@ -120,7 +122,6 @@ app.post('/zendesk_login', function(req, res){
 
 
 });
-
 
 app.post('/tenants', function(req, res){
 sys.puts('ip: ' + req.body.s_ip);

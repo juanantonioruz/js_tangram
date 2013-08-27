@@ -4,18 +4,41 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
            
 
            var result={};
-       
+           
            result.try_to_log={
                arr:
                [
-                   {item_name_fn:query.query_profile},
+                   {item_name_fn:query.query_base, bound:{"query":"profile"}},
                    {item_name_fn:dao.dao},
                    {item_name_fn:model.model_load_profile}
 
                ],
                spec:
                {type:Pipeline, params:[]}};
-      
+           
+           result.show_organizations={
+               arr:
+               [
+                   {item_name_fn:query.query_base, bound:{"query":"organizations"}},
+                   {item_name_fn:dao.dao},
+                   {item_name_fn:model.model_load_organizations}
+
+               ],
+               spec:
+               {type:Pipeline, params:[]}};
+
+
+    result.show_tickets={
+               arr:
+               [
+                   {item_name_fn:query.query_base, bound:{"query":"tickets"}},
+                   {item_name_fn:dao.dao},
+                    {item_name_fn:model.model_load_base, bound:{key:"tickets", dao_key:"tickets"}},
+                   {item_name_fn:ui.ui_simple_show, bound: {key:"tickets"}}
+
+               ],
+               spec:
+               {type:Pipeline, params:[]}};
 
            var resultado=common.naming_pipes(result);
 
