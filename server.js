@@ -74,6 +74,8 @@ app.get('/child.html', function(req, res) {
 
 
 
+
+
 app.get('/SpecRunner', function(req, res) {
     fs.readFile(__dirname + '/SpecRunner.html', 'utf8', function(err, text){
         res.send(text);
@@ -95,6 +97,30 @@ app.post('/tokens', function(req, res){
         }
     });
 });
+
+
+app.post('/zendesk_login', function(req, res){
+
+   rest.get('https://'+req.body.ip+'/api/v2/users.json',
+            {username: req.body.user,  password:req.body.password }
+           )
+             .on('complete', function(result) {
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // try again after 5 sec
+        } else {
+            res.send(result);
+         //   sys.puts(toJson(result));
+        }
+    });
+
+
+
+
+
+});
+
 
 app.post('/tenants', function(req, res){
 sys.puts('ip: ' + req.body.s_ip);

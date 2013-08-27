@@ -58,7 +58,7 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
         },
         logging:{
             dao:{
-                dir:false
+                dir:true
             },
             dispatcher:{
                 searching:false,
