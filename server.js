@@ -122,6 +122,30 @@ app.post('/zendesk', function(req, res){
 
 
 });
+app.post('/zendesk_create', function(req, res){
+sys.puts(req.body.user+":"+req.body.password);
+            sys.puts('https://'+req.body.ip+'/api/v2/'+req.body.operation+'.json'+JSON.stringify(req.body.model));
+                sys.puts(toJson(req.body.user+"---"+req.body.password));
+   rest.postJson('https://'+req.body.ip+'/api/v2/'+req.body.operation+'.json',
+             {user:req.body.model.user} , {username: req.body.user,  password:req.body.password}
+           )
+             .on('complete', function(result) {
+sys.puts('COMPLETE: ' + toJson(result));
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // tr∑vy again after 5 sec
+        } else {
+            res.send(result);
+         //   sys.puts(toJson(result));
+        }
+    });
+
+
+
+
+
+});
 
 app.post('/tenants', function(req, res){
 sys.puts('ip: ' + req.body.s_ip);

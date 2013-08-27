@@ -5,8 +5,8 @@ require.config({
 
 
 define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/zendesk/pipelines.js", "js/open_stack/d3_visualizations.js"
-        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js"],
-       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui) {
+        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js"],
+       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao) {
 
 
 
@@ -31,11 +31,11 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                        , false);
 
                dispatcher.listen_pipe(events.on_end, "try_to_log",
-                                      defines.single_step_pipe("show_register", ui.ui_simple_show, {key:"profile"}).addTransformation(ui.ui_clean_register_form).addTransformation(ui.ui_show_link_organizations), 
+                                      defines.single_step_pipe("show_register", ui.ui_simple_show, {key:"profile"}).addTransformation(ui.ui_clean_register_form).addTransformation(ui.ui_show_links), 
                                       false);
 
 
-               dispatcher.listen_event("show_organizations", 
+               dispatcher.listen_event("show_list_organization", 
                                       z_pipelines.show_organizations.spec, 
                                       false);
 
@@ -44,18 +44,26 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                       false);
 
 
-               dispatcher.listen_event("show_tickets", 
+               dispatcher.listen_event("show_list_ticket", 
                                       z_pipelines.show_tickets.spec, 
                                       false);
-               dispatcher.listen_event("show_groups", 
+               dispatcher.listen_event("show_list_group", 
                                       z_pipelines.show_groups.spec, 
                                       false);
-               dispatcher.listen_event("show_topics", 
+               dispatcher.listen_event("show_list_topic", 
                                       z_pipelines.show_topics.spec, 
                                       false);
-               dispatcher.listen_event("show_users", 
+               dispatcher.listen_event("show_list_user", 
                                       z_pipelines.show_users.spec, 
                                       false);
+
+               dispatcher.listen_event("create_user", 
+                                       defines.single_step_pipe("user_options", ui.ui_create_user_options), 
+                                       false);
+               dispatcher.listen_event("send_create_user", 
+                                       defines.single_step_pipe("user_options", ui.ui_simple_show, {key:"create_user_options"}).addTransformation(query.query_create, {query:"user", data_key_options:"create_user_options"}).addTransformation(dao.dao), 
+                                       false);
+
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",
                                                             {"mouse_event_name":"contextmenu", fn:function(){

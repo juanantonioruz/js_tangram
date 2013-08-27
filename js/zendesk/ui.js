@@ -22,29 +22,26 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                callback(null, data_state);
            };
 
-           result.show_link_organizations=function (data_state, callback){
+           function addButton(key, target, data_state){
+               $('#register_form').append("<input type='button' id='"+key+"' value='"+key+"'>");
+                   $('#'+key).on('click', function(){
+                       console.log("dispathing event:"+key);
+                   dispatcher.dispatch(key, target, data_state);
+               });
+
+           }
+
+
+           result.show_links=function (data_state, callback){
                var target_pipeline=this.pipeline;
-               $('#register_form').append("<input type='button' id='users' value='users'>");
-               $('#register_form').append("<input type='button' id='organizations' value='organizations'>");
-               $('#register_form').append("<input type='button' id='tickets' value='tickets'>");
-               $('#register_form').append("<input type='button' id='groups' value='groups'>");
-               $('#register_form').append("<input type='button' id='topics' value='topics'>");
-               
-               $('#organizations').on('click', function(){
-                   dispatcher.dispatch("show_organizations", target_pipeline,data_state );
-               });
-               $('#groups').on('click', function(){
-                   dispatcher.dispatch("show_groups", target_pipeline,data_state );
-               });
-               $('#tickets').on('click', function(){
-                   dispatcher.dispatch("show_tickets", target_pipeline,data_state );
-               });
-               $('#topics').on('click', function(){
-                   dispatcher.dispatch("show_topics", target_pipeline,data_state );
-               });
-               $('#users').on('click', function(){
-                   dispatcher.dispatch("show_users", target_pipeline,data_state );
-               });
+
+               ["user", "organization", "ticket", "group", "topic"].map(function(itera){
+                   ["show_list", "create"].map(function(item){
+                       addButton(item+"_"+itera, target_pipeline, data_state);
+                   });
+               $('#register_form').append("<hr>");
+
+               });            
 
                callback(null, data_state);
            };
@@ -55,6 +52,20 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                            callback(null, data_state);
                        };
 
+           result.create_user_options=function(data_state, callback){
+               var target=this;
+               var options=   $('#register_form').append("<div id='options'>");
+               options.append("NAME: <input type='text' id='name' value=''><br>");
+               options.append("MAIL: <input type='text' id='email' value=''><br>");
+               options.append(" <input type='button' id='send_data' value='send'><br>").on('click', '#send_data', function(){
+                   alert("creating user!!");
+                   data_state.create_user_options={user:{name:$('#name').val(), email:$('#email').val()}};
+                   dispatcher.dispatch("send_create_user", target,data_state );
+                   
+               });
+
+               callback(null, data_state);
+           };
 
            return common.naming_fns(result, "ui_");
        }
