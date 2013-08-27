@@ -41,7 +41,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
 //               var load_tenants= define_pipe(os_pipelines.yuhu.spec);
 
-               var evaluation=defines.pipe({
+               var evaluation_example_not_in_use=defines.pipe({
                    arr:  [], 
                    spec: {
                        type:SwitcherPipeline, 
@@ -59,7 +59,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                        ]}},
                                           "switch");
 
-               var ok_register=defines.pipe({arr:
+               var ok_register_example_not_in_use=defines.pipe({arr:
                                              [
                                                  {item_name_fn:ui.ui_empty_register_form},
                                                  {item_name_fn:defines.pipe(os_pipelines.load_tenants.spec)},
@@ -71,45 +71,25 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                dispatcher.listen_event(events.try_to_log, 
                                        defines.single_step_pipe("setting",  ui.ui_set_value,{set_value_key:"ey", set_value_value:"hola"})
                                        .addTransformation(defines.state_step(ui.ui_show_data_state_value, {data_state_key:"ey"} ))
-                                       .addTransformation(evaluation)
                                        .addTransformation(defines.pipe(os_pipelines.load_tokens.spec))
-                                       .addTransformation(defines.pipe(os_pipelines.ok_register.spec))
+                                       .addTransformation(
+                                           defines.switcher(token_model.data_state_key,
+                                                            defines.pipe(os_pipelines.ok_register.spec), 
+                                                            defines.state_step(ui.ui_alerta, {show:"negative case"} )))
+
                                       
                                        ,false);
 
-               // var evaluation=define_pipe({
-               //     arr:  [], 
-               //     spec: {
-               //         type:SwitcherPipeline, 
-               //         params:[
-               //             "switch", 
-               //             function(value){
-               //                 if(value) 
-               //                     return ok_register;
-               //                 else
-               //                     return define_pipe(
-               //                         [
-               //                             {item_name_fn:ui.ui_alerta, boud:{show:"juan", juan:"work"}}
-               //                         ]);
-               //             }, token_model.data_state_key
-               //         ]}},
-               //                            "switch");
 
 
 
-               // dispatcher.listen_event(events.try_to_log, 
-               //                         define_pipe(os_pipelines.load_tokens.spec, os_pipelines.load_tokens.name)
-               //                         .addTransformation(evaluation)
-               //                         ,false);
 
 
-               // dispatcher.listen_event(events.tenant_selected, 
-               //                         define_pipe(os_pipelines.load_tenant_selected.spec, os_pipelines.load_tenant_selected.name)
-               //                         .addTransformation(define_pipe(
-               //                             [
-               //                                 {item_name_fn:ui.ui_select_operations, boud:{show:"juan", juan:"work"}}
-               //                             ]))
-//                                       ,false);
+               dispatcher.listen_event(events.tenant_selected, 
+                                       defines.pipe(os_pipelines.load_tenant_selected.spec)
+                                       .addTransformation(defines.state_step(ui.ui_select_operations,{show:"juan", juan:"work"}))
+
+                                      ,false);
 
                /*
 

@@ -11,8 +11,8 @@ require(["js/start_ew.js", "js/start_proposal.js", "js/start_dev.js"],
                 dev(); 
             else if (getURLParameter("proposal"))
                 proposal();
-            else if (getURLParameter("ew"))
-                ew();
+            // else if (getURLParameter("ew"))
+            //     ew();
             else
                 proposal();
 

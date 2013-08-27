@@ -1,4 +1,4 @@
-define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js"],function(StateStep, Pipeline){
+define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js"],function(StateStep, Pipeline, SwitcherPipeline){
            function inject_values(i, bound){
                for(var k in bound)
                    i[k]=bound[k];
@@ -101,11 +101,12 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js"],func
                        // check if the item_name_fn is already instanciate <-- that's related with the data one level item_name_fn nature
                        // so we check if it is built and in this case the object will be a state_step or a pipeline
                        var p;
-                       console.log(item.item_name_fn.name);
-                       console.dir(item);
+//                       console.log(item.item_name_fn.name);
+ //                      console.dir(item);
                        if(item.item_name_fn.spec){ 
+                           // if it is a pipeline specification
                            p=define_pipe(item.item_name_fn);
-                           alert(p);
+                           console.log("pipeline definition nested");
                        }else
                        if(!item.item_name_fn.built){
 
@@ -123,5 +124,26 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js"],func
                }
            }
 
-    return {pipeline:define_pipeline, single_step_pipe:define_single_step_pipe, state_step:define_state_step, pipe:define_pipe};
+    function define_switch(key_model, on_true, on_false, fn_exp){              
+        return define_pipe({
+                   arr:  [], 
+                   spec: {
+                       type:SwitcherPipeline, 
+                       params:[
+                           "switch", 
+                           function(value){
+                               var  r_fn=fn_exp? fn_exp(value): value;
+                               if(r_fn) 
+                                   return on_true;
+                               else
+                                   return on_false;
+                           }, 
+
+                           key_model
+                       ]}},
+                                          "switch");
+
+    }
+
+    return {pipeline:define_pipeline, single_step_pipe:define_single_step_pipe, state_step:define_state_step, pipe:define_pipe, switcher:define_switch};
 });
