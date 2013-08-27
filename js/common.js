@@ -6,7 +6,7 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
                 var data={ name:((prefix)?prefix:"")+key, fn:result[key] };
                 //                console.log(data.name);
 //                new_map[data.name]=new State_step(data.name, data.fn);
-                new_map[data.name]={name:data.name,fn:data.fn};
+                new_map[data.name]={name:data.name,fn:data.fn, type:State_step};
             }
             return new_map;
         },

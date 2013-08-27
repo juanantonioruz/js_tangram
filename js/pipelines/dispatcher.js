@@ -1,4 +1,4 @@
-define(["js/async.js"], function(async) {
+define(["js/async.js", "js/redefines.js"], function(async, redefines) {
     var contador=0;    
 
     var dispatcher=(function(){
@@ -32,6 +32,7 @@ define(["js/async.js"], function(async) {
                 console.log("\n");
 
         }
+
 
 
         var api= {
@@ -136,7 +137,8 @@ define(["js/async.js"], function(async) {
                             //TODO fix that with the new changes
                             //                             console.dir(bo);
                             var ext=new Pipeline("*EVENT*"+transformation_event_type+"");
-                            var pipi=o.pipeline();
+//                            var pipi=o.pipeline();
+                            var pipi=redefines.pipe(o.pipeline());
 //                            var pipi=o.pipeline();
 
                             // this is not necesary the parallel is related to method apply_transformations call, if it is nested or not
@@ -158,9 +160,12 @@ define(["js/async.js"], function(async) {
 
                             // i have included this to init the pipeline instance.... $.extend(true, {}, o.pipeline) 
                             syncq.map(function(o){
-                              //  console.dir(o);
+
                               //  alert("invoking");
-                            var pipi=o.pipeline();
+//                            var pipi=o.pipeline();
+                             //   console.dir(o.pipeline());
+                                var pipi=redefines.pipe(o.pipeline());
+
 //                            var pipi=o.pipeline();
 
                                 compose.addPipe(pipi);

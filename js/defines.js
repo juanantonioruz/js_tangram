@@ -14,17 +14,44 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/p
 
            //data= {array_state_step_functions, name }
     // simplified version with no bound option!! TODO 
+
+
            function define_pipeline(data){
                console.log("add bound option y update common.namingPipelines!!");
                var array_adapted=[];
                //item_name_fn is the standard in common.js naming_functions
-               data.array_state_step_functions.map(function(item_name_fn){array_adapted.push({item_name_fn:item_name_fn});});
-
-               var spec={ arr:array_adapted,
-                          spec:
-                          {type:Pipeline, params:[data.name]}};
-               return define_pipe(spec, data.name);
+               data.array_state_step_functions.map(function(item_name_fn){
+                   item_name_fn.type=StateStep;
+                   array_adapted.push({item_name_fn:item_name_fn,type:item_name_fn.type});
+               });
+               var spec=createSpec();
+               
+               spec. arr=array_adapted;
+               spec.spec= {type:Pipeline, params:[data.name]};
+               return spec;
            };
+
+function _createTransformation(state_step_name_fn, bound){
+    var x= {item_name_fn:state_step_name_fn, bound:bound, type:state_step_name_fn.type};
+    return x;
+}
+    function createSpec(){
+        var s={};
+        s.addTransformation=function(state_step_name_fn, bound){
+            if(state_step_name_fn.spec) return s._addPipe(state_step_name_fn, bound);
+            state_step_name_fn.type=StateStep;
+            var x= {item_name_fn:state_step_name_fn, bound:bound, type:state_step_name_fn.type};
+            s.arr.push(x);
+            return s;
+        };
+        s._addPipe=function(x){
+            var t={item_name_fn:x};
+            s.arr.push(t);
+            return s;
+        };
+        
+        return s;
+    }
 
 //it will  work as the beginning of the pipeline so it will let us work with .addTransformation method of the pipeline
 // the state_step doesnt let this behavior
@@ -34,100 +61,23 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/p
                    the_name ="define_pipe_"+contador;
                    contador++;
                };
+               var s=createSpec();
 
-               return define_pipe({
-                   arr:
-                   [{item_name_fn:state_step_name_fn, bound:bound}],
-                   spec:
-                   {type:Pipeline, params:[the_name]}});
+                   s.arr=
+                   [{item_name_fn:state_step_name_fn, bound:bound, type:state_step_name_fn.type}];
+                   s.spec=
+                   {type:Pipeline, params:[the_name]};
+               
+
+               return s;
            }
 
-           function define_state_step(state_step_name_fn, bound){
-                              // if is not an  array then  is a state_step.. instanciate and return with {name and fn} properties oe element, the state step has is own name so we haven't to use the second argument named_pipe
-
-                   //state_step
-                   
-                  var p=new StateStep(state_step_name_fn.name, state_step_name_fn.fn);
-
-               if(bound)inject_values(p, bound);
-
-                   return p;
-
-
-
-           }
 
            //spec is an array // rename to define_
-           function define_pipe(pipe_spec){
-
-                   if( Object.prototype.toString.call( pipe_spec.arr ) !== '[object Array]' ) {
-                       console.dir(pipe_spec);
-                       alert("donde vas calamer");
-                       return null;
-                   }else{
-                   // else we create a pipeline with second parameter 
-
-                   // this function taken from http://stackoverflow.com/questions/3362471/how-can-i-call-a-javascript-constructor-using-call-or-apply
-                   function conthunktor(Constructor, args) {
-                       return function() {
-
-                           var Temp = function(){}, // temporary constructor
-                               inst, ret; // other vars
-
-                           // Give the Temp constructor the Constructor's prototype
-                           Temp.prototype = Constructor.prototype;
-
-                           // Create a new instance
-                           inst = new Temp;
-
-                           // Call the original Constructor with the temp
-                           // instance as its context (i.e. its 'this' value)
-                           ret = Constructor.apply(inst, args);
-
-                           // If an object has been returned then return it otherwise
-                           // return the original instance.
-                           // (consistent with behaviour of the new operator)
-
-                           return Object(ret) === ret ? ret : inst;
-
-                       };
-                   }
-
-                   //  instanciate the pipeline with spec.spec object type and params properties
-                   var x=conthunktor(pipe_spec.spec.type, pipe_spec.spec.params)();
-
-                   ///----> recursive??? to make it adaptable to a tree data specification?
-                   // foreach spec.arr we instanciate 
-                   pipe_spec.arr.map(function(item){
-
-                       // check if the item_name_fn is already instanciate <-- that's related with the data one level item_name_fn nature
-                       // so we check if it is built and in this case the object will be a state_step or a pipeline
-                       var p;
-//                       console.log(item.item_name_fn.name);
- //                      console.dir(item);
-                       if(item.item_name_fn.spec){ 
-                           // if it is a pipeline specification
-                           p=define_pipe(item.item_name_fn);
-                           console.log("pipeline definition nested");
-                       }else
-                       if(!item.item_name_fn.built){
-
-                           p=new StateStep(item.item_name_fn.name, item.item_name_fn.fn);
-                       }else{
-                           
-                           p=item.item_name_fn;
-                       }
-                       if(item.bound)inject_values(p, item.bound);
-                       x.addTransformation(p);
-                   });
-                   x.built=true;
-                   return x;
-                   // require a new pipe
-               }
-           }
+           function define_pipe(){alert("the place has changed!");}
 
     function define_switch(key_model, on_true, on_false, fn_exp){              
-        return define_pipe({
+        return {
                    arr:  [], 
                    spec: {
                        type:SwitcherPipeline, 
@@ -136,25 +86,15 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js","js/p
                            function(value){
                                var  r_fn=fn_exp? fn_exp(value): value;
                                if(r_fn) {
-                                   console.log("TODO: this is a hack!");
-                                   if(on_true.spec) return define_pipe(on_true);
-                                   else
-                                       return on_true;
-
-
+                                   return on_true;
                                }else{
-                                   console.log("TODO: this is a hack!");
-                                   if(on_false.spec) return define_pipe(on_false);
-                                   else
                                    return on_false;
                                }
                            }, 
-
                            key_model
-                       ]}},
-                                          "switch");
+                       ]}};
 
     }
 
-    return {pipeline:define_pipeline, single_step_pipe:define_single_step_pipe, state_step:define_state_step, pipe:define_pipe, switcher:define_switch};
+    return {pipeline:define_pipeline, single_step_pipe:define_single_step_pipe,  switcher:define_switch, _createTransformation:_createTransformation};
 });

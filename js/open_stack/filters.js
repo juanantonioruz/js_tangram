@@ -108,7 +108,7 @@ function toJson(o){
 
                 }else{
                    //alert("it is not init or end: "+event_type+"\n we have to process it too, aren't we?");
-                    console.dir(active_pipelines);
+//                    console.dir(active_pipelines);
                     //active_pipelines.push(this.target);
                 }
             }else{

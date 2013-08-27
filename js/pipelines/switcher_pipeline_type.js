@@ -1,5 +1,5 @@
-define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
-       function( Fiber, Pipeline, StateStep,async, dispatcher) {
+define(["js/redefines.js","js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_step_type.js","js/async.js","js/pipelines/dispatcher.js"],
+       function(redefines,  Fiber, Pipeline, StateStep,async, dispatcher) {
            
            var Switcher_Pipeline=Pipeline.extend(function(base){
                return  {
@@ -35,8 +35,8 @@ define(["js/fiber.min.js","js/pipelines/pipeline_type.js","js/pipelines/state_st
 
                            this.addPipe(pipe);
                         }else{     
-
-                           this.addPipe(pipe());
+                            var pipi=redefines.pipe(pipe);
+                           this.addPipe(pipi);
                        }
                        base.apply_transformations.call(this, data_state);
                    }

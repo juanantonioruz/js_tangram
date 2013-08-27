@@ -368,6 +368,7 @@ define(["js/common.js"], function(common) {
             }
             
             $(window_id_ref).scrollTop($(window_id_ref.document).height());
+            $(window_id_ref).scrollLeft($(window_id_ref.document).width());
         });
         
 

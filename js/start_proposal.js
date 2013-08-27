@@ -25,7 +25,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
            data_state.host=document.location.host;
 
            var load_operation=os_pipelines.load_operation;
-           os_pipelines=os_pipelines.pipes;
+
 
            var result=function(){
                // EOP
@@ -34,7 +34,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                //ON LOAD APP show register_form
 //{array_state_step_functions:[], name }
                dispatcher.listen_event(events.on_load_app, 
-                                       defines.single_step_pipe(null, ui.ui_register_form, {runtime:"value added in instantiation time binding"}));
+                                       defines.single_step_pipe("hola", ui.ui_register_form, {runtime:"value added in instantiation time binding"}));
 
 
 
@@ -42,19 +42,23 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 //               var load_tenants= define_pipe(os_pipelines.yuhu.spec);
 
 
-               var ok_register_example_not_in_use=defines.pipeline({array_state_step_functions:
-                                             [ui.ui_empty_register_form], name:"simple_test"});
+                 var ok_register_example_not_in_use=defines.pipeline(
+                     {array_state_step_functions:
+                      [ui.ui_empty_register_form], 
+                      name:"simple_test"});
+               
+
 
 
 
                dispatcher.listen_event(events.try_to_log, 
                                        defines.single_step_pipe("setting",  ui.ui_set_value,{set_value_key:"ey", set_value_value:"hola"})
-                                       .addTransformation(defines.state_step(ui.ui_show_data_state_value, {data_state_key:"ey"} ))
-                                       .addTransformation(defines.pipe(os_pipelines.load_tokens.spec))
-                                       .addTransformation(
-                                           defines.switcher(token_model.data_state_key,
-                                                            defines.pipe(os_pipelines.ok_register.spec), 
-                                                            defines.state_step(ui.ui_alerta, {show:"negative case"} )))
+                                        .addTransformation(ui.ui_show_data_state_value, {data_state_key:"ey"})
+                                       .addTransformation(os_pipelines.load_tokens.spec)
+                                        .addTransformation(
+                                            defines.switcher(token_model.data_state_key,
+                                                             defines.single_step_pipe(null,ui.ui_alerta, {show:"positivecase"} ).addTransformation(ok_register_example_not_in_use), //defines.pipe(os_pipelines.ok_register.spec), 
+                                                             defines.single_step_pipe(null,ui.ui_alerta, {show:"negative case"} )))
                                        //.addTransformation(ok_register_example_not_in_use)
                                       
                                        ,false);
@@ -64,16 +68,16 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
 
 
-               dispatcher.listen_event(events.tenant_selected, 
-                                       defines.pipe(os_pipelines.load_tenant_selected.spec)
-                                       .addTransformation(defines.state_step(ui.ui_select_operations,{show:"juan", juan:"work"}))
+               // dispatcher.listen_event(events.tenant_selected, 
+               //                         defines.pipe(os_pipelines.load_tenant_selected.spec)
+               //                         .addTransformation(defines.state_step(ui.ui_select_operations,{show:"juan", juan:"work"}))
 
-                                      ,false);
+               //                        ,false);
 
 
-                dispatcher.listen_event(events.operation_selected,                                       
-                                        defines.pipe(os_pipelines.operation_selected.spec)
-                                        , false);
+               //  dispatcher.listen_event(events.operation_selected,                                       
+               //                          defines.pipe(os_pipelines.operation_selected.spec)
+               //                          , false);
 
                /*
 
