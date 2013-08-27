@@ -59,7 +59,7 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js"],func
            function define_pipe(pipe_spec){
 
                    if( Object.prototype.toString.call( pipe_spec.arr ) !== '[object Array]' ) {
-
+                       console.dir(pipe_spec);
                        alert("donde vas calamer");
                        return null;
                    }else{
@@ -101,6 +101,12 @@ define(["js/pipelines/state_step_type.js", "js/pipelines/pipeline_type.js"],func
                        // check if the item_name_fn is already instanciate <-- that's related with the data one level item_name_fn nature
                        // so we check if it is built and in this case the object will be a state_step or a pipeline
                        var p;
+                       console.log(item.item_name_fn.name);
+                       console.dir(item);
+                       if(item.item_name_fn.spec){ 
+                           p=define_pipe(item.item_name_fn);
+                           alert(p);
+                       }else
                        if(!item.item_name_fn.built){
 
                            p=new StateStep(item.item_name_fn.name, item.item_name_fn.fn);

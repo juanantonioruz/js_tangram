@@ -13,8 +13,8 @@ function clean_history(){
 
 
 define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/open_stack/pipelines.js", "js/open_stack/d3_visualizations.js"
-        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/open_stack/ui.js","js/open_stack/pipelines_up.js"],
-       function(defines, common, events, filters,  dispatcher,  State, os_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, up) {
+        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/open_stack/ui.js"],
+       function(defines, common, events, filters,  dispatcher,  State, os_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui) {
 
 
 
@@ -73,7 +73,8 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                        .addTransformation(defines.state_step(ui.ui_show_data_state_value, {data_state_key:"ey"} ))
                                        .addTransformation(evaluation)
                                        .addTransformation(defines.pipe(os_pipelines.load_tokens.spec))
-                                       .addTransformation(up.ok_register)
+                                       .addTransformation(defines.pipe(os_pipelines.ok_register.spec))
+                                      
                                        ,false);
 
                // var evaluation=define_pipe({

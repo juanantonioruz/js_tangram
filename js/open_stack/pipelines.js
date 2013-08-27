@@ -41,7 +41,7 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/open_sta
                    [{item_name_fn:query.query_endpoints},{item_name_fn:dao.dao}, {item_name_fn:model.model_store_endpoints}], 
                    spec:
                    {type:Pipeline, params:[]}},
-
+               
 
                load_operation:function (){
                    return new Pipeline(this.name)
@@ -165,10 +165,21 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/open_sta
            };
            
            
+               result.ok_register={
+                   arr:
+                   [
+                       {item_name_fn:ui.ui_empty_register_form},
+                       {item_name_fn:result.load_tenants},
+                       {item_name_fn:ui.ui_select_tenants}
+                   ],
+                   spec:
+                   {type:Pipeline, params:[]}};
 
 
-           
-           return {pipes:common.naming_pipes(result), load_operation:select_load_operation};
+           var resultado={pipes:common.naming_pipes(result), load_operation:select_load_operation};
+
+          
+           return resultado;
        });
 
 
