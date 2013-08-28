@@ -22,7 +22,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                };
                
 
-               $('#right').prepend("<h3 class='left_message'>Loading "+this.query+", please wait ...</h3>");
+//               $('#right').prepend("<h3 class='left_message'>Loading "+this.query+", please wait ...</h3>");
                
                callback(null, data_state);
                
@@ -31,7 +31,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
 
            result.create=function (data_state, callback){
                this.ns+= this.query;
-               $('#right').prepend("<h3 class='left_message'>Creating: "+this.query+"</h3>");
+ //              $('#right').prepend("<h3 class='left_message'>Creating: "+this.query+"</h3>");
                var the_data=init_data(data_state);
                var operations_map={ organization:"organizations", ticket:"tickets", group:"groups", topic:"topics", user:"users"};
                the_data.model=data_state[this.data_key_options];
@@ -43,16 +43,37 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                    data:the_data,
                    error_property:"message"
                };
-               
+         callback(null, data_state);
+                   
+               };
 
 
-               
-               callback(null, data_state);
-               
-  };
+               result.load=function (data_state, callback){
+                   this.ns+= this.query;
+                   
+                   var the_data=init_data(data_state);
+                   var operations_map={ organization:"organizations", ticket:"tickets", group:"groups", topic:"topics", user:"users"};
+
+                   the_data.operation=operations_map[this.query];
+                   
+                   the_data.id=data_state[this.key_id_stored];
+                   
+                   data_state.dao={
+                       method:'POST',
+                       action:"http://"+data_state.host+"/zendesk_load", 
+                       data:the_data,
+                       error_property:"message"
+                   };
+                   
+
+                   
+                   
+                   callback(null, data_state);
+                   
+               };
 
 
 
-           return common.naming_fns(result, "query_");
+               return common.naming_fns(result, "query_");
        }
       );

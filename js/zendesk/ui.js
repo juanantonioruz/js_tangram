@@ -1,6 +1,59 @@
-define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/open_stack/model/tenant.js","js/open_stack/model/operation.js"],
-       function(common, events, dispatcher, tenant_model, operation_model) {
+define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","js/zendesk/model/user.js"],
+       function(common, events, dispatcher, model_user) {
            var result={};
+           
+ function show_dom_select(pipeline_target, data_state,  model_name, data_state_store_key, target_dom_id, select_dom_id,  the_collection,  store_model_in_option){
+
+              return function(){
+                   $(select_dom_id).remove();
+                   var target=$("<select id='"+select_dom_id.replace('#', '')+"'></select>");
+                   $.each(the_collection, function(i, value){
+                       var option=$("<option value='"+value._hidden_+"'>"+value._visible_+"</option>");
+                       if(store_model_in_option)
+                           option.data("item", value.item);
+                       target.append(option);
+                   });
+
+                  $(target_dom_id).append(target);
+                  var idd=select_dom_id.replace('#', '');
+                   $(target_dom_id).append("<input type='button' value='details' id='details_"+idd+"'>");
+                   $(target_dom_id).append("<input type='button' value='edit'  id='edit_"+idd+"'>");
+                  $("#edit_"+idd).on('click', function(){
+                      var selected=$(select_dom_id+" option:selected").first();
+                      var id=selected.val();
+                      var text=selected.text();
+                      data_state[data_state_store_key]=id;
+                      dispatcher.dispatch("edit_"+model_name+"_selected", pipeline_target, data_state);
+                      console.log(selected.val()+selected.text());
+                  });
+                  $("#details_"+idd).on('click', function(){
+                      var selected=$(select_dom_id+" option:selected").first();
+                      var id=selected.val();
+                      var text=selected.text();
+                      data_state[data_state_store_key]=id;
+                      dispatcher.dispatch("detail_"+model_name+"_selected", pipeline_target, data_state);
+                      console.log(selected.val()+selected.text());
+                  });
+
+
+              };
+           };
+
+           result.show_select_users=function(data_state, callback){
+               var colection=data_state[model_user.data_state_key];
+
+               colection.map(function(item){
+                   item["_hidden_"]=item[model_user.data.id];
+                   item["_visible_"]=item[model_user.data.human_id];
+                  
+               });
+               show_dom_select(this, data_state, model_user.model_name, model_user.data_state_store_selected_key, "#content","#ey", colection )();
+
+                  
+
+               callback(null, data_state);
+           };
+
            result.clean_register_form=function (data_state, callback){
                    var target_pipeline=this.pipeline;
                    $('#register_form').empty();
@@ -48,9 +101,10 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
 
            
            result.simple_show=function(data_state, callback){
-                           $('#content').prepend( "<h2>show "+this.key+": </h2><pre><code class='json'>"+common.toJson(data_state[this.key])+"</code></pre>" );                                 
+               console.log(this.key);
+                           $('#right').prepend( "<h2>show "+this.key+": </h2><pre><code class='json'>"+common.toJson(data_state.get_value(this.key))+"</code></pre>" );                                 
                            callback(null, data_state);
-                       };
+           };
 
            result.create_user_options=function(data_state, callback){
                var target=this;
@@ -67,6 +121,6 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                callback(null, data_state);
            };
 
-           return common.naming_fns(result, "ui_");
+           return common.renaming_fns(result, "ui_");
        }
       );

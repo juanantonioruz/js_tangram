@@ -10,6 +10,8 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        callback(null, data_state);
                    };
                },
+               edit_model:function(model){return "edit_"+model.model_name+"_selected";},
+               detail_model:function(model){return "detail_"+model.model_name+"_selected";},
                on_load_app:"on_load_app",
                tenant_selected:"tenant_selected",
                try_to_log:"try_to_log",

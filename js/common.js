@@ -10,6 +10,16 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
             }
             return new_map;
         },
+        renaming_fns:function(result, prefix){
+            var new_map={};
+            for (var key in result){
+                var data={ name:((prefix)?prefix:"")+key, fn:result[key] };
+                //                console.log(data.name);
+//                new_map[data.name]=new State_step(data.name, data.fn);
+                new_map[key]={name:data.name,fn:data.fn, type:State_step};
+            }
+            return new_map;
+        },
         toJson: function toJson(o){
             return JSON.stringify(o, null, 4);
         },
@@ -20,13 +30,7 @@ define(["js/pipelines/state_step_type.js"],function(State_step){
 //                inter_fn= inter_fn.bind({name:((prefix)?prefix:"")+key});
                 if(inter_spec.spec)
                     if(inter_spec.spec.params){
-                        var new_params=[];
-                        new_params.push(the_name);
-                        console.log("TODO--- create new array with this name and push all that already  exists");
-                        inter_spec.spec.params.map(function(it){
-                            new_params.push(it);
-                        });
-                        inter_spec.spec.params=new_params;
+                        inter_spec.spec.params.unshift(the_name);
                     };
                 result[((prefix)?prefix:"")+key]={name:the_name, spec:inter_spec};
             }

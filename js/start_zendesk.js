@@ -5,8 +5,8 @@ require.config({
 
 
 define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/zendesk/pipelines.js", "js/open_stack/d3_visualizations.js"
-        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js"],
-       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao) {
+        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js", "js/zendesk/model/user.js"],
+       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao, model_user) {
 
 
 
@@ -24,45 +24,38 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                //ON LOAD APP show register_form
 //{array_state_step_functions:[], name }
                dispatcher.listen_event(events.on_load_app, 
-                                       defines.single_step_pipe("show_register", ui.ui_register_form, {ip:"enterprisewebcom.zendesk.com" , user:"juanantonioruz@gmail.com", password:"IgBNEzzUDQsJ4hSMcKWF2LYetEGeZNSNKLwi6iXp"}));
+                                       defines.single_step_pipe("zendesk_welcome", ui.register_form, {ip:"enterprisewebcom.zendesk.com" , user:"juanantonioruz@gmail.com", password:"IgBNEzzUDQsJ4hSMcKWF2LYetEGeZNSNKLwi6iXp"}));
 
-               dispatcher.listen_event(events.try_to_log, 
-                                       z_pipelines.try_to_log.spec
-                                       , false);
+               dispatcher.listen_event(events.try_to_log, z_pipelines.try_to_log.spec);
 
                dispatcher.listen_pipe(events.on_end, "try_to_log",
-                                      defines.single_step_pipe("show_register", ui.ui_simple_show, {key:"profile"}).addTransformation(ui.ui_clean_register_form).addTransformation(ui.ui_show_links), 
-                                      false);
+                                      defines.single_step_pipe("show_register", ui.simple_show, {key:"profile"})
+                                      .addTransformation(ui.clean_register_form).addTransformation(ui.show_links) );
 
 
-               dispatcher.listen_event("show_list_organization", 
-                                      z_pipelines.show_organizations.spec, 
-                                      false);
+               dispatcher.listen_event("show_list_organization", z_pipelines.show_organizations.spec);
 
-               dispatcher.listen_pipe(events.on_end, "show_organizations",
-                                      defines.single_step_pipe("show_orgs", ui.ui_simple_show, {key:"organizations"}), 
-                                      false);
+               dispatcher.listen_pipe(events.on_end, "show_organizations", defines.single_step_pipe("show_orgs", ui.simple_show, {key:"organizations"}));
 
+               dispatcher.listen_event(events.edit_model(model_user) ,  
+                                       defines.single_step_pipe("editing_user_options", ui.simple_show, {key:model_user.data_state_store_selected_key})
+                                       .addTransformation(query.query_load,{query:model_user.model_name, key_id_stored:model_user.data_state_store_selected_key})
+                                       .addTransformation(dao.dao)
+                                       .addTransformation(ui.simple_show, {key:"dao.result"})
+                                      );
+               dispatcher.listen_event(events.detail_model(model_user) ,  defines.single_step_pipe("detailing_user_options", ui.simple_show, {key:model_user.data_state_store_selected_key}));
 
-               dispatcher.listen_event("show_list_ticket", 
-                                      z_pipelines.show_tickets.spec, 
-                                      false);
-               dispatcher.listen_event("show_list_group", 
-                                      z_pipelines.show_groups.spec, 
-                                      false);
-               dispatcher.listen_event("show_list_topic", 
-                                      z_pipelines.show_topics.spec, 
-                                      false);
-               dispatcher.listen_event("show_list_user", 
-                                      z_pipelines.show_users.spec, 
-                                      false);
+               dispatcher.listen_event("show_list_ticket",  z_pipelines.show_tickets.spec);
+               dispatcher.listen_event("show_list_group",  z_pipelines.show_groups.spec);
+               dispatcher.listen_event("show_list_topic",    z_pipelines.show_topics.spec);
+               dispatcher.listen_event("show_list_user",     z_pipelines.show_users.spec);
 
-               dispatcher.listen_event("create_user", 
-                                       defines.single_step_pipe("user_options", ui.ui_create_user_options), 
-                                       false);
+               dispatcher.listen_event("create_user",  defines.single_step_pipe("user_options", ui.create_user_options));
+
                dispatcher.listen_event("send_create_user", 
-                                       defines.single_step_pipe("user_options", ui.ui_simple_show, {key:"create_user_options"}).addTransformation(query.query_create, {query:"user", data_key_options:"create_user_options"}).addTransformation(dao.dao), 
-                                       false);
+                                       defines.single_step_pipe("user_options", ui.simple_show, {key:"create_user_options"})
+                                       .addTransformation(query.query_create, {query:"user", data_key_options:"create_user_options"})
+                                       .addTransformation(dao.dao));
 
 
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",

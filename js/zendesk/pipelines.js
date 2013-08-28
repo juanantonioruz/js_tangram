@@ -23,7 +23,8 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
                    {item_name_fn:query.query_base, bound:{"query":"users"}},
                    {item_name_fn:dao.dao},
                    {item_name_fn:model.model_load_base, bound:{key:"users", dao_key:"users"}},
-                   {item_name_fn:ui.ui_simple_show, bound: {key:"users"}}
+                   {item_name_fn:ui.simple_show, bound: {key:"users"}},
+                   {item_name_fn:ui.show_select_users}
 
                ],
                spec:
@@ -48,7 +49,7 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
                    {item_name_fn:query.query_base, bound:{"query":"tickets"}},
                    {item_name_fn:dao.dao},
                    {item_name_fn:model.model_load_base, bound:{key:"tickets", dao_key:"tickets"}},
-                   {item_name_fn:ui.ui_simple_show, bound: {key:"tickets"}}
+                   {item_name_fn:ui.simple_show, bound: {key:"tickets"}}
 
                ],
                spec:
@@ -60,7 +61,7 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
                    {item_name_fn:query.query_base, bound:{"query":"groups"}},
                    {item_name_fn:dao.dao},
                    {item_name_fn:model.model_load_base, bound:{key:"groups", dao_key:"groups"}},
-                   {item_name_fn:ui.ui_simple_show, bound: {key:"groups"}}
+                   {item_name_fn:ui.simple_show, bound: {key:"groups"}}
 
                ],
                spec:
@@ -71,7 +72,7 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
                    {item_name_fn:query.query_base, bound:{"query":"topics"}},
                    {item_name_fn:dao.dao},
                    {item_name_fn:model.model_load_base, bound:{key:"topics", dao_key:"topics"}},
-                   {item_name_fn:ui.ui_simple_show, bound: {key:"topics"}}
+                   {item_name_fn:ui.simple_show, bound: {key:"topics"}}
 
                ],
                spec:

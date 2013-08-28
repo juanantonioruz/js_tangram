@@ -49,7 +49,7 @@ var childWin;
       #container{width:100%;}
       #left{float:left;width:20%;}
       #right{float:right;}
-      #center{margin:0 0 0 100px;width:40%; float:left;}
+      #center{margin:0 0 0 50px;width:40%; float:left;}
       ul{
       margin-left:0em; 
       padding-left:0.2em; 
@@ -119,16 +119,17 @@ or <a href='?proposal=true'>proposal</a>  -->
         <h1 id='loading'> testing </h1>
         <div id="loading_results" style="padding:4px;margin-bottom:5px;"></div>
         <div id="event_history"></div></div>
-      <div id="right">
+      <div id="center">
+        <div id="content" style="margin:100px"></div>
+      </div>
+      <div id="right" style="background-color:pink;word-wrap: break-word;">
         <div class='chart_history' id='chart_history'>
         </div>
 
         <div id="logging" style="font-size:12px;">
           <ul id="history_status"></ul>
 </div></div>
-      <div id="center">
-        <div id="content" style="background-color:pink;word-wrap: break-word;"></div>
-      </div>
+
       <div style="clear:both;">
       </div>
 <div id="footer"><!--I am the static footer--></div>

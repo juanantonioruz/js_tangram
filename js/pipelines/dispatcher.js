@@ -10,12 +10,12 @@ define(["js/async.js", "js/redefines.js"], function(async, redefines) {
 
             dispatcher:{
                 searching:false,
-                listeners:true,
-                listeners_detail:true,
-                parallel:true,
-                parallel_detail:true,
-                syncq:true,
-                syncq_detail:true
+                listeners:false,
+                listeners_detail:false,
+                parallel:false,
+                parallel_detail:false,
+                syncq:false,
+                syncq_detail:false
             }
             
         };
@@ -26,7 +26,7 @@ define(["js/async.js", "js/redefines.js"], function(async, redefines) {
                 console.log("\n"+title+": "+target.ns+"/"+transformation_event_type+":: listeners size: "+collection.length);
             collection.map(function(item){
                 if(specific_log)
-                    console.log("___listener stored: "+item.pipeline().ns);
+                    console.log("___listener stored: "+item.pipeline().spec.params);
             });
             if(general_log)
                 console.log("\n");
