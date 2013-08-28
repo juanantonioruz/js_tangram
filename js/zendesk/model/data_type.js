@@ -6,5 +6,9 @@ define(["js/common.js"],
            result.url={};
            result.email={};
            result.date={};
+           Object.keys(result).map(function(item){
+               result[item].key=item;
+           });
+
            return result;
 });

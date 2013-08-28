@@ -122,6 +122,26 @@ app.post('/zendesk', function(req, res){
 
 
 });
+
+app.post('/zendesk_update', function(req, res){
+
+   rest.put('https://'+req.body.ip+'/api/v2/'+req.body.operation+'/'+req.body.id+'.json',
+               {username: req.body.user,  password:req.body.password, data:req.body.model}
+           )
+             .on('complete', function(result) {
+sys.puts('COMPLETE: ' + toJson(result));
+        if (result instanceof Error) {
+            sys.puts('Error: ' + result.message);
+            res.send('Error: ' + result.message);
+            //            this.retry(5000); // trvy again after 5 sec
+        } else {
+            res.send(result);
+         //   sys.puts(toJson(result));
+        }
+    });
+});
+
+
 app.post('/zendesk_create', function(req, res){
 sys.puts(req.body.user+":"+req.body.password);
             sys.puts('https://'+req.body.ip+'/api/v2/'+req.body.operation+'.json'+JSON.stringify(req.body.model));
@@ -134,17 +154,12 @@ sys.puts('COMPLETE: ' + toJson(result));
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
             res.send('Error: ' + result.message);
-            //            this.retry(5000); // tr∑vy again after 5 sec
+            //            this.retry(5000); // trvy again after 5 sec
         } else {
             res.send(result);
          //   sys.puts(toJson(result));
         }
     });
-
-
-
-
-
 });
 app.post('/zendesk_load', function(req, res){
 sys.puts(req.body.user+":"+req.body.password);
@@ -170,6 +185,7 @@ sys.puts('COMPLETE: ' + toJson(result));
 
 
 });
+
 
 app.post('/tenants', function(req, res){
 sys.puts('ip: ' + req.body.s_ip);

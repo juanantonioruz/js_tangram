@@ -47,7 +47,11 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                       );
 
                dispatcher.listen_event("send_edit_user", 
-                                       defines.single_step_pipe("send_edit_user", ui.simple_show, {key:"you are editing finally the user selected"}));
+                                       defines.single_step_pipe("send_edit_user", ui.simple_show, {key:model_user.data_state_store_user_on_editing})
+                                       .addTransformation(query.query_update,{query:model_user.model_name, data_key_options:model_user.data_state_store_user_on_editing,key_id_stored:model_user.data_state_store_selected_key})
+                                       .addTransformation(dao.dao)
+                                       .addTransformation(ui.simple_show, {key:"successful editing!!"})
+);
 
 
 

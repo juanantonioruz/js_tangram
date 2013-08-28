@@ -1,5 +1,5 @@
-define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","js/zendesk/model/user.js"],
-       function(common, events, dispatcher, model_user) {
+define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","js/zendesk/model/user.js","js/zendesk/model/info_type.js","js/zendesk/model/data_type.js"],
+       function(common, events, dispatcher, model_user,i_type, d_type) {
            var result={};
            
  function show_dom_select(pipeline_target, data_state,  model_name, data_state_store_key, target_dom_id, select_dom_id,  the_collection,  store_model_in_option){
@@ -47,6 +47,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                    item["_visible_"]=item[model_user.data.human_id];
                   
                });
+
                show_dom_select(this, data_state, model_user.model_name, model_user.data_state_store_selected_key, "#content","#ey", colection )();
 
                callback(null, data_state);
@@ -60,19 +61,49 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                callback(null, data_state);
 };           
 
+
+
            function append_button( dom_id, click_fn, the_id, the_value){
                $(dom_id).append("<input type='button' id='"+the_id+"' value='"+((the_value)?the_value:the_id)+"'>");
                $('#'+the_id).on('click', click_fn);
            }
+           function append_input_text( dom_id, label, the_class, the_id, the_value, change_fn){
+               $(dom_id).append(((label)?"<br>"+label.toUpperCase()+"<br>":"<br>")+"<input type='text' class='"+the_class+"' id='"+the_id+"' value='"+((the_value)?the_value:"")+"'>");
+
+//               $('#'+the_id).on('click', click_fn);
+           }
            
            result.show_edit_user_form=function(data_state, callback){
-               $('#content').append("<h1>THe user form!!</h1>");
+
+               var form_id="user_form";
+               $('#'+form_id).remove();
+               $('#content').append("<div id='"+form_id+"'></div>");
+
+               $('#'+form_id).append("<h1>The user form!!</h1>");
+               $('#'+form_id).append("<div id='fields'></div>");
+               $('#'+form_id).append("<div id='buttons'></div>");
                var that=this;
-               append_button("#content", function(){
+                   var object_model_stored=data_state[model_user.data_state_store_selected_user][model_user.model_name];
+               Object.keys(model_user.data.human).map(function(item){
+                   var o=model_user.data.human[item];
+
+                   // component_type=o.type
+                       append_input_text("#fields",  o.key, model_user.model_name, o.key, object_model_stored[o.key]);
+                   
+               });
+               
+               append_button("#buttons", function(){
                    // data_state.user=$('#user').val()+"/token";
                    // data_state.password=$('#password').val();
                    // data_state.ip=$('#ip').val();
-                   
+
+                   var mod={user:{}};
+                   $('.'+model_user.model_name).each(function(){
+
+                       mod[model_user.model_name][$(this).attr('id')]=$(this).val();
+                   });
+           //        console.dir(mod);
+                   data_state[model_user.data_state_store_user_on_editing]=mod;
                    dispatcher.dispatch("send_edit_user", that, data_state );
                },
                              "edit_user");

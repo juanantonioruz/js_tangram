@@ -11,5 +11,9 @@ define(["js/common.js"],
            result.updated={};
            result.time_zone={};
 
+           Object.keys(result).map(function(item){
+               result[item].key=item;
+           });
+
            return result;
 });

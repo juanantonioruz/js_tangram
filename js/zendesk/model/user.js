@@ -1,7 +1,7 @@
 define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", "js/zendesk/model/info_type.js","js/zendesk/model/data_type.js"],
        function(common, events, dispatcher, i_type, d_type) {
            function define_data(info_type_key, data_type_key){
-               return {info_type:i_type[info_type_key], data_type:d_type[data_type_key]};
+               return {info_type:i_type[info_type_key].key, data_type:d_type[data_type_key].key};
            };
            var user_schema={
                "id": define_data("id", "numeric"),
@@ -10,8 +10,8 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                "created_at": define_data("created", "date"),
                "updated_at": define_data("updated", "date"),
                "time_zone":  define_data("time_zone", "string"),
-               "email": define_data("human_id", "email")
-               // "phone": null,
+               "email": define_data("human_id", "email"),
+               "phone":define_data("human", "string")
                // "photo": null,
                // "locale_id": 1,
                // "locale": "en-US",
@@ -38,21 +38,30 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
            };
            
            function analyse(){
-               var the_data_analysed={};
+               var the_data_analysed={human:[]};
+               console.dir(user_schema);
                Object.keys(user_schema).map(function(item){
+               user_schema[item].key=item;
                    if(user_schema[item] && user_schema[item].toString()=="[object Object]"){
                        var info_type=user_schema[item].info_type;
-                       if(info_type==i_type.id)
+                       if(info_type==i_type.id.key)
                            the_data_analysed.id=item;
 
-
-                       if(info_type==i_type.human_id)
+                       if(info_type==i_type.human_id.key)
                            the_data_analysed.human_id=item;
+
+
+                       if(info_type==i_type.human.key)
+                           the_data_analysed.human.push({key:item, type:user_schema[item].data_type});
+
+
 
 
                    }
 
                });
+               console.dir(the_data_analysed);
+
                return the_data_analysed;
            };
 
@@ -61,6 +70,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
                model_name:"user",
                data_state_store_selected_key:"user_selected_id",
                data_state_store_selected_user:"user_selected_load",
+               data_state_store_user_on_editing:"user_on_editing",
                data_state_key:"users",
                
                raw:user_schema,
