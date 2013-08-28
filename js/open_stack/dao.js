@@ -5,7 +5,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                // return dao.result || dao.error
                dao:function (data_state, callback){
                    var dao_object=data_state.dao;
-                   
+                   var that=this;
                    $.ajax({
                        type: dao_object.method,
                        url: dao_object.action,
@@ -18,7 +18,10 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                            dao_object.result=msg;
                            if(common.logging.dao.dir)
                                console.dir(dao_object.result);
-                           
+                           if(that.store_key){
+data_state[that.store_key]=dao_object.result;
+
+                               }
                        }else{
                            
                            dao_object.result={error:msg.error};                

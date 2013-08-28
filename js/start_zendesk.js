@@ -40,9 +40,17 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                dispatcher.listen_event(events.edit_model(model_user) ,  
                                        defines.single_step_pipe("editing_user_options", ui.simple_show, {key:model_user.data_state_store_selected_key})
                                        .addTransformation(query.query_load,{query:model_user.model_name, key_id_stored:model_user.data_state_store_selected_key})
-                                       .addTransformation(dao.dao)
-                                       .addTransformation(ui.simple_show, {key:"dao.result"})
+                                       .addTransformation(dao.dao, {store_key:model_user.data_state_store_selected_user})
+
+                                       .addTransformation(ui.simple_show, {key:model_user.data_state_store_selected_user})
+                                       .addTransformation(ui.show_edit_user_form, {})
                                       );
+
+               dispatcher.listen_event("send_edit_user", 
+                                       defines.single_step_pipe("send_edit_user", ui.simple_show, {key:"you are editing finally the user selected"}));
+
+
+
                dispatcher.listen_event(events.detail_model(model_user) ,  defines.single_step_pipe("detailing_user_options", ui.simple_show, {key:model_user.data_state_store_selected_key}));
 
                dispatcher.listen_event("show_list_ticket",  z_pipelines.show_tickets.spec);

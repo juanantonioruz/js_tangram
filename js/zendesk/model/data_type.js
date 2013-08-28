@@ -3,6 +3,7 @@ define(["js/common.js"],
            var result={};
            result.string={};
            result.numeric={};
+           result.url={};
            result.email={};
            result.date={};
            return result;

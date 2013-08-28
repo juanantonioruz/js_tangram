@@ -49,7 +49,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js", 
 
 
                result.load=function (data_state, callback){
-                   this.ns+= this.query;
+                   this.ns+= "_"+this.query;
                    
                    var the_data=init_data(data_state);
                    var operations_map={ organization:"organizations", ticket:"tickets", group:"groups", topic:"topics", user:"users"};

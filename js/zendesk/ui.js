@@ -49,29 +49,51 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                });
                show_dom_select(this, data_state, model_user.model_name, model_user.data_state_store_selected_key, "#content","#ey", colection )();
 
-                  
-
                callback(null, data_state);
            };
+
+
 
            result.clean_register_form=function (data_state, callback){
                    var target_pipeline=this.pipeline;
                    $('#register_form').empty();
                callback(null, data_state);
 };           
+
+           function append_button( dom_id, click_fn, the_id, the_value){
+               $(dom_id).append("<input type='button' id='"+the_id+"' value='"+((the_value)?the_value:the_id)+"'>");
+               $('#'+the_id).on('click', click_fn);
+           }
+           
+           result.show_edit_user_form=function(data_state, callback){
+               $('#content').append("<h1>THe user form!!</h1>");
+               var that=this;
+               append_button("#content", function(){
+                   // data_state.user=$('#user').val()+"/token";
+                   // data_state.password=$('#password').val();
+                   // data_state.ip=$('#ip').val();
+                   
+                   dispatcher.dispatch("send_edit_user", that, data_state );
+               },
+                             "edit_user");
+               callback(null, data_state);
+           };
+           
+
            result.register_form=function (data_state, callback){
                var target_pipeline=this.pipeline;
                $('#loading').html("zendesk");
-               $('#left').append("<div id='register_form'><h3>Login: </h3> IP : <input type='text' id='ip' value='"+this.ip+"'><br>  User: <input type='text' id='user' value='"+this.user+"'><br> Password: <input type='password' id='password' value='"+this.password+"'><br><input type='button' id='logging' value='logging'></div>");
+               $('#left').append("<div id='register_form'><h3>Login: </h3> IP : <input type='text' id='ip' value='"+this.ip+"'><br>  User: <input type='text' id='user' value='"+this.user+"'><br> Password: <input type='password' id='password' value='"+this.password+"'><br><div id='buttons'/></div>");
                
-               $('#logging').on('click', function(){
-                   
+               append_button("#buttons", function(){
                    data_state.user=$('#user').val()+"/token";
                    data_state.password=$('#password').val();
                    data_state.ip=$('#ip').val();
                    
                    dispatcher.dispatch(events.try_to_log, target_pipeline,data_state );
-               });
+               }, "logging");
+
+
                callback(null, data_state);
            };
 
