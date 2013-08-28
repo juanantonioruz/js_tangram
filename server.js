@@ -124,12 +124,14 @@ app.post('/zendesk', function(req, res){
 });
 
 app.post('/zendesk_update', function(req, res){
-
-   rest.put('https://'+req.body.ip+'/api/v2/'+req.body.operation+'/'+req.body.id+'.json',
-               {username: req.body.user,  password:req.body.password, data:req.body.model}
+var url='https://'+req.body.ip+'/api/v2/'+req.body.operation+'/'+req.body.id+'.json';
+sys.puts(url);
+sys.puts(toJson(req.body.model));
+   rest.put(url,
+               {username: req.body.user,  password:req.body.password, data:req.body.model, headers:{"Content-Type": "application/json"}}
            )
              .on('complete', function(result) {
-sys.puts('COMPLETE: ' + toJson(result));
+sys.puts('COMPLETE_UPDATE: ' + toJson(result));
         if (result instanceof Error) {
             sys.puts('Error: ' + result.message);
             res.send('Error: ' + result.message);
