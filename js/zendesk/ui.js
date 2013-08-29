@@ -153,6 +153,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
            result.register_form=function (data_state, callback){
                var target_pipeline=this.pipeline;
                $('#loading').html("zendesk");
+               $('#register_form').remove();
                $('#left').append("<div id='register_form'><h3>Login: </h3> IP : <input type='text' id='ip' value='"+this.ip+"'><br>  User: <input type='text' id='user' value='"+this.user+"'><br> Password: <input type='password' id='password' value='"+this.password+"'><br><div id='buttons'/></div>");
                
                append_button("#buttons", function(){

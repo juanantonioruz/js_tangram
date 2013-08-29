@@ -54,7 +54,7 @@ define(["js/common.js", "js/open_stack/loadings.js", "js/open_stack/dao.js"], fu
         describe("open_stack_loadings", function() {
             
             it("the token_id with 'demo' user login must be defined", function() {
-console.dir(loadings.loaded_tokens);
+                console.dir(loadings.loaded_tokens);
                 call_fn(loadings.loaded_tokens, 
                         function() {
                             expect(data_state.token_id).toBeDefined();

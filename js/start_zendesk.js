@@ -8,12 +8,16 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
         ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js", "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js"],
        function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao, user_model, org_model, ticket_model) {
 
+           var data_state;
+//           console.dir(this.data_state);
 
+           if(this.data_state) data_state=this.data_state;
+           else  data_state=State();
 
-
-           var data_state=State();
            this.data_state=data_state;
            this.dispatcher=dispatcher;
+           this.events=events;
+
            data_state.host=document.location.host;
 
 
@@ -33,7 +37,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                       .addTransformation(ui.clean_register_form).addTransformation(ui.show_links) );
 
 
-
+               dispatcher.listen_event("ey",  defines.single_step_pipe("show_ey", ui.simple_show, {key:"juan"}));
 
                dispatcher.listen_pipe(events.on_end, "show_organizations", defines.single_step_pipe("show_orgs", ui.simple_show, {key:"organizations"}));
 
@@ -98,7 +102,8 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                                             }}));
                var start_pipe=new Pipeline("start");
                this.start_pipe=start_pipe;
-               dispatcher.dispatch(events.on_load_app, start_pipe, data_state);
+
+              // dispatcher.dispatch(events.on_load_app, start_pipe, data_state);
 
            };
 

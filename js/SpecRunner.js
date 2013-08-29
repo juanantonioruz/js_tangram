@@ -2,7 +2,7 @@ require.config({
     baseUrl: "/js/",
     urlArgs: 'cb=' + Math.random(),
     paths: {
-        jquery: 'jquery-1.9.1.min',
+        jquery: 'jquery-1.10.2.min',
         jasmine: '../jasmine/lib/jasmine-1.3.1/jasmine',
         'jasmine-html': '../jasmine/lib/jasmine-1.3.1/jasmine-html'
 //        spec: '../../pepe'
