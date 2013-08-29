@@ -7,7 +7,7 @@ require.onResourceLoad = function (context, map, depArray) {
     all.push(map.name);    
     //console.log("name:"+map.name);
 };
-function init(clean){
+this.init=function init(clean){
     console.log("------------------------------------INIT REQUIREJS !!!");
     var stock;
     if(this.data_state){

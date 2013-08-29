@@ -17,7 +17,7 @@ define(["js/common.js", "js/pipelines/dispatcher.js"],
                        if(!msg.error ){
                            dao_object.result=msg;
                            if(common.logging.dao.dir)
-                               console.dir(dao_object.result);
+                               console.dir(dao_object);
                            if(that.store_key){
 data_state[that.store_key]=dao_object.result;
 

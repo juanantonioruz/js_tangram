@@ -292,17 +292,16 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 
-
+if(process.env.PORT){
 io.configure(function () { 
   io.set("transports", ["xhr-polling"]); 
   io.set("polling duration", 10); 
 });
-
+}
 
 server.listen(port, function() {
   console.log("Listening on " + port);
 });
-
 
 
 io.sockets.on('connection', function (socket) {

@@ -116,18 +116,23 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
               // dispatcher.dispatch(events.on_load_app, start_pipe, data_state);
 
-               
-
-
-
-
 
 
                this.dispatch=function(event_name, init_app, clean){
                    if(init_app) this.init(clean);
+                   console.dir(data_state.password);
+                   console.dir(data_state.last_event_dispatched);
 
                    dispatcher.dispatch(event_name, start_pipe, data_state);
                };
+
+
+
+               if(data_state.last_event_dispatched){
+                   console.dir(data_state.password);
+                   console.dir(data_state.last_event_dispatched);
+                   this.dispatch(data_state.last_event_dispatched);
+               }
 
 
            };

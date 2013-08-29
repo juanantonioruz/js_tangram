@@ -82,6 +82,9 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
 
                show_dom_select(this, data_state, user_model.model_name, user_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, user_model) )();
 
+                       $("#ey").css("margin", "200px").css("background-color", "red");
+
+
                callback(null, data_state);
            };
 
@@ -154,10 +157,13 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
 
 
            result.inject_reg_values=function(data_state, callback){
+
+               if($('#user').val()!==undefined){
                data_state.user=$('#user').val()+"/token";
                    data_state.password=$('#password').val();
                    data_state.ip=$('#ip').val();
-
+               }else
+               console.log("INFO: in debug mode maybe there is not the form in the page so we can switch this part!");
                callback(null, data_state);
            };
 

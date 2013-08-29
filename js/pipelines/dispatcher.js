@@ -39,6 +39,8 @@ define(["js/async.js", "js/redefines.js"], function(async, redefines) {
 
             
             dispatch:function(transformation_event_type, target, data_state,callback){
+                if(transformation_event_type.indexOf("END")==-1 && transformation_event_type.indexOf("INIT")==-1)
+                data_state.last_event_dispatched=transformation_event_type;
                 //                 console.dir(transformation_event_type);
 
 

@@ -10,14 +10,7 @@
 
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io.connect(document.location.host);
-  socket.on('news', function (data) {
-    console.log(data);
-  init();
-    socket.emit('my other event', { my: 'data' });
-  });
-</script>
+
 
 
     <script  src="js/d3.js" ></script>
@@ -56,6 +49,16 @@ var childWin;
     </script>
 
     <script type="text/javascript" src="js/require.js" data-main="js/controller"></script>
+
+<script>
+  var socket = io.connect('http://localhost');
+  socket.on('news', function (data) {
+    console.log(data);
+ init();
+    socket.emit('my other event', { my: 'data' });
+  });
+</script>
+
 
     <style>
       #container{width:100%;}
