@@ -15,29 +15,21 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 //           console.dir(this.data_state);
 
            if(this.stock){
-               console.log("this.data_state exists");
-              console.dir(this.stock);
+              //  console.log("this.data_state exists");
+              // console.dir(this.stock);
                data_state=this.stock;
            }else{
-               console.log("this.data_state NO exists");
+           //    console.log("this.data_state NO exists");
                data_state=State();
             
            }
 
+               // debug purposes
            this.data_state=data_state;
-           this.dispatcher=dispatcher;
-           this.events=events;
+
 
            data_state.host=document.location.host;
 
-           this.uno=function(prop){
-               console.dir(data_state[prop]);
-           };
-
-
-           this.data_state_fn=function(){
-               return data_state;
-           };
 
 
 
@@ -130,11 +122,13 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
 
 
-               this.dispatch=function(event_name){
 
+               this.dispatch=function(event_name, init_app, clean){
+                   if(init_app) this.init(clean);
 
                    dispatcher.dispatch(event_name, start_pipe, data_state);
                };
+
 
            };
 

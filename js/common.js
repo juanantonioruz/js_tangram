@@ -1,5 +1,5 @@
 define(["js/pipelines/state_step_type.js","js/meta_model/info_type.js","js/meta_model/data_type.js"],function(State_step, i_type, d_type){
-console.log("init_common.js");
+//console.log("init_common.js");
     var r= {
         define_data:function (info_type_key, data_type_key){
                return {info_type:i_type[info_type_key].key, data_type:d_type[data_type_key].key};
