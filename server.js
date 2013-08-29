@@ -128,7 +128,7 @@ var url='https://'+req.body.ip+'/api/v2/'+req.body.operation+'/'+req.body.id+'.j
 sys.puts(url);
 sys.puts(toJson(req.body.model));
    rest.put(url,
-               {username: req.body.user,  password:req.body.password, data:req.body.model, headers:{"Content-Type": "application/json"}}
+               {username: req.body.user,  password:req.body.password, data:JSON.stringify(req.body.model), headers:{"Content-Type": "application/json"}}
            )
              .on('complete', function(result) {
 sys.puts('COMPLETE_UPDATE: ' + toJson(result));
