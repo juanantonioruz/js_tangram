@@ -8,11 +8,21 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
         ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js", "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js"],
        function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao, user_model, org_model, ticket_model) {
 
+
+           var result=function(){
+
            var data_state;
 //           console.dir(this.data_state);
 
-           if(this.data_state) data_state=this.data_state;
-           else  data_state=State();
+           if(this.stock){
+               console.log("this.data_state exists");
+              console.dir(this.stock);
+               data_state=this.stock;
+           }else{
+               console.log("this.data_state NO exists");
+               data_state=State();
+            
+           }
 
            this.data_state=data_state;
            this.dispatcher=dispatcher;
@@ -20,8 +30,17 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
            data_state.host=document.location.host;
 
+           this.uno=function(prop){
+               console.dir(data_state[prop]);
+           };
 
-           var result=function(){
+
+           this.data_state_fn=function(){
+               return data_state;
+           };
+
+
+
                // EOP
                dispatcher.reset();
 
@@ -101,9 +120,21 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
                                                             }}));
                var start_pipe=new Pipeline("start");
-               this.start_pipe=start_pipe;
+
 
               // dispatcher.dispatch(events.on_load_app, start_pipe, data_state);
+
+               
+
+
+
+
+
+               this.dispatch=function(event_name){
+
+
+                   dispatcher.dispatch(event_name, start_pipe, data_state);
+               };
 
            };
 

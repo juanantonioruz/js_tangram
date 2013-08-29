@@ -8,10 +8,24 @@ all.push(map.name);
 //console.log("name:"+map.name);
 };
 function init(clean){
-if(all.length>0) end();
+console.log("------------------------------------INIT!!!");
+    var stock;
+    if(this.data_state){
+        console.dir(this.data_state.password);
+        stock=this.data_state;
+    }
+if(all.length>0){
+    end();
+    if(stock){
+    this.stock=stock;
+    }
+console.dir(this.data_state.password);
+}
+
+
 if(clean) ["left", "center", "right"].map(function(item){$('#'+item).empty();});
 
-    console.log("init()");
+
 require(["js/start_ew.js", "js/start_proposal.js", "js/start_dev.js", "js/start_zendesk.js"],
         function(ew, proposal, dev, zendesk) {
             function getURLParameter(name) {

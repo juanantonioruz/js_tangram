@@ -8,6 +8,7 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
            result.try_to_log={
                arr:
                [
+                   {item_name_fn:ui.inject_reg_values},
                    {item_name_fn:query.query_base, bound:{"query":"profile"}},
                    {item_name_fn:dao.dao},
                    {item_name_fn:model.model_load_profile} // the first user is the admin

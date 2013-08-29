@@ -79,7 +79,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
 
            result.show_select_users=function(data_state, callback){
               
-               
+
                show_dom_select(this, data_state, user_model.model_name, user_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, user_model) )();
 
                callback(null, data_state);
@@ -150,6 +150,19 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                callback(null, data_state);
            };
            
+
+
+
+           result.inject_reg_values=function(data_state, callback){
+               data_state.user=$('#user').val()+"/token";
+                   data_state.password=$('#password').val();
+                   data_state.ip=$('#ip').val();
+
+               callback(null, data_state);
+           };
+
+
+
            result.register_form=function (data_state, callback){
                var target_pipeline=this.pipeline;
                $('#loading').html("zendesk");
@@ -157,10 +170,6 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                $('#left').append("<div id='register_form'><h3>Login: </h3> IP : <input type='text' id='ip' value='"+this.ip+"'><br>  User: <input type='text' id='user' value='"+this.user+"'><br> Password: <input type='password' id='password' value='"+this.password+"'><br><div id='buttons'/></div>");
                
                append_button("#buttons", function(){
-                   data_state.user=$('#user').val()+"/token";
-                   data_state.password=$('#password').val();
-                   data_state.ip=$('#ip').val();
-                   
                    dispatcher.dispatch(events.try_to_log, target_pipeline,data_state );
                }, "logging");
 
