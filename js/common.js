@@ -1,5 +1,35 @@
-define(["js/pipelines/state_step_type.js"],function(State_step){
+define(["js/pipelines/state_step_type.js","js/meta_model/info_type.js","js/meta_model/data_type.js"],function(State_step, i_type, d_type){
     var r= {
+        define_data:function (info_type_key, data_type_key){
+               return {info_type:i_type[info_type_key].key, data_type:d_type[data_type_key].key};
+           },
+        analyse_data: function (schema){
+               var the_data_analysed={human:[]};
+               console.dir(schema);
+               Object.keys(schema).map(function(item){
+               schema[item].key=item;
+                   if(schema[item] && schema[item].toString()=="[object Object]"){
+                       var info_type=schema[item].info_type;
+                       if(info_type==i_type.id.key)
+                           the_data_analysed.id=item;
+
+                       if(info_type==i_type.human_id.key)
+                           the_data_analysed.human_id=item;
+
+
+                       if(info_type==i_type.human.key)
+                           the_data_analysed.human.push({key:item, type:schema[item].data_type});
+
+
+
+
+                   }
+
+               });
+               console.dir(the_data_analysed);
+
+               return the_data_analysed;
+           },
         naming_fns:function(result, prefix){
             var new_map={};
             for (var key in result){

@@ -1,12 +1,18 @@
-define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","js/zendesk/model/user.js","js/zendesk/model/info_type.js","js/zendesk/model/data_type.js"],
-       function(common, events, dispatcher, model_user,i_type, d_type) {
+define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js"],
+       function(common, events, dispatcher, user_model,org_model, ticket_model) {
            var result={};
            
- function show_dom_select(pipeline_target, data_state,  model_name, data_state_store_key, target_dom_id, select_dom_id,  the_collection,  store_model_in_option){
+           function show_dom_select(pipeline_target, data_state,  model_name, data_state_store_key, target_dom_id, select_dom_id,  the_collection,  store_model_in_option){
 
               return function(){
                    $(select_dom_id).remove();
-                   var target=$("<select id='"+select_dom_id.replace('#', '')+"'></select>");
+                  var idd=select_dom_id.replace('#', '');
+
+                   $("#details_"+idd).remove();
+                  $("#edit_"+idd).remove();
+
+
+                   var target=$("<select id='"+idd+"'></select>");
                    $.each(the_collection, function(i, value){
                        var option=$("<option value='"+value._hidden_+"'>"+value._visible_+"</option>");
                        if(store_model_in_option)
@@ -15,44 +21,79 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                    });
 
                   $(target_dom_id).append(target);
-                  var idd=select_dom_id.replace('#', '');
+
                    $(target_dom_id).append("<input type='button' value='details' id='details_"+idd+"'>");
                    $(target_dom_id).append("<input type='button' value='edit'  id='edit_"+idd+"'>");
-                  $("#edit_"+idd).on('click', function(){
+
+                  function select_object(op){
                       var selected=$(select_dom_id+" option:selected").first();
                       var id=selected.val();
                       var text=selected.text();
                       data_state[data_state_store_key]=id;
-                      dispatcher.dispatch("edit_"+model_name+"_selected", pipeline_target, data_state);
+                      dispatcher.dispatch(op+model_name+"_selected", pipeline_target, data_state);
                       console.log(selected.val()+selected.text());
+                  }
+                  
+
+                  $("#edit_"+idd).on('click', function(){
+                    select_object("edit_");
                   });
                   $("#details_"+idd).on('click', function(){
-                      var selected=$(select_dom_id+" option:selected").first();
-                      var id=selected.val();
-                      var text=selected.text();
-                      data_state[data_state_store_key]=id;
-                      dispatcher.dispatch("detail_"+model_name+"_selected", pipeline_target, data_state);
-                      console.log(selected.val()+selected.text());
+                    select_object("detail_");
                   });
 
 
               };
            };
 
-           result.show_select_users=function(data_state, callback){
-               var colection=data_state[model_user.data_state_key];
+           function append_button( dom_id, click_fn, the_id, the_value){
+               $(dom_id).append("<input type='button' id='"+the_id+"' value='"+((the_value)?the_value:the_id)+"'>");
+               $('#'+the_id).on('click', click_fn);
+           };
+           function append_input_text( dom_id, label, the_class, the_id, the_value, change_fn){
+               $(dom_id).append(((label)?"<br>"+label.toUpperCase()+"<br>":"<br>")+"<input type='text' class='"+the_class+"' id='"+the_id+"' value='"+((the_value)?the_value:"")+"'>");
 
-               colection.map(function(item){
-                   item["_hidden_"]=item[model_user.data.id];
-                   item["_visible_"]=item[model_user.data.human_id];
-                  
+//               $('#'+the_id).on('click', click_fn);
+           };
+
+           function addButton(key, target, data_state){
+               $('#register_form').append("<input type='button' id='"+key+"' value='"+key+"'>");
+                   $('#'+key).on('click', function(){
+                       console.log("dispathing event:"+key);
+                   dispatcher.dispatch(key, target, data_state);
                });
 
-               show_dom_select(this, data_state, model_user.model_name, model_user.data_state_store_selected_key, "#content","#ey", colection )();
+           };
+
+           function generate_human_collection(data_state, model){
+               var colection=data_state[model.data_state_key];
+
+               colection.map(function(item){
+                   item["_hidden_"]=item[model.data.id];
+                   item["_visible_"]=item[model.data.human_id];
+                  
+               });
+               return colection;
+           }
+
+
+           result.show_select_users=function(data_state, callback){
+              
+               
+               show_dom_select(this, data_state, user_model.model_name, user_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, user_model) )();
 
                callback(null, data_state);
            };
 
+
+           result.show_select_orgs=function(data_state, callback){
+               show_dom_select(this, data_state, org_model.model_name, org_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, org_model)  )();
+               callback(null, data_state);
+           };
+           result.show_select_tickets=function(data_state, callback){
+               show_dom_select(this, data_state, ticket_model.model_name, ticket_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, ticket_model)  )();
+               callback(null, data_state);
+           };
 
 
            result.clean_register_form=function (data_state, callback){
@@ -60,18 +101,6 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                    $('#register_form').empty();
                callback(null, data_state);
 };           
-
-
-
-           function append_button( dom_id, click_fn, the_id, the_value){
-               $(dom_id).append("<input type='button' id='"+the_id+"' value='"+((the_value)?the_value:the_id)+"'>");
-               $('#'+the_id).on('click', click_fn);
-           }
-           function append_input_text( dom_id, label, the_class, the_id, the_value, change_fn){
-               $(dom_id).append(((label)?"<br>"+label.toUpperCase()+"<br>":"<br>")+"<input type='text' class='"+the_class+"' id='"+the_id+"' value='"+((the_value)?the_value:"")+"'>");
-
-//               $('#'+the_id).on('click', click_fn);
-           }
            
            result.show_edit_user_form=function(data_state, callback){
 
@@ -83,12 +112,12 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                $('#'+form_id).append("<div id='fields'></div>");
                $('#'+form_id).append("<div id='buttons'></div>");
                var that=this;
-                   var object_model_stored=data_state[model_user.data_state_store_selected_user][model_user.model_name];
-               Object.keys(model_user.data.human).map(function(item){
-                   var o=model_user.data.human[item];
+                   var object_model_stored=data_state[user_model.data_state_store_selected_object][user_model.model_name];
+               Object.keys(user_model.data.human).map(function(item){
+                   var o=user_model.data.human[item];
 
                    // component_type=o.type
-                       append_input_text("#fields",  o.key, model_user.model_name, o.key, object_model_stored[o.key]);
+                       append_input_text("#fields",  o.key, user_model.model_name, o.key, object_model_stored[o.key]);
                    
                });
                
@@ -98,19 +127,29 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                    // data_state.ip=$('#ip').val();
 
                    var mod={user:{}};
-                   $('.'+model_user.model_name).each(function(){
+                   $('.'+user_model.model_name).each(function(){
 
-                       mod[model_user.model_name][$(this).attr('id')]=$(this).val();
+                       mod[user_model.model_name][$(this).attr('id')]=$(this).val();
                    });
            //        console.dir(mod);
-                   data_state[model_user.data_state_store_user_on_editing]=mod;
+                   data_state[user_model.data_state_store_object_on_editing]=mod;
                    dispatcher.dispatch("send_edit_user", that, data_state );
                },
                              "edit_user");
                callback(null, data_state);
            };
-           
+           result.show_edit_organization_form=function(data_state, callback){
 
+             
+               callback(null, data_state);
+           };
+
+           result.show_edit_ticket_form=function(data_state, callback){
+
+             
+               callback(null, data_state);
+           };
+           
            result.register_form=function (data_state, callback){
                var target_pipeline=this.pipeline;
                $('#loading').html("zendesk");
@@ -128,16 +167,6 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                callback(null, data_state);
            };
 
-           function addButton(key, target, data_state){
-               $('#register_form').append("<input type='button' id='"+key+"' value='"+key+"'>");
-                   $('#'+key).on('click', function(){
-                       console.log("dispathing event:"+key);
-                   dispatcher.dispatch(key, target, data_state);
-               });
-
-           }
-
-
            result.show_links=function (data_state, callback){
                var target_pipeline=this.pipeline;
 
@@ -151,7 +180,6 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
 
                callback(null, data_state);
            };
-
            
            result.simple_show=function(data_state, callback){
                console.log(this.key);
