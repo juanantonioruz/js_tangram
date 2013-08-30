@@ -305,7 +305,7 @@ server.listen(port, function() {
 
 
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
+  socket.emit('news', { hello: 'world' , debug:"_mock"});
   socket.on('my other event', function (data) {
     console.log(data);
   });

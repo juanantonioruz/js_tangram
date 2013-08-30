@@ -1,14 +1,15 @@
 require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
-
-
-
 define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/zendesk/pipelines.js", "js/open_stack/d3_visualizations.js"
-        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js", "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js","js/zendesk/model.js"],
-       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao, user_model, org_model, ticket_model, _model) {
+   ,"js/pipelines/pipeline_type.js"    , "js/d3/history_cluster.js", "js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js","js/zendesk/model.js",
+        "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js", "js/zendesk/helper"+this.debug_value+".js"],
 
+       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,   
+                Pipeline, history_cluster, ui, query, dao,_model, 
+                user_model, org_model, ticket_model, helper) {
 
+           
            var result=function(){
 
            var data_state;
@@ -21,6 +22,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
            }else{
            //    console.log("this.data_state NO exists");
                data_state=State();
+
             
            }
 
@@ -36,10 +38,13 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                // EOP
                dispatcher.reset();
 
-               //ON LOAD APP show register_form
-//{array_state_step_functions:[], name }
+
                dispatcher.listen_event(events.on_load_app, 
-                                       defines.single_step_pipe("zendesk_welcome", ui.register_form, {ip:"enterprisewebcom.zendesk.com" , user:"juanantonioruz@gmail.com", password:"IgBNEzzUDQsJ4hSMcKWF2LYetEGeZNSNKLwi6iXp"}));
+                                       defines.single_step_pipe("zendesk_welcome", ui.register_form, 
+                                                                {ip:"enterprisewebcom.zendesk.com" , user:"juanantonioruz@gmail.com", password:"IgBNEzzUDQsJ4hSMcKWF2LYetEGeZNSNKLwi6iXp"})
+                                       .addTransformation(helper.ey)
+);
+
 
                dispatcher.listen_event(events.try_to_log, z_pipelines.try_to_log.spec);
 

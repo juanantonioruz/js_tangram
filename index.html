@@ -49,12 +49,27 @@ var childWin;
     </script>
 
     <script type="text/javascript" src="js/require.js" data-main="js/controller"></script>
-
 <script>
   var socket = io.connect('http://localhost');
   socket.on('news', function (data) {
-    console.log(data);
- init();
+  console.log(data);
+  if(data.debug){
+console.log("MOCKING DEPENDENCIES ON!!");
+  
+/*
+
+    require.config({
+        map: {
+            'foo': {
+                bar: 'barMock'
+            }
+        }
+    });
+*/
+
+  }
+  init_debug(data.debug);    
+  init();
     socket.emit('my other event', { my: 'data' });
   });
 </script>

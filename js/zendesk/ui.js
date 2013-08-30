@@ -80,7 +80,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                   
                });
                return colection;
-           }
+           };
 
 
            result.show_select_users=function(data_state, callback){
