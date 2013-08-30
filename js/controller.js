@@ -22,8 +22,9 @@ this.init_debug=function(value){
 
 };
 
+
 this.init=function init(clean){
-    alert(this.debug_value);
+    console.log("this.debug_value: "+this.debug_value);
     console.log("------------------------------------INIT REQUIREJS !!!***");
     var stock;
     if(this.data_state){

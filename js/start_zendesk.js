@@ -2,7 +2,7 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/zendesk/pipelines.js", "js/open_stack/d3_visualizations.js"
-   ,"js/pipelines/pipeline_type.js"    , "js/d3/history_cluster.js", "js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js","js/zendesk/model.js",
+   ,"js/pipelines/pipeline_type.js"    , "js/d3/history_cluster.js", "js/zendesk/ui.js","js/zendesk/query.js", "js/dao/dao"+this.debug_value+".js","js/zendesk/model.js",
         "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js", "js/zendesk/helper"+this.debug_value+".js"],
 
        function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,   

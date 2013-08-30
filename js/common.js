@@ -52,6 +52,7 @@ define(["js/pipelines/state_step_type.js","js/meta_model/info_type.js","js/meta_
             return new_map;
         },
         toJson: function toJson(o){
+
             return JSON.stringify(o, null, 4);
         },
         naming_pipes:function(result, prefix){

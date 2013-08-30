@@ -3,7 +3,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js"],
            var result={};
            
            result.ey=function(data_state, callback){
-               alert("helper_ey function");
+               console.log("helper_ey function");
                callback(null, data_state);
            };
 

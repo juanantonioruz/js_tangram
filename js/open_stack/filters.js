@@ -4,6 +4,7 @@ define(  function() {
     }
 
 function toJson(o){
+
             return JSON.stringify(o, null, 4);
 }
     function getStart(){return (new Date).getTime();};
