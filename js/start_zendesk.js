@@ -5,8 +5,8 @@ require.config({
 
 
 define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_stack/filters.js", "js/pipelines/dispatcher.js", "js/pipelines/state_type.js", "js/zendesk/pipelines.js", "js/open_stack/d3_visualizations.js"
-        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js", "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js"],
-       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao, user_model, org_model, ticket_model) {
+        ,"js/pipelines/pipeline_type.js","js/pipelines/switcher_pipeline_type.js","js/pipelines/state_step_type.js", "js/d3/history_cluster.js", "js/open_stack/model/tenant.js", "js/open_stack/model/token.js" ,"js/zendesk/ui.js","js/zendesk/query.js", "js/open_stack/dao.js", "js/zendesk/model/user.js","js/zendesk/model/organization.js","js/zendesk/model/ticket.js","js/zendesk/model.js"],
+       function(defines, common, events, filters,  dispatcher,  State, z_pipelines, d3_pipes,  Pipeline, SwitcherPipeline, StateStep, history_cluster,tenant_model, token_model, ui, query, dao, user_model, org_model, ticket_model, _model) {
 
 
            var result=function(){
@@ -50,6 +50,13 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
                dispatcher.listen_event("ey",  defines.single_step_pipe("show_ey", ui.simple_show, {key:"juan"}));
 
+               dispatcher.listen_state_step("ON_END", "ui_show_edit_user_form",  
+                                            defines.single_step_pipe("show_select_orgssss", query.query_base, {"query":"organizations"} )
+                                            .addTransformation(dao.dao)
+                                            .addTransformation(_model.model_load_base, {key:"organizations", dao_key:"organizations"})
+                                            .addTransformation(ui.show_select_orgs, {"no_buttons":true, target_dom_id:"#fields" }));
+                   
+
                dispatcher.listen_pipe(events.on_end, "show_organizations", defines.single_step_pipe("show_orgs", ui.simple_show, {key:"organizations"}));
 
                var mapa={"user":user_model, "organization":org_model, "ticket":ticket_model};
@@ -90,7 +97,7 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
                                        .addTransformation(query.query_create, {query:"user", data_key_options:"create_user_options"})
                                        .addTransformation(dao.dao));
 
-
+              // dispatcher.filter( filters.logging(true, true));
                dispatcher.filter(filters.d3_debug_pipelines(history_cluster, childWin, "#pipelines",
                                                             {"mouse_event_name":"contextmenu", fn:function(){
                                                                 console.log("NS: "+this.d.ns);
@@ -120,8 +127,8 @@ define(["js/defines.js", "js/common.js", "js/open_stack/events.js", "js/open_sta
 
                this.dispatch=function(event_name, init_app, clean){
                    if(init_app) this.init(clean);
-                   console.dir(data_state.password);
-                   console.dir(data_state.last_event_dispatched);
+//                   console.dir(data_state.password);
+ //                  console.dir(data_state.last_event_dispatched);
 
                    dispatcher.dispatch(event_name, start_pipe, data_state);
                };

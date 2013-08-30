@@ -63,8 +63,11 @@ define(["js/pipelines/state_step_type.js","js/meta_model/info_type.js","js/meta_
                     if(inter_spec.spec.params){
                         inter_spec.spec.params.unshift(the_name);
                     };
+
                 result[((prefix)?prefix:"")+key]={name:the_name, spec:inter_spec};
             }
+
+
             return result;
 
         },

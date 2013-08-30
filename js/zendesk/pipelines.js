@@ -30,12 +30,24 @@ define([  "js/defines.js",  "js/common.js","js/open_stack/dao.js",  "js/zendesk/
                ],
                spec:
                {type:Pipeline, params:[]}};
-           result.show_organizations={
+
+           result.load_organizations={
                arr:
                [
                    {item_name_fn:query.query_base, bound:{"query":"organizations"}},
                    {item_name_fn:dao.dao},
-                   {item_name_fn:model.model_load_base, bound:{key:"organizations", dao_key:"organizations"}},
+                   {item_name_fn:model.model_load_base, bound:{key:"organizations", dao_key:"organizations"}}
+
+
+
+               ],
+               spec:
+               {type:Pipeline, params:[]}};
+
+           result.show_organizations={
+               arr:
+               [
+                   {item_name_fn:result.load_organizations},
                    {item_name_fn:ui.show_select_orgs}
 
 

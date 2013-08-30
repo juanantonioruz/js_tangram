@@ -5,6 +5,8 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
            function show_dom_select(pipeline_target, data_state,  model_name, data_state_store_key, target_dom_id, select_dom_id,  the_collection,  store_model_in_option){
 
               return function(){
+
+                  select_dom_id+=model_name+"_id";
                    $(select_dom_id).remove();
                   var idd=select_dom_id.replace('#', '');
 
@@ -12,7 +14,7 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                   $("#edit_"+idd).remove();
 
 
-                   var target=$("<select id='"+idd+"'></select>");
+                   var target=$("<br><select id='"+idd+"'></select>");
                    $.each(the_collection, function(i, value){
                        var option=$("<option value='"+value._hidden_+"'>"+value._visible_+"</option>");
                        if(store_model_in_option)
@@ -22,9 +24,6 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
 
                   $(target_dom_id).append(target);
 
-                   $(target_dom_id).append("<input type='button' value='details' id='details_"+idd+"'>");
-                   $(target_dom_id).append("<input type='button' value='edit'  id='edit_"+idd+"'>");
-
                   function select_object(op){
                       var selected=$(select_dom_id+" option:selected").first();
                       var id=selected.val();
@@ -33,14 +32,21 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
                       dispatcher.dispatch(op+model_name+"_selected", pipeline_target, data_state);
                       console.log(selected.val()+selected.text());
                   }
-                  
 
-                  $("#edit_"+idd).on('click', function(){
-                    select_object("edit_");
-                  });
+//                  if(!buttons){
+                   $(target_dom_id).append("<input type='button' value='details' id='details_"+idd+"'>");
                   $("#details_"+idd).on('click', function(){
                     select_object("detail_");
                   });
+
+                   $(target_dom_id).append("<input type='button' value='edit'  id='edit_"+idd+"'>");
+                  $("#edit_"+idd).on('click', function(){
+                    select_object("edit_");
+                  });
+
+//                  }
+                  
+
 
 
               };
@@ -82,15 +88,18 @@ define(["js/common.js","js/open_stack/events.js", "js/pipelines/dispatcher.js","
 
                show_dom_select(this, data_state, user_model.model_name, user_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, user_model) )();
 
-                       $("#ey").css("margin", "200px").css("background-color", "red");
+                       $("#ey").css("margin", "20px").css("background-color", "cyan");
 
 
                callback(null, data_state);
            };
 
-
            result.show_select_orgs=function(data_state, callback){
-               show_dom_select(this, data_state, org_model.model_name, org_model.data_state_store_selected_key, "#content","#ey", generate_human_collection(data_state, org_model)  )();
+var value_=(this.target_dom_id)?this.target_dom_id : "#content";
+//alert(this.no_buttons);
+               show_dom_select(this, data_state, org_model.model_name, org_model.data_state_store_selected_key,
+                               value_, "#"
+                               , generate_human_collection(data_state, org_model) , this.no_buttons )();
                callback(null, data_state);
            };
            result.show_select_tickets=function(data_state, callback){

@@ -57,7 +57,7 @@ define(["js/async.js", "js/redefines.js"], function(async, redefines) {
                                                         filters.map(
                                                             function(o){
                                                                 return o.bind(
-                                                                    {data_state:data_state, target:target, 
+                                                                    {target:target, 
                                                                      transformation_event_type:transformation_event_type});}));
                     composition(data_state, function(err, result){
                         // TODO THIS LINE HAS BEEN MOVED TO MAKE THE FILTERS ASYNC OF THE LISTENERS
