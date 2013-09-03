@@ -43,9 +43,10 @@ this.init=function init(clean){
     if(clean) ["left", "content", "right"].map(function(item){$('#'+item).empty();});
 
 
-    require(["js/start_ew.js", "js/start_proposal.js", "js/start_dev.js", "js/start_zendesk.js"],
 
-            function(ew, proposal, dev, zendesk) {
+    require([ "js/start_proposal.js", "js/start_dev.js", "js/start_zendesk.js"],
+
+            function( proposal, dev, zendesk) {
                 function getURLParameter(name) {
                     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
                 }

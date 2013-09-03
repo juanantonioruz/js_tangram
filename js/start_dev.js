@@ -2,7 +2,7 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()
 });
 
-define(["js/dev/fns.js", "js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/ew_related/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
+define(["js/dev/fns.js", "js/dev/pipes.js", "js/open_stack/filters.js", "js/pipelines/state_type.js", "js/pipelines/dispatcher.js", "js/pipelines/mapper_pipeline_type.js", "js/pipelines/pipeline_type.js", "js/dev/helper_display.js","js/async.js", "js/d3/history_cluster.js"],
        function(fns, pipes, filters, State, dispatcher,Mapper_Pipeline, Pipeline, display, async, history_cluster) {
            var app_data=State();
            // console.log(toJson(json_data));
