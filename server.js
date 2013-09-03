@@ -282,6 +282,14 @@ sys.puts('**************** http://'+req.body.s_host+req.body.s_url);
 });
 
 
+app.get('/overture_test', function(req, res){
+sys.puts('**************** overture_test');
+//    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({success:true}));
+    res.end();
+
+});
+
 
 
 var port = process.env.PORT || 3000;

@@ -5,7 +5,8 @@
   , "dependencies": {
     "express":"*",
     "restler":"*",
-    "socket.io": "*"
+    "socket.io": "*",
+"jasmine-node":"1.4.0"
   }
   ,"engines": {
     "node": "0.8.4",
